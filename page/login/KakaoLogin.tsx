@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { WebViewNativeEvent } from 'react-native-webview/lib/WebViewTypes';
@@ -6,17 +7,23 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const CLIENT_ID = "7c7b66bfebd17d00be7c61d798f0b6e9";
-const REDIRECT_URI = "http://localhost:8081/login/redirect/kakao";
+const REDIRECT_URI = "http://192.168.0.16:8080/api/v1/auth/kakao";
 
 export default function KakaoLogin({ navigation }: any) {
-    const onNavigationStateChange = (state: WebViewNativeEvent) => {
+    const getData = async (uri: string) => {
+        try {
+            const response = await axios.get(uri);
+            return response.data;
+        } catch (error) {
+            alert(error);
+        }
+    }
+
+    const onNavigationStateChange = async (state: WebViewNativeEvent) => {
         const url = new URL(state.url);
         if (url.hostname != 'kauth.kakao.com'){
-            navigation.navigate('Login', {
-                token: url.searchParams.get("code"),
-                error: url.searchParams.get("error"),
-                error_description: url.searchParams.get("error_description"),
-            });
+            const token = await getData(state.url);
+            navigation.navigate('ClickHome', {test: token});
         }
     }
 
