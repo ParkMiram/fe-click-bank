@@ -10,8 +10,13 @@ const REDIRECT_URI = "http://localhost:8081/login/redirect/kakao";
 
 export default function KakaoLogin({ navigation }: any) {
     const onNavigationStateChange = (state: WebViewNativeEvent) => {
-        if (!state.url.startsWith("https://kauth.kakao.com")){
-            navigation.navigate('Login', {token: state.url});
+        const url = new URL(state.url);
+        if (url.hostname != 'kauth.kakao.com'){
+            navigation.navigate('Login', {
+                token: url.searchParams.get("code"),
+                error: url.searchParams.get("error"),
+                error_description: url.searchParams.get("error_description"),
+            });
         }
     }
 

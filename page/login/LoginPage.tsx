@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function LoginPage({ route, navigation }: any) {
-    const { token } = route.params;
+    const { token, error, error_description } = route.params;
 
     const onPress = () => {
         navigation.navigate('KakaoLogin');
@@ -15,6 +15,8 @@ export default function LoginPage({ route, navigation }: any) {
             />
             {/* <Text>쉽고 간편한 금융서비스 딸깍!</Text> */}
             <Text>{token}</Text>
+            <Text>{error}</Text>
+            <Text>{error_description}</Text>
             <TouchableOpacity
                 style={{marginTop:100}}
                 onPress={onPress}>

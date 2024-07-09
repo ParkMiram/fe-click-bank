@@ -3,7 +3,7 @@ import { StyleSheet, Image, View } from 'react-native';
 export default function SplashLogo({ navigation }: any) {
 
     setTimeout(() => {
-        navigation.navigate('Login', {token: null});
+        navigation.navigate('Login', {token: null, error: null});
     }, 1000);
 
     return (
