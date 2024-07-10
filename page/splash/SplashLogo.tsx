@@ -25,6 +25,6 @@ const styles = StyleSheet.create({
     },
     splashLogo: {
         width: 300,
-        height: 100
+        height: 120
     },
 });
