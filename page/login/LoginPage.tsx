@@ -1,15 +1,16 @@
-import { Dimensions, Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Container } from '../../css/sujin/Container';
 
-export default function LoginPage({ route, navigation }: any) {
+export default function LoginPage({ navigation }: any) {
 
     const onPress = () => {
         // navigation.navigate('KakaoLogin');
-        navigation.navigate('UserTermOfUse');
+        navigation.navigate('UserTermOfUse', {token: "asd"});
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
                 <Image 
                     style={styles.clickLogo}
                     source={require('../../assets/image/Click_logo.png')}
@@ -36,17 +37,5 @@ const styles = StyleSheet.create({
     kakaoLogin: {
         width:230,
         height:56,
-    },
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });

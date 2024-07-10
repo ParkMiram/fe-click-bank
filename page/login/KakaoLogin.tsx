@@ -2,6 +2,7 @@ import axios from 'axios';
 import { SafeAreaView, StyleSheet, Dimensions } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { WebViewNativeEvent } from 'react-native-webview/lib/WebViewTypes';
+import { Container } from '../../css/sujin/Container';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -25,13 +26,17 @@ export default function KakaoLogin({ navigation }: any) {
         const url = new URL(state.url);
         if (url.hostname != 'kauth.kakao.com' && !checkAlreadySend){
             checkAlreadySend = true;
-            const token = await getData(state.url);
-            navigation.navigate('ClickHome', {code: token});
+            const data = await getData(state.url);
+            if (data.isAlready) {
+                // 자동로그인 토큰 발급
+            } else {
+                navigation.navigate('ClickHome', {identity: data.identity, type: data.type});
+            }
         }
     }
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={Container.container}>
             <WebView 
                 style={styles.webview}
                 source={{
@@ -44,12 +49,6 @@ export default function KakaoLogin({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },    
     webview: {
         flex: 1,
         width: windowWidth,
