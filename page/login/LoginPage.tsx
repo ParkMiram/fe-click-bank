@@ -1,31 +1,30 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function LoginPage({ route, navigation }: any) {
-    // const { token, error, error_description } = route.params;
 
     const onPress = () => {
-        navigation.navigate('KakaoLogin');
+        // navigation.navigate('KakaoLogin');
+        navigation.navigate('UserTermOfUse');
     }
 
     return (
-        <View style={styles.container}>
-            <Image 
-                style={styles.clickLogo}
-                source={require('../../assets/image/Click_logo.png')}
-            />
-            <Text>쉽고 간편한 금융서비스 딸깍!</Text>
-            {/* <Text>{token}</Text>
-            <Text>{error}</Text>
-            <Text>{error_description}</Text> */}
-            <TouchableOpacity
-                style={{marginTop:100}}
-                onPress={onPress}>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.innerContainer}>
                 <Image 
-                    style={styles.kakaoLogin}
-                    source={require('../../assets/image/kakao_login_large_narrow.png')}
+                    style={styles.clickLogo}
+                    source={require('../../assets/image/Click_logo.png')}
                 />
-            </TouchableOpacity>
-        </View>
+                <Text>쉽고 간편한 금융서비스 딸깍!</Text>
+                <TouchableOpacity
+                    style={{marginTop:100}}
+                    onPress={onPress}>
+                    <Image 
+                        style={styles.kakaoLogin}
+                        source={require('../../assets/image/kakao_login_large_narrow.png')}
+                    />
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
     );
 }
 
@@ -38,9 +37,15 @@ const styles = StyleSheet.create({
         width:230,
         height:56,
     },
+    innerContainer: {
+        flex: 1,
+        width: "100%",
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
     },
