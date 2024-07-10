@@ -5,6 +5,7 @@ import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashLogo from './page/splash/SplashLogo';
+import ClickHome from './page/main/ClickHome';
 
 const Stack = createStackNavigator();
 
@@ -18,6 +19,7 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="ClickHome" component={ClickHome} />
             </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
