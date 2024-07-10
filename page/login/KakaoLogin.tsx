@@ -10,9 +10,11 @@ const CLIENT_ID = "7c7b66bfebd17d00be7c61d798f0b6e9";
 const REDIRECT_URI = "http://192.168.0.16:8080/api/v1/auth/kakao";
 
 export default function KakaoLogin({ navigation }: any) {
+    let checkAlreadySend = false;
+
     const getData = async (uri: string) => {
         try {
-            const response = await axios.get(uri);
+            const response = await axios.get(uri+"&isFront=true");
             return response.data;
         } catch (error) {
             alert(error);
@@ -21,9 +23,10 @@ export default function KakaoLogin({ navigation }: any) {
 
     const onNavigationStateChange = async (state: WebViewNativeEvent) => {
         const url = new URL(state.url);
-        if (url.hostname != 'kauth.kakao.com'){
+        if (url.hostname != 'kauth.kakao.com' && !checkAlreadySend){
+            checkAlreadySend = true;
             const token = await getData(state.url);
-            navigation.navigate('ClickHome', {test: token});
+            navigation.navigate('ClickHome', {code: token});
         }
     }
 

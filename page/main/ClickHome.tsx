@@ -1,13 +1,13 @@
 import { StyleSheet, View, Text } from 'react-native';
 
 export default function ClickHome({ route, navigation }: any) {
-    const { test } = route.params;
+    const { code } = route.params;
 
     return (
         <View style={styles.container}>
             <Text>Click home</Text>
             <Text>
-                {test}
+                {code}
             </Text>
         </View>
     );
