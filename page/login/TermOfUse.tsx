@@ -2,9 +2,13 @@ import { StyleSheet, Image, View, Text, SafeAreaView } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
 
-export default function TermOfUse({ navigation }: any) {
-    const onPress = () => {
-        navigation.navigate('UserSetPassword');
+export default function TermOfUse({ navigation, route }: any) {
+    
+    const goNext = () => {
+        navigation.navigate('UserSetPassword', {
+            identity: route.params.identity,
+            type: route.params.type
+        });
     }
 
     return (
@@ -21,7 +25,7 @@ export default function TermOfUse({ navigation }: any) {
                     <Text>대충 동의하시죠?</Text>
                     <Text>승인은 딸깍이 했어요~</Text>
                 </View>
-                <NextButton text="빨리 다음으로 가요" press={onPress} active={true} />
+                <NextButton text="빨리 다음으로 가요" press={goNext} active={true} />
             </View>
         </SafeAreaView>
     );

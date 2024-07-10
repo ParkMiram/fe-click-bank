@@ -4,10 +4,18 @@ import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
 import Keypad from '../../component/auth/Keypad';
 
-export default function SetPassword({ navigation }: any) {
+export default function SetPassword({ navigation, route }: any) {
     const [password, setPassword] = useState("");
     const [toStar, setStar] = useState("");
     const [canGoNext, setGoNext] = useState(false);
+
+    const goNext = () => {
+        navigation.navigate('UserCheckPassword', {
+            identity: route.params.identity,
+            type: route.params.type,
+            password: password
+        });
+    }
 
     const addPassword = (str: string) => {
         if (password.length >= 6) return;
@@ -35,7 +43,7 @@ export default function SetPassword({ navigation }: any) {
                     <Text style={styles.passwordStar}>{toStar}</Text>
                 </View>
                 <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
-                <NextButton text="이제 어서 시작해요" press={() => {}} active={canGoNext} />
+                <NextButton text="이제 어서 시작해요" press={goNext} active={canGoNext} />
             </View>
         </SafeAreaView>
     );
