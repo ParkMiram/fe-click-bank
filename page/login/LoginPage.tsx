@@ -1,29 +1,31 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Container } from '../../css/sujin/Container';
 
-export default function LoginPage({ route, navigation }: any) {
-    const { token } = route.params;
+export default function LoginPage({ navigation }: any) {
 
-    const onPress = () => {
+    const goKakao = () => {
         navigation.navigate('KakaoLogin');
+        // navigation.navigate('UserTermOfUse', {token: "asd"});
     }
 
     return (
-        <View style={styles.container}>
-            <Image 
-                style={styles.clickLogo}
-                source={require('../../assets/image/Click_logo.png')}
-            />
-            {/* <Text>쉽고 간편한 금융서비스 딸깍!</Text> */}
-            <Text>{token}</Text>
-            <TouchableOpacity
-                style={{marginTop:100}}
-                onPress={onPress}>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
                 <Image 
-                    style={styles.kakaoLogin}
-                    source={require('../../assets/image/kakao_login_large_narrow.png')}
+                    style={styles.clickLogo}
+                    source={require('../../assets/image/Click_logo.png')}
                 />
-            </TouchableOpacity>
-        </View>
+                <Text>쉽고 간편한 금융서비스 딸깍!</Text>
+                <TouchableOpacity
+                    style={{marginTop:100}}
+                    onPress={goKakao}>
+                    <Image 
+                        style={styles.kakaoLogin}
+                        source={require('../../assets/image/kakao_login_large_narrow.png')}
+                    />
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
     );
 }
 
@@ -35,11 +37,5 @@ const styles = StyleSheet.create({
     kakaoLogin: {
         width:230,
         height:56,
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });
