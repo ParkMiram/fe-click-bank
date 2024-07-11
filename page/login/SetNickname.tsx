@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 
 export default function SetNickName({ navigation, route }: any) {
+    const { identity, type, password } = route.params;
     const [nickname, setNickname] = useState("");
     const [infoText, setInfoText] = useState("");
     const [canGoNext, setGoNext] = useState(false);
@@ -22,9 +23,9 @@ export default function SetNickName({ navigation, route }: any) {
 
     const goNext = () => {
         navigation.navigate('UserCreate', {
-            identity: route.params.identity,
-            type: route.params.type,
-            password: route.params.password,
+            identity: identity,
+            type: type,
+            password: password,
             nickname: nickname
         });
     }

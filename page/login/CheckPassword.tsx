@@ -5,6 +5,7 @@ import NextButton from '../../component/auth/NextButton';
 import Keypad from '../../component/auth/Keypad';
 
 export default function CheckPassword({ navigation, route }: any) {
+    const { identity, type } = route.params;
     const [password, setPassword] = useState("");
     const [toStar, setStar] = useState("");
     const [canGoNext, setGoNext] = useState(false);
@@ -12,8 +13,8 @@ export default function CheckPassword({ navigation, route }: any) {
 
     const goNext = () => {
         navigation.navigate('UserSetNickName', {
-            identity: route.params.identity,
-            type: route.params.type,
+            identity: identity,
+            type: type,
             password: route.params.password
         });
     }
