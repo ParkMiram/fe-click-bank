@@ -10,13 +10,13 @@ import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
 
-export type RootStackParamList = {
-    Home: undefined;
-    Transfer: undefined;
-    ReminingTranfer: undefined;
-    ResultTransfer: undefined;
-    SendingTransfer: undefined;
-};
+// export type RootStackParamList = {
+//     Home: undefined;
+//     Transfer: undefined;
+//     ReminingTranfer: undefined;
+//     ResultTransfer: undefined;
+//     SendingTransfer: { bank: string; accountNumber: string };
+// };
 
 const Stack = createStackNavigator();
 
@@ -24,7 +24,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Splash" 
+                initialRouteName="Transfer" 
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
