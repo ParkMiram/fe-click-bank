@@ -5,6 +5,8 @@ import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashLogo from './page/splash/SplashLogo';
+import AccountHistory from "./page/account-history/AccountHistory";
+import AccountHistoryDetail from "./page/account-history/AccountHistoryDetail";
 
 const Stack = createStackNavigator();
 
