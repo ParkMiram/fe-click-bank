@@ -25,7 +25,7 @@ export default function TermOfUse({ navigation, route }: any) {
                     <Text>대충 동의하시죠?</Text>
                     <Text>승인은 딸깍이 했어요~</Text>
                 </View>
-                <NextButton text="빨리 다음으로 가요" press={goNext} active={true} />
+                <NextButton text="어서 시작해요" press={goNext} active={true} />
             </View>
         </SafeAreaView>
     );

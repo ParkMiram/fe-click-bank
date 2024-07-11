@@ -24,13 +24,17 @@ export default function KakaoLogin({ navigation }: any) {
 
     const onNavigationStateChange = async (state: WebViewNativeEvent) => {
         const url = new URL(state.url);
-        if (url.hostname != 'kauth.kakao.com' && !checkAlreadySend){
+        if (url.host == '192.168.0.16:8080' && !checkAlreadySend){
             checkAlreadySend = true;
             const data = await getData(state.url);
             if (data.isAlready) {
                 // 자동로그인 토큰 발급
+                navigation.navigate('ClickHome');
             } else {
-                navigation.navigate('ClickHome', {identity: data.identity, type: data.type});
+                navigation.navigate('UserTermOfUse', {
+                    identity: data.identity, 
+                    type: data.type
+                });
             }
         }
     }

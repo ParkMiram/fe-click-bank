@@ -25,7 +25,7 @@ export default function SetNickName({ navigation, route }: any) {
             identity: route.params.identity,
             type: route.params.type,
             password: route.params.password,
-            nickcname: nickname
+            nickname: nickname
         });
     }
 

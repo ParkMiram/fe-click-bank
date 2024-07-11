@@ -47,7 +47,7 @@ export default function SetPassword({ navigation, route }: any) {
                     <Text/>
                 </View>
                 <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
-                <NextButton text="이제 어서 시작해요" press={goNext} active={canGoNext} />
+                <NextButton text="빨리 다음으로 가요" press={goNext} active={canGoNext} />
             </View>
         </SafeAreaView>
     );

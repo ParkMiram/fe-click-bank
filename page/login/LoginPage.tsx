@@ -3,9 +3,9 @@ import { Container } from '../../css/sujin/Container';
 
 export default function LoginPage({ navigation }: any) {
 
-    const onPress = () => {
-        // navigation.navigate('KakaoLogin');
-        navigation.navigate('UserTermOfUse', {token: "asd"});
+    const goKakao = () => {
+        navigation.navigate('KakaoLogin');
+        // navigation.navigate('UserTermOfUse', {token: "asd"});
     }
 
     return (
@@ -18,7 +18,7 @@ export default function LoginPage({ navigation }: any) {
                 <Text>쉽고 간편한 금융서비스 딸깍!</Text>
                 <TouchableOpacity
                     style={{marginTop:100}}
-                    onPress={onPress}>
+                    onPress={goKakao}>
                     <Image 
                         style={styles.kakaoLogin}
                         source={require('../../assets/image/kakao_login_large_narrow.png')}
