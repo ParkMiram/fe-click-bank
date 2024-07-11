@@ -1,13 +1,18 @@
 import { StyleSheet, Image, View } from 'react-native';
+import { Container } from '../../css/sujin/Container';
 
 export default function SplashLogo({ navigation }: any) {
 
     setTimeout(() => {
-        navigation.navigate('Login', {token: null});
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}]
+        });
+        // navigation.navigate('Login') //, {token: null, error: null});
     }, 1000);
 
     return (
-        <View style={styles.container}>
+        <View style={Container.container}>
             <Image
                 style={styles.splashLogo}
                 source={require('../../assets/image/Click_logo.png')}
@@ -17,14 +22,8 @@ export default function SplashLogo({ navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     splashLogo: {
         width: 300,
-        height: 100
+        height: 120
     },
 });
