@@ -3,15 +3,15 @@ import { useState } from "react";
 import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text, TextInput } from "react-native-paper";
-import { RootStackParamList } from "../../App";
+// import { RootStackParamList } from "../../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ReactNativeModal from "react-native-modal";
 
-type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
+// type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
-type Props = {
-  navigation: TransferNavigationProp;
-};
+// type Props = {
+//   navigation: TransferNavigationProp;
+// };
 
 const banks = [
   { label: '국민은행', value: '국민은행', logo: require('../../assets/image/kb_bank.png') },
@@ -19,8 +19,8 @@ const banks = [
   { label: '카카오뱅크', value: '카카오뱅크', logo: require('../../assets/image/kakao_bank.jpeg') },
   { label: '클릭뱅크', value: '클릭뱅크', logo: require('../../assets/image/Click_logo.png') },
 ];
-
-const Transfer: React.FC<Props> = ({ navigation }) => {
+// : React.FC<Props>
+const Transfer = ({ navigation }: any) => {
     const [accountNumber, setAccountNumber] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedBank, setSelectedBank] = useState('');
@@ -82,7 +82,10 @@ const Transfer: React.FC<Props> = ({ navigation }) => {
                     <Text style={styles.selectedBankText}>선택된 은행: {selectedBank}</Text>
                 </View>
                     <View style={{ flex: 1 }} />
-                    <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('SendingTransfer')}>
+                    <TouchableOpacity 
+                        style={styles.sendButton} 
+                        onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber })}
+                    >
                     <Text style={styles.sendButtonText}>보내기</Text>
                     </TouchableOpacity>
                 </View>
