@@ -12,7 +12,7 @@ export default function SetNickName({ navigation, route }: any) {
 
     const changeNickname = (text: string) => {
         setNickname(text);
-        if (text.length > 2) {
+        if (text.length >= 2) {
             setGoNext(true);
             setInfoText("멋진 이름이네요!");
         } else {
