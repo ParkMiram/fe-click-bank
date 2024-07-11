@@ -20,6 +20,17 @@ export type RootStackParamList = {
     SendingTransfer: undefined;
 };
 
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+export type RootStackParamList = {
+    AccountType: undefined;
+    AccountInformation: undefined;
+
+};
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -36,6 +47,12 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="AccountType" component={AccountType}/>
+               <Stack.Screen name='AccountInformation' component={AccountInformation}/>
+                <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+                <Stack.Screen name="AccountPassword" component={AccountPassword}/>
+                <Stack.Screen name="AccountComplete" component={AccountComplete}/>
+                <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
             </Stack.Navigator>
