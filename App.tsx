@@ -17,6 +17,13 @@ import Transfer from './page/trasfer/Transfer';
 import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+import GetLoginToken from './page/login/GetLoginToken';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -25,13 +32,6 @@ import ResultTransfer from './page/trasfer/ResultTransfer';
 //     ResultTransfer: undefined;
 //     SendingTransfer: { bank: string; accountNumber: string };
 // };
-
-import AccountInformation from './page/newAccount/AccountInformation';
-import AccountType from './page/newAccount/AccountType';
-import CreateAccount from './page/newAccount/CreateAccount';
-import AccountPassword from './page/newAccount/AccountPassword';
-import AccountComplete from './page/newAccount/AccountComplete';
-import AccountTerms from './page/newAccount/AccountTerms';
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
