@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { StyleSheet, View, Text, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Vibration } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
 import Keypad from '../../component/auth/Keypad';
@@ -19,7 +19,10 @@ export default function SetPassword({ navigation, route }: any) {
 
     const addPassword = (str: string) => {
         if (password.length >= 6) return;
-        if (password.length == 5) setGoNext(true);
+        if (password.length == 5) {
+            setGoNext(true);
+            Vibration.vibrate(60);
+        }
         setPassword(password + str);
         setStar("●".repeat(password.length+1));
     }
@@ -41,6 +44,7 @@ export default function SetPassword({ navigation, route }: any) {
                 </Text>
                 <View style={styles.passwordBox}>
                     <Text style={styles.passwordStar}>{toStar}</Text>
+                    <Text/>
                 </View>
                 <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
                 <NextButton text="이제 어서 시작해요" press={goNext} active={canGoNext} />
@@ -60,6 +64,7 @@ const styles = StyleSheet.create({
     passwordBox: {
         flex: 1,
         width: "65%",
+        paddingTop: "5%",
         alignItems: 'center',
         justifyContent: 'center',
     },

@@ -8,10 +8,14 @@ export default function CheckPassword({ navigation, route }: any) {
     const [password, setPassword] = useState("");
     const [toStar, setStar] = useState("");
     const [canGoNext, setGoNext] = useState(false);
-    const [infoText, setInfoText] = useState("확인을 위해 한번 더 입력해 주세요.");
+    const [infoText, setInfoText] = useState("");
 
     const goNext = () => {
-
+        navigation.navigate('UserSetNickName', {
+            identity: route.params.identity,
+            type: route.params.type,
+            password: route.params.password
+        });
     }
 
     const addPassword = (str: string) => {
@@ -19,10 +23,10 @@ export default function CheckPassword({ navigation, route }: any) {
         if (password.length == 5) {
             if (route.params.password === password+str) {
                 setGoNext(true);
-                setInfoText("좋아요, 이제 시작할 준비가 되었어요!");
+                setInfoText("좋아요, 기억력이 훌륭하시네요!");
                 Vibration.vibrate(60);
             } else {
-                setInfoText("아무래도 비밀번호가 틀린것 같아요.");
+                setInfoText("아까랑 암호가 다른 것 같아요.");
                 Vibration.vibrate(200);
             }
         }
@@ -32,7 +36,7 @@ export default function CheckPassword({ navigation, route }: any) {
     const removePassword = () => {
         if (password.length == 0) return;
         setGoNext(false);
-        setInfoText("확인을 위해 한번 더 입력해 주세요.");
+        setInfoText("");
         setPassword(password.slice(0, password.length-1));
         setStar("●".repeat(password.length-1));
     }
@@ -43,9 +47,10 @@ export default function CheckPassword({ navigation, route }: any) {
                 <Text style={styles.titleText}>
                     암호 확인
                 </Text>
-                <Text>{infoText}</Text>
+                <Text>확인을 위해 한번 더 입력해 주세요.</Text>
                 <View style={styles.passwordBox}>
                     <Text style={styles.passwordStar}>{toStar}</Text>
+                    <Text>{infoText}</Text>
                 </View>
                 <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
                 <NextButton text="이거 언제 끝나요" press={goNext} active={canGoNext} />
@@ -65,6 +70,7 @@ const styles = StyleSheet.create({
     passwordBox: {
         flex: 1,
         width: "65%",
+        paddingTop: "5%",
         alignItems: 'center',
         justifyContent: 'center',
     },
