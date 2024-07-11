@@ -5,6 +5,8 @@ import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashLogo from './page/splash/SplashLogo';
+import AccountHistory from "./page/account-history/AccountHistory";
+import AccountHistoryDetail from "./page/account-history/AccountHistoryDetail";
 import Transfer from './page/trasfer/Transfer';
 import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
@@ -34,6 +36,8 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="AccountHistory" component={AccountHistory} />
+                <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
             </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
