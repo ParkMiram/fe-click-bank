@@ -43,7 +43,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Transfer" 
+                initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -59,6 +59,7 @@ export default function App() {
                 <Stack.Screen name="UserCheckPassword" component={CheckPassword} />
                 <Stack.Screen name="UserSetNickName" component={SetNickName} />
                 <Stack.Screen name="UserCreate" component={CreateUser} />
+                <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
