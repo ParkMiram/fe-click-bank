@@ -5,17 +5,23 @@ import {
     StyleSheet,
     Text,
     View,
-    StatusBar,Animated
+    StatusBar, Animated, TouchableOpacity
 } from "react-native";
 
 export default function AccountHistoryDetail({ navigation }: any) {
+
+    const goBack = () => {
+        navigation.goBack(); // 이전 화면으로 돌아가는 함수
+    };
 
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
                 <View style={styles.top}>
                     <Text style={styles.topFont}>거래 내역 조회</Text>
-                    <Image source={require('../../assets/image/close.png')}/>
+                    <TouchableOpacity onPress={goBack}>
+                        <Image source={require('../../assets/image/close.png')}/>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.wrap}>
@@ -51,9 +57,13 @@ export default function AccountHistoryDetail({ navigation }: any) {
                         </View>
                     </View>
                 </View>
-                <View style={styles.bottom}>
-                    <Text style={styles.bottomText}>확인</Text>
-                </View>
+
+                <TouchableOpacity onPress={goBack}>
+                    <View style={styles.bottom}>
+                        <Text style={styles.bottomText}>확인</Text>
+                    </View>
+                </TouchableOpacity>
+
             </View>
         </SafeAreaView>
     );
