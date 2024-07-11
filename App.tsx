@@ -10,6 +10,7 @@ import SetPassword from './page/login/SetPassword';
 import CheckPassword from './page/login/CheckPassword';
 import SetNickName from './page/login/SetNickname';
 import CreateUser from './page/login/CreateUser';
+import SimpleLogin from './page/login/SimpleLogin';
 
 const Stack = createStackNavigator();
 
@@ -23,6 +24,7 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="SimpleLogin" component={SimpleLogin} />
                 <Stack.Screen name="UserTermOfUse" component={TermOfUse} />
                 <Stack.Screen name="UserSetPassword" component={SetPassword} />
                 <Stack.Screen name="UserCheckPassword" component={CheckPassword} />
