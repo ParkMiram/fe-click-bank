@@ -18,6 +18,8 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="AccountHistory" component={AccountHistory} />
+                <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
             </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
