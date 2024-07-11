@@ -5,6 +5,20 @@ import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashLogo from './page/splash/SplashLogo';
+import AccountHistory from "./page/account-history/AccountHistory";
+import AccountHistoryDetail from "./page/account-history/AccountHistoryDetail";
+import Transfer from './page/trasfer/Transfer';
+import SendingTransfer from './page/trasfer/SendingTransfer';
+import ReminingTranfer from './page/trasfer/ReminingTransfer';
+import ResultTransfer from './page/trasfer/ResultTransfer';
+
+export type RootStackParamList = {
+    Home: undefined;
+    Transfer: undefined;
+    ReminingTranfer: undefined;
+    ResultTransfer: undefined;
+    SendingTransfer: undefined;
+};
 
 import AccountInformation from './page/newAccount/AccountInformation';
 import AccountType from './page/newAccount/AccountType';
@@ -23,9 +37,13 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="AccountType" 
+                initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
+                <Stack.Screen name="Transfer" component={Transfer} />
+                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
+                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
+                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
@@ -35,9 +53,8 @@ export default function App() {
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
-
-
-
+                <Stack.Screen name="AccountHistory" component={AccountHistory} />
+                <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
             </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
