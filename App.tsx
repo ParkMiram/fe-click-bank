@@ -11,16 +11,45 @@ import CheckPassword from './page/login/CheckPassword';
 import SetNickName from './page/login/SetNickname';
 import CreateUser from './page/login/CreateUser';
 import SimpleLogin from './page/login/SimpleLogin';
+import AccountHistory from "./page/account-history/AccountHistory";
+import AccountHistoryDetail from "./page/account-history/AccountHistoryDetail";
+import Transfer from './page/trasfer/Transfer';
+import SendingTransfer from './page/trasfer/SendingTransfer';
+import ReminingTranfer from './page/trasfer/ReminingTransfer';
+import ResultTransfer from './page/trasfer/ResultTransfer';
 
+// export type RootStackParamList = {
+//     Home: undefined;
+//     Transfer: undefined;
+//     ReminingTranfer: undefined;
+//     ResultTransfer: undefined;
+//     SendingTransfer: { bank: string; accountNumber: string };
+// };
+
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+export type RootStackParamList = {
+    AccountType: undefined;
+    AccountInformation: undefined;
+
+};
 const Stack = createStackNavigator();
 
 export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Splash" 
+                initialRouteName="Transfer" 
                 screenOptions={{headerShown: false}}
             >
+                <Stack.Screen name="Transfer" component={Transfer} />
+                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
+                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
+                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
@@ -31,6 +60,14 @@ export default function App() {
                 <Stack.Screen name="UserSetNickName" component={SetNickName} />
                 <Stack.Screen name="UserCreate" component={CreateUser} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
+                <Stack.Screen name="AccountType" component={AccountType}/>
+                <Stack.Screen name='AccountInformation' component={AccountInformation}/>
+                <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+                <Stack.Screen name="AccountPassword" component={AccountPassword}/>
+                <Stack.Screen name="AccountComplete" component={AccountComplete}/>
+                <Stack.Screen name="AccountTerms" component={AccountTerms}/>
+                <Stack.Screen name="AccountHistory" component={AccountHistory} />
+                <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
             </Stack.Navigator>
         </NavigationContainer>
     );
