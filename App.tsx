@@ -32,6 +32,8 @@ import CreateAccount from './page/newAccount/CreateAccount';
 import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
+import FriendList from "./page/friend/FriendList";
+import FriendRequestList from "./page/friend/FriendRequestList";
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
@@ -43,7 +45,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Transfer" 
+                initialRouteName="Splash"
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -68,6 +70,8 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+                <Stack.Screen name="FriendList" component={FriendList} />
+                <Stack.Screen name="FriendRequestList" component={FriendRequestList} />
             </Stack.Navigator>
         </NavigationContainer>
     );

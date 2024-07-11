@@ -7,7 +7,7 @@ import {
     View,
     TextInput,
     Image,
-    TouchableOpacity
+    TouchableOpacity, ScrollView
 } from "react-native";
 import {SwipeListView} from 'react-native-swipe-list-view';
 
@@ -35,7 +35,13 @@ const renderHiddenItem = (data: any, rowMap: any) => (
     </View>
 );
 
-export default function FriendList() {
+export default function FriendList({ navigation }: any) {
+
+    // 요청
+    const goFriendRequestList = () => {
+        navigation.navigate('FriendRequestList');
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -49,14 +55,32 @@ export default function FriendList() {
                         <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기' />
                         <Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />
                     </View>
-                    {/* list */}
-                    <SwipeListView
-                        style={styles.friendList}
-                        data={data}
-                        renderItem={renderItem}
-                        renderHiddenItem={renderHiddenItem}
-                        rightOpenValue={-55}
-                    />
+                    <ScrollView style={styles.listWrap}>
+                        <View style={{marginBottom: 50}}>
+                            {/* list */}
+                            <SwipeListView
+                                style={styles.friendList}
+                                data={data}
+                                renderItem={renderItem}
+                                renderHiddenItem={renderHiddenItem}
+                                rightOpenValue={-55}
+                            />
+                        </View>
+                    </ScrollView>
+                </View>
+                <View style={styles.tabWrap}>
+                    <TouchableOpacity style={[styles.tab, styles.on]}>
+                        <Text style={styles.tabTxt}>내 친구</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.tab}
+                        onPress={goFriendRequestList}
+                    >
+                        <Text style={styles.tabTxt}>요청</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.add}>
+                        <Image source={require('../../assets/image/add.png')} />
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
@@ -78,7 +102,6 @@ const styles = StyleSheet.create({
     wrap: {
         width: '100%',
         height: '100%',
-        padding: 20,
     },
     title: {
         width: '100%',
@@ -102,7 +125,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingHorizontal: 20,
         paddingVertical: 15,
-        marginBottom: 20
     },
     searchInpt: {
         flex: 1,
@@ -110,6 +132,10 @@ const styles = StyleSheet.create({
     searchIcon: {
         flex: 0,
         marginLeft: 10
+    },
+    listWrap: {
+        height: '100%',
+        padding: 20,
     },
     friendList: {
         position: 'relative',
@@ -165,4 +191,48 @@ const styles = StyleSheet.create({
     hiddenItemTxt: {
         color: 'white',
     },
+    tabWrap: {
+        position: 'absolute',
+        left: '50%',
+        transform: [{translateX: -122.5}],
+        bottom: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#eeeeee',
+        padding: 5,
+        height: 50,
+        borderRadius: 25,
+        width: 245,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    tab: {
+        width: 95,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    on: {
+        backgroundColor: '#ffffff',
+    },
+    tabTxt: {
+
+    },
+    add: {
+        width: 40,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#d5d5d5',
+        borderRadius: 20,
+        marginLeft: 5
+    }
 });
