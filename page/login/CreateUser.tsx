@@ -1,4 +1,4 @@
-import { StyleSheet, Image, View, Text } from 'react-native';
+import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useEffect, useState } from 'react';
 
@@ -14,11 +14,11 @@ export default function CreateUser({ navigation, route }: any) {
     }, []);
 
     return (
-        <View style={Container.container}>
+        <SafeAreaView style={Container.container}>
             <Text style={styles.waitMessage}>
                 {waitMessage}
             </Text>
-        </View>
+        </SafeAreaView>
     );
 }
 
