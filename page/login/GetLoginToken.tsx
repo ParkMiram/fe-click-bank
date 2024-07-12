@@ -2,6 +2,7 @@ import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import axios from 'axios';
 import { useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
 
 export default function GetLoginToken({ route, navigation }: any) {
@@ -10,6 +11,7 @@ export default function GetLoginToken({ route, navigation }: any) {
     const getToken = async (identity:string, type:string) => {
         try {
             const response = await axios.get(`${SERVER_URI}/login/token?identity=${identity}&type=${type}`);
+            AsyncStorage.setItem("login", response.data);
             navigation.reset({
                 index: 0,
                 routes: [{name: 'SimpleLogin', params: {token: response.data}}]

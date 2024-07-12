@@ -1,13 +1,22 @@
 import { StyleSheet, Image, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function SplashLogo({ navigation }: any) {
 
-    setTimeout(() => {
-        navigation.reset({
-            index: 0,
-            routes: [{name: 'Login'}]
-        });
+    setTimeout( async () => {
+        const loginToken = await AsyncStorage.getItem("login");
+        if (loginToken) {
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'SimpleLogin', params: {token: loginToken}}]
+            });
+        } else {
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'Login'}]
+            });
+        }
         // navigation.navigate('Login') //, {token: null, error: null});
     }, 1000);
 
