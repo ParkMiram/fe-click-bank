@@ -17,8 +17,20 @@ import Transfer from './page/trasfer/Transfer';
 import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
-
-
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+import GetLoginToken from './page/login/GetLoginToken';
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+import AccountHome from './page/newAccount/AccountHome';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -28,24 +40,11 @@ import ResultTransfer from './page/trasfer/ResultTransfer';
 //     SendingTransfer: { bank: string; accountNumber: string };
 // };
 
-
-import AccountInformation from './page/newAccount/AccountInformation';
-import AccountType from './page/newAccount/AccountType';
-import CreateAccount from './page/newAccount/CreateAccount';
-import AccountPassword from './page/newAccount/AccountPassword';
-import AccountComplete from './page/newAccount/AccountComplete';
-import AccountTerms from './page/newAccount/AccountTerms';
-
-import AccountHome from './page/newAccount/AccountHome';
-
-
 import FriendList from "./page/friend/FriendList";
 import FriendRequestList from "./page/friend/FriendRequestList";
-
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
-
 };
 const Stack = createStackNavigator();
 
@@ -53,7 +52,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Transfer"
+                initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -69,6 +68,7 @@ export default function App() {
                 <Stack.Screen name="UserCheckPassword" component={CheckPassword} />
                 <Stack.Screen name="UserSetNickName" component={SetNickName} />
                 <Stack.Screen name="UserCreate" component={CreateUser} />
+                <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
