@@ -5,6 +5,9 @@ node_modules/
 pakage*.json
 yarn.lock
 
+#Jetbrain
+.idea/
+
 # Expo
 .expo/
 dist/

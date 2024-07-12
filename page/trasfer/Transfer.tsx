@@ -6,6 +6,7 @@ import { Text, TextInput } from "react-native-paper";
 // import { RootStackParamList } from "../../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ReactNativeModal from "react-native-modal";
+import { Path, Svg } from "react-native-svg";
 
 // type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
@@ -53,7 +54,14 @@ const Transfer = ({ navigation }: any) => {
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.inner}>
                     <TouchableOpacity onPress={() => console.log('hello')}>
-                        <Image style={styles.image} source={require('../../assets/image/Expand_left.png')}></Image>
+                      <Svg
+                        width={31}
+                        height={23}
+                        fill="none"
+                        style={styles.image}
+                      >
+                        <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+                      </Svg>
                     </TouchableOpacity>
                     <Text style={styles.label}>계좌 번호</Text>
                     <TextInput
@@ -69,14 +77,14 @@ const Transfer = ({ navigation }: any) => {
                     </TouchableOpacity>
                     <ReactNativeModal isVisible={isModalVisible} onBackdropPress={toggleModal}>
                         <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>은행 선택</Text>
-                        <FlatList
-                            data={banks}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => index.toString()}
-                            numColumns={3}
-                            columnWrapperStyle={styles.row}
-                        />
+                          <Text style={styles.modalTitle}>은행 선택</Text>
+                          <FlatList
+                              data={banks}
+                              renderItem={renderItem}
+                              keyExtractor={(item, index) => index.toString()}
+                              numColumns={3}
+                              columnWrapperStyle={styles.row}
+                          />
                         </View>
                     </ReactNativeModal>
                     <Text style={styles.selectedBankText}>선택된 은행: {selectedBank}</Text>
@@ -144,8 +152,10 @@ const styles = StyleSheet.create({
     },
     modalContent: {
       backgroundColor: 'white',
-      padding: 20,
+      padding: 23,
       borderRadius: 10,
+      justifyContent: 'center',
+      alignSelf: 'stretch'
     },
     modalTitle: {
       fontSize: 18,
@@ -155,7 +165,6 @@ const styles = StyleSheet.create({
     },
     row: {
       justifyContent: 'space-between',
-      marginBottom: 16,
     },
     bankItem: {
       padding: 10,
