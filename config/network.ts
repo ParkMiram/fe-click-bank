@@ -9,7 +9,7 @@ export const api = async (
     method: Method,
     body?: ApiRequestBody
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://34.30.189.73:31000";
+    axios.defaults.baseURL = "http://192.168.0.23:8080";
 
     const res = await axios({
         url,
