@@ -30,7 +30,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Splash" 
+                initialRouteName="AccountHome" 
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -49,7 +49,7 @@ export default function App() {
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
-            </Stack.Navigator>
+           </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
         //     <LoginPage />
