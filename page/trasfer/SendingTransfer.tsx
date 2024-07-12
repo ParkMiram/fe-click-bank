@@ -5,6 +5,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, StatusBar, A
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RouteProp } from '@react-navigation/native';
+import { Path, Svg } from 'react-native-svg';
 
 // type SendingTransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
@@ -45,7 +46,14 @@ const SendingTransfer = ({ navigation, route }: any) => {
     
     <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
-            <Image style={styles.image} source={require('../../assets/image/Expand_left.png')}></Image>
+            <Svg
+              width={31}
+              height={23}
+              fill="none"
+              style={styles.image}
+            >
+              <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+            </Svg>
             <View style={styles.textContainer}>
                 <Text style={styles.label}>예금주</Text>
                 <Text style={styles.recipient}>

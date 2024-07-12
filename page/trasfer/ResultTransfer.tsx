@@ -3,8 +3,6 @@ import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform
 // import { RootStackParamList } from "../../App";
 import React from "react";
 
-const money: number = 159200000;
-
 // type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
 // type Props = {
@@ -13,13 +11,13 @@ const money: number = 159200000;
 
 type data = {
     name: String;
-    amount: String;
+    amount: number;
 }
 
 const ResultTransfer = ({ navigation, route }: any) => {
-    const { name, amount }: data = route.params;
-    if (typeof amount === 'string') {
-        console.log(Number(amount.replace(/,/g, "")));
+    const { name, amount }:data = route.params;
+    if (typeof amount === 'number') {
+        console.log(amount);
     } else {
         console.log("Amount is not a string");
     }
@@ -28,7 +26,7 @@ const ResultTransfer = ({ navigation, route }: any) => {
         <View style={styles.innerContainer}>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
             <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{name}님에게</Text>
-            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount}원을</Text>
+            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
             <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('Transfer')}>
