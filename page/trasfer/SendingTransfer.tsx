@@ -1,18 +1,26 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Image, Platform, StatusBar } from 'react-native';
-import { RootStackParamList } from '../../App';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, StatusBar, Alert } from 'react-native';
+// import { RootStackParamList } from '../../App';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { RouteProp } from '@react-navigation/native';
+import { Path, Svg } from 'react-native-svg';
 
-type SendingTransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
+// type SendingTransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
-type Props = {
-  navigation: SendingTransferNavigationProp;
-};
+// type SendingTransferRouteProp = RouteProp<RootStackParamList, 'SendingTransfer'>;
 
-const SendingTransfer: React.FC<Props> = ({ navigation }) => {
+// type Props = {
+//   navigation: SendingTransferNavigationProp;
+//   route: SendingTransferRouteProp;
+// };
+
+const SendingTransfer = ({ navigation, route }: any) => {
   const [amount, setAmount] = useState('');
+  
+  const name: string = '난쟁이미람';
+  const { bank, accountNumber } = route.params;
 
   const handleNumberPress = (num: string) => {
     setAmount(amount + num);
@@ -27,29 +35,37 @@ const SendingTransfer: React.FC<Props> = ({ navigation }) => {
   };
 
   const handleSend = () => {
-    // Add your send logic here
-    console.log('Amount:', amount);
+    if (!Number.isNaN(parseInt(amount)) && parseInt(amount) !== 0) {
+      navigation.navigate('ReminingTranfer', { name, amount: parseInt(amount) });
+    } else {
+      Alert.alert('', '돈 입력 안하냐? ***');
+    }
   };
 
   return (
     
     <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
-            <Image style={styles.image} source={require('../../assets/image/Expand_left.png')}></Image>
+            <Svg
+              width={31}
+              height={23}
+              fill="none"
+              style={styles.image}
+            >
+              <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+            </Svg>
             <View style={styles.textContainer}>
                 <Text style={styles.label}>예금주</Text>
                 <Text style={styles.recipient}>
-                    <Text style={styles.boldText}>박분도</Text>님에게
+                    <Text style={styles.boldText}>{name}</Text>님에게
                 </Text>
-                <Text style={styles.accountInfo}>클릭뱅크 12345678900011</Text>
+                <Text style={styles.accountInfo}>{bank} {accountNumber}</Text>
                 <Text style={styles.question}>얼마를 보낼까요?</Text>
             </View>
-            <TextInput
-                style={styles.input}
-                value={amount}
-                onChangeText={setAmount}
-                maxLength={15}
-                />
+            <View style={styles.amountContainer}>
+                <Text style={styles.amountText}>{amount}</Text>
+            </View>
+            <View style={styles.greenLine}></View>
 
             <View style={styles.balanceContainer}>
                 <Text style={styles.balanceLabel}>잔액</Text>
@@ -57,18 +73,18 @@ const SendingTransfer: React.FC<Props> = ({ navigation }) => {
             </View>
 
             <View style={styles.predefinedAmounts}>
-                <View style={styles.amountButtonWrapper}>
-                <Button title="+ 1만" onPress={() => handlePredefinedAmount(10000)} />
-                </View>
-                <View style={styles.amountButtonWrapper}>
-                <Button title="+ 5만" onPress={() => handlePredefinedAmount(50000)} />
-                </View>
-                <View style={styles.amountButtonWrapper}>
-                <Button title="+ 10만" onPress={() => handlePredefinedAmount(100000)} />
-                </View>
-                <View style={styles.amountButtonWrapper}>
-                <Button title="전액" onPress={() => setAmount('100000000')} />
-                </View>
+            <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(10000)}>
+                    <Text style={styles.amountButtonText}>+ 1만</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(50000)}>
+                    <Text style={styles.amountButtonText}>+ 5만</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(100000)}>
+                    <Text style={styles.amountButtonText}>+ 10만</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount('100000000')}>
+                    <Text style={styles.amountButtonText}>전액</Text>
+                </TouchableOpacity>
             </View>
 
             <View style={styles.keypad}>
@@ -82,7 +98,7 @@ const SendingTransfer: React.FC<Props> = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ReminingTranfer')}>
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
                 <Text style={styles.sendButtonText}>보내기</Text>
             </TouchableOpacity>
       </View>
@@ -133,20 +149,25 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginTop: 16,
   },
-  input: {
-    borderBottomColor: '#B7E1CE',
-    borderBottomWidth: 3,
+  amountContainer: {
     height: 100,
     width: 345,
-    // marginBottom: 16,
-    backgroundColor: '#ffffff',
-    textAlign: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  amountText: {
     fontSize: 30,
+  },
+  greenLine: {
+    borderBottomColor: '#B7E1CE',
+    borderBottomWidth: 3,
+    width: '100%',
+    maxWidth: 345,
   },
   balanceContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 43,
+    marginTop: 30,
     marginBottom: 20,
     maxWidth: 325
   },
@@ -166,6 +187,10 @@ const styles = StyleSheet.create({
   },
   amountButtonWrapper: {
     marginHorizontal: 18,
+  },
+  amountButtonText: {
+    fontSize: 16,
+    color: '#6BC29A',
   },
   keypad: {
     flexDirection: 'row',
