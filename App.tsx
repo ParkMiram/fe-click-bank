@@ -45,7 +45,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Splash"
+                initialRouteName="Transfer"
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
