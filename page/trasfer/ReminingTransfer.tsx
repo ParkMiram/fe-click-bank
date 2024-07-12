@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from "react-native";
 // import { RootStackParamList } from "../../App";
 import React from "react";
+import { Path, Svg } from "react-native-svg";
 
 // type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
@@ -22,7 +23,14 @@ const ReminingTranfer = ({ navigation, route }: any) => {
         <View style={styles.innerContainer}>  
             <View>
                 <TouchableOpacity onPress={() => { navigation.goBack(); }}>
-                    <Image style={styles.markImage} source={require('../../assets/image/Expand_left.png')} resizeMode="contain" onError={(e) => console.log(e.nativeEvent.error)}></Image>
+                    <Svg
+                      width={31}
+                      height={23}
+                      fill="none"
+                      style={styles.markImage}
+                    >
+                      <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+                    </Svg>
                 </TouchableOpacity>
             </View>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
@@ -30,7 +38,7 @@ const ReminingTranfer = ({ navigation, route }: any) => {
             <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보낼까요?</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { name, amount: String })}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { name, amount })}>
             <Text style={styles.sendButtonText}>보내기</Text>
             </TouchableOpacity>
         </View>

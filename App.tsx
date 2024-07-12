@@ -24,6 +24,13 @@ import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
 import GetLoginToken from './page/login/GetLoginToken';
+import AccountInformation from './page/newAccount/AccountInformation';
+import AccountType from './page/newAccount/AccountType';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
+import AccountHome from './page/newAccount/AccountHome';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -32,10 +39,12 @@ import GetLoginToken from './page/login/GetLoginToken';
 //     ResultTransfer: undefined;
 //     SendingTransfer: { bank: string; accountNumber: string };
 // };
+
+import FriendList from "./page/friend/FriendList";
+import FriendRequestList from "./page/friend/FriendRequestList";
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
-
 };
 const Stack = createStackNavigator();
 
@@ -69,6 +78,12 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+
+                <Stack.Screen name="AccountHome" component={AccountHome}/>
+
+                <Stack.Screen name="FriendList" component={FriendList} />
+                <Stack.Screen name="FriendRequestList" component={FriendRequestList} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );
