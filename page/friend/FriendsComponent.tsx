@@ -1,3 +1,4 @@
+import React, {useState} from "react";
 import {
     Platform,
     StatusBar,
@@ -9,8 +10,8 @@ import {
     TouchableOpacity, ScrollView
 } from "react-native";
 import {SwipeListView} from 'react-native-swipe-list-view';
-import React from "react";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
+import FriendSearch from "./FriendSearch";
 
 const data = [
     { friend_id: 1, user_nickname: '박성무', profile: null },
@@ -118,6 +119,11 @@ const FriendRequestList = () => {
 const Tab = createBottomTabNavigator();
 
 export default function FriendsComponent() {
+    const [isModalVisible, setModalVisible] = useState(false);
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    };
     return (
         // <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -183,11 +189,19 @@ export default function FriendsComponent() {
                                     style={{
                                         ...styles.add
                                     }}
+                                    onPress={toggleModal}
                                 />
                             ),
                         }}
                     />
                 </Tab.Navigator>
+                {
+                    isModalVisible &&
+                    <FriendSearch
+                        isModalVisible={isModalVisible}
+                        toggleModal={toggleModal}
+                    />
+                }
             </View>
         // </SafeAreaView>
     )
