@@ -17,7 +17,7 @@ export default function SimpleLogin({ navigation, route }: any) {
             const response = await axios.get(`${SERVER_URI}/token?token=${token}&password=${str}`);
             return response.data;
         } catch (error) {
-            alert(error);
+            // alert(error);
             return `error`;
         }
     }

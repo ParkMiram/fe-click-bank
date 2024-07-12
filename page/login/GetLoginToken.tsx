@@ -17,7 +17,7 @@ export default function GetLoginToken({ route, navigation }: any) {
                 routes: [{name: 'SimpleLogin', params: {token: response.data}}]
             });
         } catch (error) {
-            alert(error);
+            // alert(error);
         }
     }
     const getData = async () => {
