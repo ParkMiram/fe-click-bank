@@ -11,21 +11,14 @@ import Transfer from './page/trasfer/Transfer';
 import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
-
-export type RootStackParamList = {
-    Home: undefined;
-    Transfer: undefined;
-    ReminingTranfer: undefined;
-    ResultTransfer: undefined;
-    SendingTransfer: undefined;
-};
-
 import AccountInformation from './page/newAccount/AccountInformation';
 import AccountType from './page/newAccount/AccountType';
 import CreateAccount from './page/newAccount/CreateAccount';
 import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
+import AccountHome from './page/newAccount/AccountHome';
+
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
@@ -55,6 +48,7 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+                <Stack.Screen name="AccountHome" component={AccountHome}/>
             </Stack.Navigator>
         </NavigationContainer>
         // <View style={styles.container}>
