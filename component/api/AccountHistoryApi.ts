@@ -1,4 +1,4 @@
-import {AxiosResponse} from "axios";
+import {                                                           AxiosResponse} from "axios";
 import {api} from "../../config/network";
 
 export const getAccountHistory = async (account: string):Promise<AxiosResponse<any>> => {
@@ -7,4 +7,8 @@ export const getAccountHistory = async (account: string):Promise<AxiosResponse<a
 
 export const getAccountHistoryDetail = async (id: number):Promise<AxiosResponse<any>> => {
     return await api(`/api/v1/histories/detail/${id}`, "get");
+}
+
+export const updateAccountHistoryMemo = async (data: any): Promise<void> => {
+    await api(`/api/v1/histories/detail/${data.id}`, "put", data.memo, { "Content-Type": "text/plain" });
 }
