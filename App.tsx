@@ -24,12 +24,6 @@ import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
 import GetLoginToken from './page/login/GetLoginToken';
-import AccountInformation from './page/newAccount/AccountInformation';
-import AccountType from './page/newAccount/AccountType';
-import CreateAccount from './page/newAccount/CreateAccount';
-import AccountPassword from './page/newAccount/AccountPassword';
-import AccountComplete from './page/newAccount/AccountComplete';
-import AccountTerms from './page/newAccount/AccountTerms';
 import AccountHome from './page/newAccount/AccountHome';
 
 // export type RootStackParamList = {
