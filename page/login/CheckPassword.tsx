@@ -5,8 +5,8 @@ import NextButton from '../../component/auth/NextButton';
 import Keypad from '../../component/auth/Keypad';
 
 export default function CheckPassword({ navigation, route }: any) {
-    const { identity, type } = route.params;
-    const [password, setPassword] = useState("");
+    const { identity, type, nickname, password, image } = route.params;
+    const [checkPassword, setCheckPassword] = useState("");
     const [toStar, setStar] = useState("");
     const [canGoNext, setGoNext] = useState(false);
     const [infoText, setInfoText] = useState("");
@@ -15,14 +15,16 @@ export default function CheckPassword({ navigation, route }: any) {
         navigation.navigate('UserSetNickName', {
             identity: identity,
             type: type,
-            password: route.params.password
+            password: password,
+            nickname: nickname,
+            image: image
         });
     }
 
     const addPassword = (str: string) => {
-        if (password.length >= 6) return;
-        if (password.length == 5) {
-            if (route.params.password === password+str) {
+        if (checkPassword.length >= 6) return;
+        if (checkPassword.length == 5) {
+            if (password === checkPassword+str) {
                 setGoNext(true);
                 setInfoText("좋아요, 기억력이 훌륭하시네요!");
                 Vibration.vibrate(60);
@@ -31,15 +33,15 @@ export default function CheckPassword({ navigation, route }: any) {
                 Vibration.vibrate(200);
             }
         }
-        setPassword(password + str);
-        setStar("●".repeat(password.length+1));
+        setCheckPassword(checkPassword + str);
+        setStar("●".repeat(checkPassword.length+1));
     }
     const removePassword = () => {
-        if (password.length == 0) return;
+        if (checkPassword.length == 0) return;
         setGoNext(false);
         setInfoText("");
-        setPassword(password.slice(0, password.length-1));
-        setStar("●".repeat(password.length-1));
+        setCheckPassword(checkPassword.slice(0, checkPassword.length-1));
+        setStar("●".repeat(checkPassword.length-1));
     }
 
     return (

@@ -2,7 +2,6 @@ import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import axios from 'axios';
 import { useEffect } from 'react';
-
 const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
 
 export default function GetLoginToken({ route, navigation }: any) {
@@ -29,7 +28,12 @@ export default function GetLoginToken({ route, navigation }: any) {
                     index: 1,
                     routes: [
                         {name: 'Login'},
-                        {name: 'UserTermOfUse', params: {identity: response.data.identity, type: response.data.type}}
+                        {name: 'UserTermOfUse', params: {
+                            identity: response.data.identity, 
+                            type: response.data.type,
+                            nickname: response.data.nickname ?? "",
+                            image: response.data.image ?? ""
+                        }}
                     ]
                 });
             }
