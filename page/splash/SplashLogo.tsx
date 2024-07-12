@@ -1,6 +1,7 @@
 import { StyleSheet, Image, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SplashLogo({ navigation }: any) {
 
@@ -21,12 +22,12 @@ export default function SplashLogo({ navigation }: any) {
     }, 1000);
 
     return (
-        <View style={Container.container}>
+        <SafeAreaView style={Container.container}>
             <Image
                 style={styles.splashLogo}
                 source={require('../../assets/image/Click_logo.png')}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 
