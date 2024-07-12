@@ -25,6 +25,7 @@ import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
 import GetLoginToken from './page/login/GetLoginToken';
 import AccountHome from './page/newAccount/AccountHome';
+import FriendsComponent from "./page/friend/FriendsComponent";
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -34,8 +35,6 @@ import AccountHome from './page/newAccount/AccountHome';
 //     SendingTransfer: { bank: string; accountNumber: string };
 // };
 
-import FriendList from "./page/friend/FriendList";
-import FriendRequestList from "./page/friend/FriendRequestList";
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
@@ -46,7 +45,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Splash" 
+                initialRouteName="FriendsComponent"
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -74,9 +73,8 @@ export default function App() {
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
 
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
-
-                <Stack.Screen name="FriendList" component={FriendList} />
-                <Stack.Screen name="FriendRequestList" component={FriendRequestList} />
+                {/* Friend */}
+                <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 
             </Stack.Navigator>
         </NavigationContainer>
