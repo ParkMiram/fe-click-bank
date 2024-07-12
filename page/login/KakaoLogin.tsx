@@ -1,5 +1,4 @@
-import axios from 'axios';
-import { SafeAreaView, StyleSheet, Dimensions } from 'react-native';
+import { SafeAreaView, StyleSheet, Dimensions, Platform, StatusBar } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { WebViewNativeEvent } from 'react-native-webview/lib/WebViewTypes';
 import { Container } from '../../css/sujin/Container';
@@ -8,7 +7,7 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const CLIENT_ID = "7c7b66bfebd17d00be7c61d798f0b6e9";
-const REDIRECT_URI = "http://192.168.0.16:8080/api/v1/auth/kakao";
+const REDIRECT_URI = "http://192.168.0.16:8080/api/v1/auth/login/kakao";
 
 export default function KakaoLogin({ navigation }: any) {
 
@@ -35,6 +34,7 @@ export default function KakaoLogin({ navigation }: any) {
 const styles = StyleSheet.create({
     webview: {
         flex: 1,
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         width: windowWidth,
         height: windowHeight,
     },
