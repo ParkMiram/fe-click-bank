@@ -17,6 +17,9 @@ import Transfer from './page/trasfer/Transfer';
 import SendingTransfer from './page/trasfer/SendingTransfer';
 import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
+import GetLoginToken from './page/login/GetLoginToken';
+import AccountHome from './page/newAccount/AccountHome';
+import FriendsComponent from "./page/friend/FriendsComponent";
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -26,16 +29,9 @@ import ResultTransfer from './page/trasfer/ResultTransfer';
 //     SendingTransfer: { bank: string; accountNumber: string };
 // };
 
-import AccountInformation from './page/newAccount/AccountInformation';
-import AccountType from './page/newAccount/AccountType';
-import CreateAccount from './page/newAccount/CreateAccount';
-import AccountPassword from './page/newAccount/AccountPassword';
-import AccountComplete from './page/newAccount/AccountComplete';
-import AccountTerms from './page/newAccount/AccountTerms';
 export type RootStackParamList = {
     AccountType: undefined;
     AccountInformation: undefined;
-
 };
 const Stack = createStackNavigator();
 
@@ -43,7 +39,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="Transfer" 
+                initialRouteName="FriendsComponent"
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
@@ -59,6 +55,7 @@ export default function App() {
                 <Stack.Screen name="UserCheckPassword" component={CheckPassword} />
                 <Stack.Screen name="UserSetNickName" component={SetNickName} />
                 <Stack.Screen name="UserCreate" component={CreateUser} />
+                <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
@@ -68,6 +65,11 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+
+                <Stack.Screen name="AccountHome" component={AccountHome}/>
+                {/* Friend */}
+                <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
+
             </Stack.Navigator>
         </NavigationContainer>
     );
