@@ -1,6 +1,6 @@
 import {
     Image, KeyboardAvoidingView,
-    Modal, Platform, ScrollView, StyleSheet,
+    Modal, Platform, StyleSheet,
     Text, TextInput, TouchableOpacity, View,
 } from "react-native";
 import React from "react";
@@ -24,7 +24,9 @@ export default function FriendSearch (props: any) {
                         <View style={styles.wrap}>
                             <View style={styles.searchWrap}>
                                 <TextInput style={styles.searchInpt} placeholder='친구 검색하기' />
-                                <Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />
+                                <TouchableOpacity>
+                                    <Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.list}>
                                 <View style={styles.friend}>
@@ -68,7 +70,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 3,
         elevation: 2,
-        borderRadius: 10
+        borderTopRightRadius: 10,
+        borderTopLeftRadius: 10
     },
     wrap: {
         padding: 20,
