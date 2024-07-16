@@ -20,6 +20,12 @@ import ResultTransfer from './page/trasfer/ResultTransfer';
 import GetLoginToken from './page/login/GetLoginToken';
 import AccountHome from './page/newAccount/AccountHome';
 import FriendsComponent from "./page/friend/FriendsComponent";
+import AccountType from './page/newAccount/AccountType';
+import AccountInformation from './page/newAccount/AccountInformation';
+import CreateAccount from './page/newAccount/CreateAccount';
+import AccountPassword from './page/newAccount/AccountPassword';
+import AccountComplete from './page/newAccount/AccountComplete';
+import AccountTerms from './page/newAccount/AccountTerms';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -39,7 +45,7 @@ export default function App() {
     return (
         <NavigationContainer>
             <Stack.Navigator 
-                initialRouteName="FriendsComponent"
+                initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Transfer" component={Transfer} />
