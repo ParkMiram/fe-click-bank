@@ -13,21 +13,23 @@ import {SwipeListView} from 'react-native-swipe-list-view';
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import FriendSearch from "./FriendSearch";
 
-const data = [
+const data: any[] = [
     { friend_id: 1, user_nickname: '박성무', profile: null },
     { friend_id: 2, user_nickname: '박분도', profile: null },
 ];
-const renderItem = (data: any, rowWrap: any) => (
-    <View style={styles.list}>
-        <View style={styles.friend}>
-            <Image source={require('../../assets/image/basicProfile.png')} style={styles.profile} />
-            <Text style={styles.friendName}>{data.item.user_nickname}</Text>
+const renderItem = (item: any, rowMap: any) => {
+    return (
+        <View style={[styles.list, item.index === data.length - 1 ? { marginBottom: 110 } : null]}>
+            <View style={styles.friend}>
+                <Image source={require('../../assets/image/basicProfile.png')} style={styles.profile} />
+                <Text style={styles.friendName}>{item.item.user_nickname}</Text>
+            </View>
+            <TouchableOpacity style={styles.transfer}>
+                <Text style={styles.transferTxt}>송금</Text>
+            </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.transfer}>
-            <Text style={styles.transferTxt}>송금</Text>
-        </TouchableOpacity>
-    </View>
-);
+    )
+};
 
 const renderHiddenItem = (data: any, rowMap: any) => (
     <View style={styles.hiddenItemWrap}>
@@ -44,10 +46,12 @@ const FriendList = () => {
                 {/* search */}
                 <View style={styles.searchWrap}>
                     <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기' />
-                    <Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />
+                    <TouchableOpacity>
+                        <Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />
+                    </TouchableOpacity>
                 </View>
-                <ScrollView style={styles.listWrap}>
-                    <View style={{marginBottom: 50}}>
+                <View style={styles.listWrap}>
+                    <View style={styles.listMap}>
                         {/* list */}
                         <SwipeListView
                             style={styles.friendList}
@@ -57,7 +61,7 @@ const FriendList = () => {
                             rightOpenValue={-55}
                         />
                     </View>
-                </ScrollView>
+                </View>
             </View>
             {/*<FriendTab />*/}
         </>
@@ -126,83 +130,83 @@ export default function FriendsComponent() {
     };
     return (
         // <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
-                <Tab.Navigator
-                    screenOptions={{
-                        tabBarStyle: {
-                            ...styles.tabWrap
-                        },
-                        tabBarActiveTintColor: '#007378',
-                        tabBarInactiveTintColor: 'gray',
-                        tabBarIcon: () => null
+        <View style={styles.innerContainer}>
+            <Tab.Navigator
+                screenOptions={{
+                    tabBarStyle: {
+                        ...styles.tabWrap
+                    },
+                    tabBarActiveTintColor: '#007378',
+                    tabBarInactiveTintColor: 'gray',
+                    tabBarIcon: () => null,
+                }}
+            >
+                <Tab.Screen
+                    name="내 친구"
+                    component={FriendList}
+                    options={{
+                        tabBarLabel: '내 친구',
+                        tabBarIcon: () => (
+                            <Image source={require('../../assets/image/list.png')} />
+                        ),
+                        tabBarButton: (props: any) => (
+                            <TouchableOpacity
+                                {...props}
+                                style={{
+                                    backgroundColor: props.accessibilityState.selected ? 'white' : 'transparent',
+                                    ...styles.tab
+                                }}
+                            />
+                        ),
                     }}
-                >
-                    <Tab.Screen
-                        name="내 친구"
-                        component={FriendList}
-                        options={{
-                            tabBarLabel: '내 친구',
-                            tabBarIcon: () => (
-                                <Image source={require('../../assets/image/list.png')} />
-                            ),
-                            tabBarButton: (props: any) => (
-                                <TouchableOpacity
-                                    {...props}
-                                    style={{
-                                        backgroundColor: props.accessibilityState.selected ? 'white' : 'transparent',
-                                        ...styles.tab
-                                    }}
-                                />
-                            ),
-                        }}
-                    />
-                    <Tab.Screen
-                        name="친구 요청"
-                        component={FriendRequestList}
-                        options={{
-                            tabBarLabel: '친구 요청',
-                            tabBarIcon: () => (
-                                <Image source={require('../../assets/image/send.png')} />
-                            ),
-                            tabBarBadge: 3,
-                            tabBarButton: (props: any) => (
-                                <TouchableOpacity
-                                    {...props}
-                                    style={{
-                                        backgroundColor: props.accessibilityState.selected ? 'white' : 'transparent',
-                                        ...styles.tab
-                                    }}
-                                />
-                            ),
-                        }}
-                    />
-                    <Tab.Screen
-                        name="검색"
-                        component={FriendRequestList}
-                        options={{
-                            tabBarLabel: () => (
+                />
+                <Tab.Screen
+                    name="친구 요청"
+                    component={FriendRequestList}
+                    options={{
+                        tabBarLabel: '친구 요청',
+                        tabBarIcon: () => (
+                            <Image source={require('../../assets/image/send.png')} />
+                        ),
+                        tabBarBadge: 3,
+                        tabBarButton: (props: any) => (
+                            <TouchableOpacity
+                                {...props}
+                                style={{
+                                    backgroundColor: props.accessibilityState.selected ? 'white' : 'transparent',
+                                    ...styles.tab
+                                }}
+                            />
+                        ),
+                    }}
+                />
+                <Tab.Screen
+                    name="검색"
+                    component={FriendRequestList}
+                    options={{
+                        tabBarIcon: () => null,
+                        tabBarButton: (props: any) => (
+                            <TouchableOpacity
+                                {...props}
+                                style={{
+                                    ...styles.add
+                                }}
+                                onPress={toggleModal}
+                            >
                                 <Image source={require('../../assets/image/add.png')}/>
-                            ),
-                            tabBarButton: (props: any) => (
-                                <TouchableOpacity
-                                    {...props}
-                                    style={{
-                                        ...styles.add
-                                    }}
-                                    onPress={toggleModal}
-                                />
-                            ),
-                        }}
-                    />
-                </Tab.Navigator>
-                {
-                    isModalVisible &&
-                    <FriendSearch
-                        isModalVisible={isModalVisible}
-                        toggleModal={toggleModal}
-                    />
-                }
-            </View>
+                            </TouchableOpacity>
+                        ),
+                    }}
+                />
+            </Tab.Navigator>
+            {
+                isModalVisible &&
+                <FriendSearch
+                    isModalVisible={isModalVisible}
+                    toggleModal={toggleModal}
+                />
+            }
+        </View>
         // </SafeAreaView>
     )
 }
@@ -212,7 +216,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        // justifyContent: 'center',
     },
     innerContainer: {
         flex: 1,
@@ -256,11 +259,15 @@ const styles = StyleSheet.create({
     listWrap: {
         height: '100%',
         padding: 20,
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+    },
+    listMap: {
+
     },
     friendList: {
         position: 'relative',
         backgroundColor: '#ffffff',
+        paddingBottom: 120
     },
     list: {
         flexDirection: 'row',
@@ -315,7 +322,8 @@ const styles = StyleSheet.create({
     },
     transferTxt: {
         color: '#007378',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        lineHeight: 18,
     },
     hiddenItemWrap: {
         height: 40,
@@ -333,12 +341,13 @@ const styles = StyleSheet.create({
     },
     hiddenItemTxt: {
         color: 'white',
+        lineHeight: 18
     },
     tabWrap: {
         position: 'absolute',
         left: '50%',
         transform: [{translateX: -125}],
-        bottom: 50,
+        bottom: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
@@ -349,7 +358,7 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         borderTopWidth: 0,
         width: 250,
-        shadowColor: "#000",
+        shadowColor: '#000',
         shadowOffset: {
             width: 0,
             height: 2,
