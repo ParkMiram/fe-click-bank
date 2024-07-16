@@ -71,7 +71,6 @@ const ResultTransfer = ({ navigation, route }: any) => {
       },
       sendButtonText: {
         fontSize: 16,
-        // fontWeight: 'bold',
       },
   })
 

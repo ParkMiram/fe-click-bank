@@ -1,6 +1,5 @@
-import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text, TextInput } from "react-native-paper";
 // import { RootStackParamList } from "../../App";
@@ -47,6 +46,7 @@ const Transfer = ({ navigation }: any) => {
 
     return (
         <SafeAreaView style={styles.container}>
+          <View style={styles.innerContainer}>
             <KeyboardAvoidingView 
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -97,9 +97,9 @@ const Transfer = ({ navigation }: any) => {
                     <Text style={styles.sendButtonText}>보내기</Text>
                     </TouchableOpacity>
                 </View>
-                <StatusBar style="auto" />
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
+          </View>
         </SafeAreaView>
     );
   };
@@ -110,6 +110,13 @@ const styles = StyleSheet.create({
       backgroundColor: "#ffffff",
       alignItems: 'center',
     },
+    innerContainer: {
+      flex: 1,
+      width: "100%",
+      marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
     inner: {
       flex: 1,
       justifyContent: "space-between"
