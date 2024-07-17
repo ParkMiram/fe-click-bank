@@ -1,17 +1,17 @@
-import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
-import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, View } from "react-native";
+import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text, TextInput } from "react-native-paper";
-import { RootStackParamList } from "../../App";
+// import { RootStackParamList } from "../../App";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import ReactNativeModal from "react-native-modal";
+import { Path, Svg } from "react-native-svg";
 
-type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
+// type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
-type Props = {
-  navigation: TransferNavigationProp;
-};
+// type Props = {
+//   navigation: TransferNavigationProp;
+// };
 
 const banks = [
   { label: '국민은행', value: '국민은행', logo: require('../../assets/image/kb_bank.png') },
@@ -19,8 +19,8 @@ const banks = [
   { label: '카카오뱅크', value: '카카오뱅크', logo: require('../../assets/image/kakao_bank.jpeg') },
   { label: '클릭뱅크', value: '클릭뱅크', logo: require('../../assets/image/Click_logo.png') },
 ];
-
-const Transfer: React.FC<Props> = ({ navigation }) => {
+// : React.FC<Props>
+const Transfer = ({ navigation }: any) => {
     const [accountNumber, setAccountNumber] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedBank, setSelectedBank] = useState('');
@@ -46,6 +46,7 @@ const Transfer: React.FC<Props> = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+          <View style={styles.innerContainer}>
             <KeyboardAvoidingView 
             style={styles.container}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -53,7 +54,14 @@ const Transfer: React.FC<Props> = ({ navigation }) => {
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.inner}>
                     <TouchableOpacity onPress={() => console.log('hello')}>
-                        <Image style={styles.image} source={require('../../assets/image/Expand_left.png')}></Image>
+                      <Svg
+                        width={31}
+                        height={23}
+                        fill="none"
+                        style={styles.image}
+                      >
+                        <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+                      </Svg>
                     </TouchableOpacity>
                     <Text style={styles.label}>계좌 번호</Text>
                     <TextInput
@@ -69,26 +77,29 @@ const Transfer: React.FC<Props> = ({ navigation }) => {
                     </TouchableOpacity>
                     <ReactNativeModal isVisible={isModalVisible} onBackdropPress={toggleModal}>
                         <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>은행 선택</Text>
-                        <FlatList
-                            data={banks}
-                            renderItem={renderItem}
-                            keyExtractor={(item, index) => index.toString()}
-                            numColumns={3}
-                            columnWrapperStyle={styles.row}
-                        />
+                          <Text style={styles.modalTitle}>은행 선택</Text>
+                          <FlatList
+                              data={banks}
+                              renderItem={renderItem}
+                              keyExtractor={(item, index) => index.toString()}
+                              numColumns={3}
+                              columnWrapperStyle={styles.row}
+                          />
                         </View>
                     </ReactNativeModal>
                     <Text style={styles.selectedBankText}>선택된 은행: {selectedBank}</Text>
                 </View>
                     <View style={{ flex: 1 }} />
-                    <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('SendingTransfer')}>
+                    <TouchableOpacity 
+                        style={styles.sendButton} 
+                        onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber })}
+                    >
                     <Text style={styles.sendButtonText}>보내기</Text>
                     </TouchableOpacity>
                 </View>
-                <StatusBar style="auto" />
                 </TouchableWithoutFeedback>
             </KeyboardAvoidingView>
+          </View>
         </SafeAreaView>
     );
   };
@@ -99,6 +110,13 @@ const styles = StyleSheet.create({
       backgroundColor: "#ffffff",
       alignItems: 'center',
     },
+    innerContainer: {
+      flex: 1,
+      width: "100%",
+      marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+      alignItems: 'center',
+      justifyContent: 'center',
+  },
     inner: {
       flex: 1,
       justifyContent: "space-between"
@@ -141,8 +159,10 @@ const styles = StyleSheet.create({
     },
     modalContent: {
       backgroundColor: 'white',
-      padding: 20,
+      padding: 23,
       borderRadius: 10,
+      justifyContent: 'center',
+      alignSelf: 'stretch'
     },
     modalTitle: {
       fontSize: 18,
@@ -152,7 +172,6 @@ const styles = StyleSheet.create({
     },
     row: {
       justifyContent: 'space-between',
-      marginBottom: 16,
     },
     bankItem: {
       padding: 10,

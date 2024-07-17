@@ -1,30 +1,39 @@
 import { StyleSheet, Image, View } from 'react-native';
+import { Container } from '../../css/sujin/Container';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SplashLogo({ navigation }: any) {
 
-    setTimeout(() => {
-        navigation.navigate('Login', {token: null});
+    setTimeout( async () => {
+        const loginToken = await AsyncStorage.getItem("login");
+        if (loginToken) {
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'SimpleLogin', params: {token: loginToken}}]
+            });
+        } else {
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'Login'}]
+            });
+        }
+        // navigation.navigate('Login') //, {token: null, error: null});
     }, 1000);
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={Container.container}>
             <Image
                 style={styles.splashLogo}
                 source={require('../../assets/image/Click_logo.png')}
             />
-        </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     splashLogo: {
         width: 300,
-        height: 100
+        height: 120
     },
 });

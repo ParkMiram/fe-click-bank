@@ -1,24 +1,32 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from "react-native";
-import { RootStackParamList } from "../../App";
+// import { RootStackParamList } from "../../App";
 import React from "react";
 
-const money: number = 159200000;
+// type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
-type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
+// type Props = {
+//   navigation: ReminingTranferNavigationProp;
+// };
 
-type Props = {
-  navigation: ReminingTranferNavigationProp;
-};
+type data = {
+    name: String;
+    amount: number;
+}
 
-
-const ResultTransfer: React.FC<Props> = ({ navigation }) => {
+const ResultTransfer = ({ navigation, route }: any) => {
+    const { name, amount }:data = route.params;
+    if (typeof amount === 'number') {
+        console.log(amount);
+    } else {
+        console.log("Amount is not a string");
+    }
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
-            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>박분도님에게</Text>
-            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{money}원을</Text>
+            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{name}님에게</Text>
+            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
             <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('Transfer')}>
@@ -63,7 +71,6 @@ const ResultTransfer: React.FC<Props> = ({ navigation }) => {
       },
       sendButtonText: {
         fontSize: 16,
-        // fontWeight: 'bold',
       },
   })
 
