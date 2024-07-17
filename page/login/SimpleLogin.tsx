@@ -2,7 +2,8 @@ import { Image, StyleSheet, Text, Vibration, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
 
@@ -17,8 +18,11 @@ export default function SimpleLogin({ navigation, route }: any) {
             const response = await axios.get(`${SERVER_URI}/token?token=${token}&password=${str}`);
             return response.data;
         } catch (error) {
-            // alert(error);
-            return `error`;
+            const {response} = error as unknown as AxiosError;
+            if(response){
+                return {status: response.status, data: response.data};
+            }
+            return error;
         }
     }
 
@@ -28,9 +32,16 @@ export default function SimpleLogin({ navigation, route }: any) {
         setStar("●".repeat(password.length+1));
         if (password.length == 5) {
             const data = await getUserToken(password + str);
-            if (data == "error") {
+            if (data.status == 400) {
                 setInfoText("로그인에 실패했어요...");
                 Vibration.vibrate(200);
+            } else if (data.status == 403) {
+                AsyncStorage.removeItem("login");
+                alert("자동 로그인 정보가 만료되었습니다.\n로그인 화면으로 돌아갑니다.");
+                navigation.reset({
+                    index: 0,
+                    routes: [{name: 'Login'}]
+                });
             } else {
                 Vibration.vibrate(60);
                 navigation.reset({
