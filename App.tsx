@@ -72,6 +72,7 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+                <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
 
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
                 {/* Friend */}
