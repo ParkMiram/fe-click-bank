@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
+const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
 export default function CreateUser({ navigation, route }: any) {
     const { identity, type, password, nickname } = route.params;
