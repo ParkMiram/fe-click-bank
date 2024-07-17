@@ -116,6 +116,7 @@ export default function AccountHistory({ navigation }: any) {
                                         return <Image style={imageStyles.icon} source={require('../../assets/image/select.png')} />;
                                     }}
                                     style={pickerSelectStyles}
+                                    useNativeAndroidPickerStyle={false}
                                 />
                                 {/*<Image source={require('../../assets/image/select.png')} />*/}
                             </View>
@@ -292,6 +293,11 @@ const pickerSelectStyles = StyleSheet.create({
         fontSize:16,
     },
     inputAndroid: {
+        width: 80,
+        height: '100%',
+        color: 'black',
+        paddingHorizontal: 20,
+        fontSize:16,
     },
     placeholder: {
         color: 'black',  // placeholder 텍스트 색상
