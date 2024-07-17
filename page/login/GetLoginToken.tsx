@@ -1,6 +1,6 @@
 import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 import { Container } from '../../css/sujin/Container';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
@@ -17,7 +17,8 @@ export default function GetLoginToken({ route, navigation }: any) {
                 routes: [{name: 'SimpleLogin', params: {token: response.data}}]
             });
         } catch (error) {
-            // alert(error);
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
         }
     }
     const getData = async () => {
@@ -40,7 +41,8 @@ export default function GetLoginToken({ route, navigation }: any) {
                 });
             }
         } catch (error) {
-            alert(error);
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
         }
     }
     

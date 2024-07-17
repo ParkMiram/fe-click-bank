@@ -1,7 +1,7 @@
 import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
@@ -32,6 +32,8 @@ export default function CreateUser({ navigation, route }: any) {
                 });
             }, 1000);
         } catch (error) {
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
             alert(error);
         }
     }
