@@ -1,9 +1,19 @@
 import { StyleSheet, View, Text, SafeAreaView, TextInput } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ClickHome({ route, navigation }: any) {
     const { token } = route.params;
+
+    const logout = () => {
+        alert("로그아웃 되었습니다.");
+        AsyncStorage.removeItem("login");
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}]
+        });
+    }
 
     return (
         <SafeAreaView style={Container.container}>
@@ -16,8 +26,9 @@ export default function ClickHome({ route, navigation }: any) {
                         defaultValue={token}
                     />
                 </View>
-                <NextButton  text="내계좌보기" press={() => navigation.navigate('AccountHome')} active={true} />
-                <NextButton  text="내칭구보기" press={() => navigation.navigate('FriendsComponent')} active={true} />
+                <NextButton text="로그아웃" press={logout} active={true} />
+                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome')} active={true} />
+                <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent')} active={true} />
             </View>
         </SafeAreaView>
     );
