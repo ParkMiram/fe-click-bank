@@ -24,7 +24,7 @@ export default function AccountPassword( {  navigation }: any ) {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
             <View style={styles.purposeContainer}>
-        <Text style={styles.title}>통방 비밀번호 만들기</Text>
+        <Text style={styles.title}>통장 비밀번호 만들기</Text>
         <View style={styles.purposeInput}>
         <TextInput
         style={styles.input}
@@ -33,7 +33,8 @@ export default function AccountPassword( {  navigation }: any ) {
         keyboardType="number-pad"
         placeholder="0000"
         maxLength={4}
-         secureTextEntry={true} // 비밀번호 입력을 안전하게 처리
+         secureTextEntry={true} 
+        //  key
 
       />
       
@@ -46,11 +47,12 @@ export default function AccountPassword( {  navigation }: any ) {
       <Text style={styles.subtitle}>어떤 용도로 통장을 사용하실 건가요?</Text>
       <View style={styles.purposeContainer}>
         <Text style={styles.purposeLabel}>계좌사용용도</Text>
-        <View style={styles.purposeInput}>
+        <View style={styles.pickerWrapper}>
           <RNPickerSelect
             onValueChange={(value) => setPurpose(value)}
+            useNativeAndroidPickerStyle={false} 
             items={purposes}
-            placeholder={{ label: '선택하세요', value: '',color:'black' }}
+            placeholder={{ label: '선택하세요', value: 'null',color:'black' }}
             value={purpose}
             style={pickerSelectStyles}
           />
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'white'
+      
     },
     container: {
         flex: 1,
@@ -136,11 +138,24 @@ const styles = StyleSheet.create({
        
       },
       purposeInput: {
+        flex: 1,
         height: 40,
         justifyContent: 'center',
         backgroundColor: '#B7E1CE',
         paddingHorizontal: 10,
         marginBottom: 20,
+        
+      },
+      pickerWrapper: {
+        flex: 1,
+        height: 40,
+        justifyContent: 'center',
+        backgroundColor: '#B7E1CE',
+        paddingHorizontal: 10,
+        marginBottom: 20,
+        // borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 5,
       },
       input: {
         height: 40,
@@ -215,10 +230,13 @@ const styles = StyleSheet.create({
       button: {
         backgroundColor: '#B7E1CE',
         // padding: 15,
+        borderRadius:8,
+        width:'100%',
         alignItems: 'center',
-        marginTop:60,
-        height:60,
-        width:350,
+        marginTop:80,
+        maxWidth: 325,
+        // height:60,
+        // width:350,
         paddingHorizontal: 10,
         paddingVertical: 20,
       },
@@ -234,18 +252,16 @@ const pickerSelectStyles = StyleSheet.create({
       borderRadius: 5,
       color:'black',
       fontSize:16
+      
      
     },
     inputAndroid: {
-      height: 40,
-      backgroundColor: '#B7E1CE',
-      paddingHorizontal: 10,
-      paddingVertical: 8,
-      borderRadius: 5,
-      fontSize:16
-
+      fontSize: 16,
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, 
     },
     placeholder: {
-        color: 'black',  // placeholder 텍스트 색상
+        color: 'black',  
       },
   });
