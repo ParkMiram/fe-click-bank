@@ -26,6 +26,7 @@ import CreateAccount from './page/newAccount/CreateAccount';
 import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
+import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 
 // export type RootStackParamList = {
 //     Home: undefined;

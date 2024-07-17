@@ -72,6 +72,10 @@ export default function AccountHistory({ navigation }: any) {
         navigation.navigate('AccountHistoryDetail', { history });
     };
 
+    const goToStatistics = (account: string) => {
+        navigation.navigate('AccountHistoryStatistics', { account });
+    };
+
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
@@ -97,7 +101,7 @@ export default function AccountHistory({ navigation }: any) {
                         </View>
 
                         <View style={styles.accountBtnArea}>
-                            <TouchableOpacity style={styles.accountBtn}>
+                            <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics("110-486-119643")}>
                                 <Text style={styles.accountBtnFont}>분석 / 예산</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.accountBtn}>
@@ -136,6 +140,8 @@ export default function AccountHistory({ navigation }: any) {
                             ))}
                         </View>
                     </View>
+
+
                 </ScrollView>
             </View>
         </SafeAreaView>
