@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'white'
+       
     },
     container: {
         flex: 1,
@@ -60,15 +60,24 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     button: {
-        paddingHorizontal: 100,
-        paddingVertical: 20,
+        // paddingHorizontal: 100,
+        // paddingVertical: 20,
+        // backgroundColor: '#B7E1CE',
+        // borderRadius: 5,
+        // position: "static",
+        // marginBottom: 10,
+        marginTop: 16,
+        marginBottom: 30,
         backgroundColor: '#B7E1CE',
-        borderRadius: 5,
-        position: "static",
-        marginBottom: 10,
+        padding: 16,
+        alignItems: 'center',
+        borderRadius: 8,
+        width: '100%',
+        maxWidth: 325,
+        alignSelf: 'center',
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'black',
     },
 });

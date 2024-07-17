@@ -8,12 +8,14 @@ export default function AccountInformation( { navigation }: any ) {
                 {/* 여기에 페이지 내용 작성 */}
                 <Text style={styles.text}>고객 정보 확인</Text>
             <View>
+                <View style={styles.buttonContainer}>
                 <TouchableOpacity 
                     style={styles.button} 
                     onPress={() => alert('메인으로 이동합니다')}
                 >
                     <Text style={styles.buttonText}>정보 수정</Text>
                 </TouchableOpacity>
+                </View>
             </View>
             <View>
                 <Text style={styles.userText}>고객 정보:</Text>
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
-        backgroundColor:"white"
+       
     },
     container: {
         flex: 1,
@@ -61,20 +63,25 @@ const styles = StyleSheet.create({
         marginTop: 60,
         marginBottom: 10,
     },
+    buttonContainer:{
+        width:'100%',
+        justifyContent:'flex-end',
+        flexDirection:'row'
+    },
     button: {
+      
         paddingHorizontal: 15,
         paddingVertical: 5,
         backgroundColor: '#B7E1CE',
         borderRadius: 5,
-        position: "static",
-        marginBottom: 10,
-        marginLeft: 280,
-        marginRight: 20,
-        marginTop: 10,
+        justifyContent:'flex-end',
+       marginRight:15
+        
     },
     buttonText: {
         fontSize: 15,
         color: 'black',
+        textAlign:'center',
     },
     userText: {
         textAlign: 'left',
@@ -87,22 +94,33 @@ const styles = StyleSheet.create({
     },
     buttonApplication:{
         position: 'absolute', 
-        bottom: 10,
-        left: 0,
-        right: 0,
-        paddingHorizontal: 100,
-        paddingVertical: 20,
+        bottom: 0.5,
+        // left: 0,
+        // right: 0,
+        // paddingHorizontal: 100,
+        // paddingVertical: 20,
+        // backgroundColor: '#B7E1CE',
+        // borderRadius: 5,
+        // alignSelf: 'center',
+        // // position: "static",
+        // marginBottom: 20,
+        // marginRight:15,
+        // marginLeft:15,
+        marginTop: 16,
+        marginBottom: 30,
         backgroundColor: '#B7E1CE',
-        borderRadius: 5,
+        padding: 16,
+        alignItems: 'center',
+        borderRadius: 8,
+        width: '100%',
+        maxWidth: 325,
         alignSelf: 'center',
-        // position: "static",
-        marginBottom: 20,
-        marginRight:15,
-        marginLeft:15,
     },
     buttonTextApplication: {
         textAlign:'center',
-        fontSize: 20,
+        // fontSize: 20,
         color: 'black',
+        fontSize: 16,
+
     },
 });
