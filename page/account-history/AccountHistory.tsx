@@ -14,6 +14,7 @@ import ScrollView = Animated.ScrollView;
 import React, {useEffect, useState} from "react";
 import {getAccountHistory} from "../../component/api/AccountHistoryApi";
 import {AxiosResponse} from "axios";
+import RNPickerSelect from "react-native-picker-select";
 
 interface Category {
     id: number;
@@ -32,10 +33,20 @@ interface History {
 
 export default function AccountHistory({ navigation }: any) {
     const [histories, setHistories] = useState<History[]>([]);
+    const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
+    const [purpose, setPurpose] = useState("전체");
+    const purposes = [
+        { label: '입금', value: '입금' },
+        { label: '출금', value: '출금' },
+    ];
 
     useEffect(()=> {
         getAccountHistories();
     },[]);
+
+    useEffect(() => {
+        filterHistories();
+    }, [histories, purpose]);
 
     const getAccountHistories = async (): Promise<any> => {
         try {
@@ -45,6 +56,15 @@ export default function AccountHistory({ navigation }: any) {
             setHistories(response.data);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const filterHistories = () => {
+        if (purpose === '전체' || purpose === null) {
+            setFilteredHistories(histories);
+        } else {
+            const filtered = histories.filter(history => history.bhStatus === purpose);
+            setFilteredHistories(filtered);
         }
     };
 
@@ -87,10 +107,20 @@ export default function AccountHistory({ navigation }: any) {
 
                         <View style={styles.historyArea}>
                             <View style={styles.filterArea}>
-                                <Text style={styles.filterFont}>전체</Text>
-                                <Image source={require('../../assets/image/select.png')} />
+                                <RNPickerSelect
+                                    onValueChange={(value) => setPurpose(value)}
+                                    items={purposes}
+                                    placeholder={{ label: '전체', value: '전체', color:'black' }}
+                                    value={purpose}
+                                    Icon={() => {
+                                        return <Image style={imageStyles.icon} source={require('../../assets/image/select.png')} />;
+                                    }}
+                                    style={pickerSelectStyles}
+                                    useNativeAndroidPickerStyle={false}
+                                />
+                                {/*<Image source={require('../../assets/image/select.png')} />*/}
                             </View>
-                            {histories.slice().reverse().map((item: History) => (
+                            {filteredHistories.slice().reverse().map((item: History) => (
                                 <TouchableOpacity key={item.historyId} style={styles.history} onPress={() => navigateToDetail(item)}>
                                     <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
                                     <Text style={styles.historyNameFont}>{item.bhName}</Text>
@@ -252,4 +282,30 @@ const styles = StyleSheet.create({
         color: '#808080',
         textAlign: 'right'
     }
+});
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        width: 80,
+        height: '100%',
+        color: 'black',
+        paddingHorizontal: 20,
+        fontSize:16,
+    },
+    inputAndroid: {
+        width: 80,
+        height: '100%',
+        color: 'black',
+        paddingHorizontal: 20,
+        fontSize:16,
+    },
+    placeholder: {
+        color: 'black',  // placeholder 텍스트 색상
+    },
+});
+
+const imageStyles = StyleSheet.create({
+    icon: {
+        marginTop: 25,
+    },
 });

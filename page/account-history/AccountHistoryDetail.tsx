@@ -5,11 +5,15 @@ import {
     StyleSheet,
     Text,
     View,
-    StatusBar, Animated, TouchableOpacity
+    StatusBar, Animated, TouchableOpacity, TextInput
 } from "react-native";
 import {useEffect, useState} from "react";
 import {AxiosResponse} from "axios";
-import {getAccountHistory, getAccountHistoryDetail} from "../../component/api/AccountHistoryApi";
+import {
+    getAccountHistory,
+    getAccountHistoryDetail,
+    updateAccountHistoryMemo
+} from "../../component/api/AccountHistoryApi";
 
 interface Category {
     id: number;
@@ -36,7 +40,9 @@ interface Detail {
 
 export default function AccountHistoryDetail({ route, navigation }: any) {
     const [detail, setDetail] = useState<Detail>();
+    const [memo, setMemo] = useState('');
     const {history} = route.params;
+    const id: number = history.historyId;
 
     const goBack = () => {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
@@ -46,15 +52,41 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
         getDetail();
     },[]);
 
+    useEffect(() => {
+        if (detail && detail.bhMemo) {
+            setMemo(detail.bhMemo);
+        }
+    }, [detail]);
+
     const getDetail = async (): Promise<any> => {
         try {
-            const id: number = history.historyId;
             const response: AxiosResponse<Detail> = await getAccountHistoryDetail(id);
             setDetail(response.data)
         } catch (error) {
             console.log(error);
         }
     };
+
+    const updateMemo = async (memo: string): Promise<any> => {
+        if (memo && memo.length > 0) {
+            try {
+                const data = {id, memo};
+                await updateAccountHistoryMemo(data);
+            } catch (error) {
+                console.log(error);
+            }
+        } else if(memo.length == 0) {
+            try {
+                memo = "";
+                const data = {id, memo}
+                await updateAccountHistoryMemo(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        goBack();
+    };
+
 
     return (
         <SafeAreaView style={styles.whole}>
@@ -75,7 +107,13 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                             <Image source={require('../../assets/image/select.png')}/>
                         </View>
                         <View style={styles.inputBox}>
-                            <Text style={styles.inputTextFont}>메모 입력(최대 20자)</Text>
+                            <TextInput
+                                style={styles.inputTextFont}
+                                placeholder="메모 입력(최대 20자)"
+                                value={memo}
+                                onChangeText={setMemo}
+                                maxLength={20}
+                            />
                         </View>
                     </View>
                     <View style={styles.historyDetailData}>
@@ -100,7 +138,7 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={goBack}>
+                <TouchableOpacity onPress={() => updateMemo(memo)}>
                     <View style={styles.bottom}>
                         <Text style={styles.bottomText}>확인</Text>
                     </View>

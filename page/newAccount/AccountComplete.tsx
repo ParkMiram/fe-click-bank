@@ -53,14 +53,23 @@ const styles = StyleSheet.create({
     marginBottom:100,
     },
     button: {
-    paddingHorizontal: 100,
-    paddingVertical: 20,
+    // paddingHorizontal: 100,
+    // paddingVertical: 20,
+    // backgroundColor: '#B7E1CE',
+    // borderRadius: 5,
+    // position:"static"
+    marginTop: 16,
+    marginBottom: 30,
     backgroundColor: '#B7E1CE',
-    borderRadius: 5,
-    position:"static"
+    padding: 16,
+    alignItems: 'center',
+    borderRadius: 8,
+    width: '100%',
+    maxWidth: 325,
+    alignSelf: 'center',
     },
     buttonText: {
     fontSize: 20,
-    color: 'white',
+    color: 'black',
     },
 });
