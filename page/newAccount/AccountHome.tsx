@@ -1,46 +1,67 @@
-import React, { useState } from 'react';
-import { FlatList,Image, Text, TouchableOpacity, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
+import React, { useEffect, useState } from 'react';
+import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View } from 'react-native';
+import { getAccountByUserId } from "../../component/api/NewAccountApi";
+import { AxiosResponse } from 'axios';
 
-const data = [
-    { user_nickname: '박분도', account_name: "클릭", account: 416280405051, account_amount: 10000000 },
-    { user_nickname: '박분도', account_name: "플레이데이터", account: 416042172881, account_amount: 20000000 },
-    { user_nickname: '박분도', account_name: "하이", account: 416464183736, account_amount: 30000000 },
-    { user_nickname: '박분도', account_name: "ㅇㅅㅇ", account: 416072768011, account_amount: 40000000 }
-];
+interface AccountResponse {
+    account: string;
+    accountName: string;
+    moneyAmount: number;
+}
 
-type Data = {
-    user_nickname: string;
-    account_name: string;
-    account: number;
-    account_amount: number;
+interface UserAccountResponse {
+    accounts: AccountResponse[];
+    userName: string;
+    userImg: string;
 }
 
 export default function AccountHome({ route, navigation }: any) {
-    const [numberHidden, setNumbereHidden] = useState(false);
+    const [numberHidden, setNumberHidden] = useState(false);
+    const [account, setAccount] = useState<AccountResponse[]>([]);
+    const [userName, setUserName] = useState<string>('');
+    const [userImg, setUserImg] = useState<string>('');
+    const token = route.params?.token;
+
+    useEffect(() => {
+        if (token) {
+            fetchAccountsByUserId(token);
+        }
+    }, [token]);
+
+    const fetchAccountsByUserId = async (token: string): Promise<any> => {
+        try {
+            const response: AxiosResponse<UserAccountResponse> = await getAccountByUserId(token);
+            const { accounts, userName, userImg } = response.data;
+            setAccount(accounts);
+            setUserName(userName);
+            setUserImg(userImg);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const numberShow = () => {
-        setNumbereHidden(!numberHidden);
+        setNumberHidden(!numberHidden);
     };
-    const renderItem = ({ item }: { item: Data }) => (
+
+    const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
             <TouchableOpacity onPress={() => navigation.navigate('EditAccount')}>
-                <Text style={styles.accountName}>{item.account_name}</Text>
-                 <Image
+                <Text style={styles.accountName}>{item.accountName}</Text>
+                <Image
                     source={require('../../assets/image/more.png')}
                     style={styles.imageMore} resizeMode="contain"
                 />
             </TouchableOpacity>
             <Text style={styles.accountNumber}>
-                {/* {numberHidden ? '****-****-****' : item.account.toString().replace(/\B(?=(\d{4})+(?!\d))/g, "-")} */}
-                {item.account.toString().replace(/\B(?=(\d{4})+(?!\d))/g, "-")}
+                {item.account.replace(/\B(?=(\d{4})+(?!\d))/g, "-")}
             </Text>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
-                    {numberHidden ? '잔액보기' : `${item.account_amount.toLocaleString()}원`}
+                    {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`}
                 </Text>
                 <TouchableOpacity style={styles.sendButton} onPress={numberShow}>
-                    <Text style={styles.buttonsendText}>{numberHidden ? '보기' : '숨김'}</Text>
+                    <Text style={styles.buttonSendText}>{numberHidden ? '보기' : '숨김'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
@@ -56,10 +77,10 @@ export default function AccountHome({ route, navigation }: any) {
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Image
-                        source={require('../../assets/image/person.png')}
+                        source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
                         style={styles.imagePerson} resizeMode="contain"
                     />
-                    <Text style={styles.text}>박분도</Text>
+                    <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
                         <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
                             <Image
@@ -70,15 +91,12 @@ export default function AccountHome({ route, navigation }: any) {
                     </View>
                 </View>
                 <FlatList
-                data={data}
-                renderItem={renderItem}
-                keyExtractor={(item, index) => index.toString()}
-                contentContainerStyle={styles.flatListContainer}
-            />
-
-             
+                    data={account}
+                    renderItem={renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    contentContainerStyle={styles.flatListContainer}
+                />
             </View>
-        
             <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
                 <Image
                     source={require('../../assets/image/plus.png')}
@@ -93,7 +111,6 @@ const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
         width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'flex-start',
     },
@@ -130,7 +147,7 @@ const styles = StyleSheet.create({
         height: 20,
         position: 'absolute',
         right: 1,
-        marginTop:5
+        marginTop: 5,
     },
     imageBell: {
         width: 80,
@@ -161,7 +178,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        // marginTop: 20,
     },
     balance: {
         fontSize: 24,
@@ -186,7 +202,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
     },
-    buttonsendText: {
+    buttonSendText: {
         color: 'black',
         fontSize: 15,
     },
