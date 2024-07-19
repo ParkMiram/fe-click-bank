@@ -22,11 +22,12 @@ export default function AccountHome({ route, navigation }: any) {
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
 
-    useEffect(() => {
-        if (token) {
-            fetchAccountsByUserId(token);
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         fetchAccountsByUserId(token);
+    //     }
+    // }, [token]);
+
 
     
     const fetchAccountsByUserId = async (token: string): Promise<void> => {
@@ -49,6 +50,7 @@ export default function AccountHome({ route, navigation }: any) {
         }
     };
     
+
 
 
     const numberShow = () => {

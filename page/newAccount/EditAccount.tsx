@@ -1,18 +1,49 @@
 import { useState } from 'react';
-import { TextInput,Modal,TouchableOpacity,Text,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
+
+type props = {
+    token: string;
+    account: string;
+}
 
 export default function EditAccount( { route, navigation }: any ) {
     const [modalVisible, setModalVisible] = useState(false);
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
+    const [limit, setLimit] = useState('');
+    const { token, account }: props = route.params;
 
-const handleDeleteAccount = () => {
-    setModalVisible(true);
-};
-const [name, setName] = useState('');
-const [password, setPassword] = useState('');
-const [limit, setLimit] = useState('');
-const closeModal = () => {
-    setModalVisible(false);
-};
+    const handleDeleteAccount = async () => {
+        setModalVisible(true);
+        try {
+            await deleteAccount(account, token);
+        } catch(error) {
+            console.log(error);
+        }
+    };
+
+    const closeModal = () => {
+        setModalVisible(false);
+    };
+
+    const handleSubmit = async () => {
+        try {
+            if (name) {
+                await setAccountName({ account, accountName: name }, token);
+            }
+            if (password) {
+                await setAccountPassword({ account, accountPassword: password }, token);
+            }
+            if (limit) {
+                await setAccountLimit({ account, accountName: name }, token);
+            }
+            navigation.navigate('AccountHome');
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -61,7 +92,7 @@ const closeModal = () => {
                         
              <TouchableOpacity 
                         style={styles.button} 
-                        onPress={() => navigation.navigate('AccountInformation')}
+                        onPress={() => navigation.navigate(handleSubmit)}
                         >
                 <Text style={styles.buttonText}>자동이체</Text>
             </TouchableOpacity>
@@ -71,7 +102,7 @@ const closeModal = () => {
                         style={styles.button}
                         onPress={handleDeleteAccount}
                     >
-                <Text style={styles.buttonText}>계좌 삭제</Text>
+                <Text style={styles.buttonText} onPress={handleDeleteAccount}>계좌 삭제</Text>
             </TouchableOpacity>
                 </View>
                 <Modal
@@ -282,8 +313,4 @@ const styles = StyleSheet.create({
         width: 180,
         textAlign:'center',
     }
-
-
-
-
 });
