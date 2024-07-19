@@ -13,10 +13,16 @@ import { Path, Svg } from "react-native-svg";
 type data = {
   name: string;
   amount: number;
+  account: string;
+  accountNumber: string;
+  moneyAmount: number;
+  token: string;
 }
 
 const ReminingTranfer = ({ navigation, route }: any) => {
-    const { name, amount }: data = route.params;
+
+    const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
+
     console.log(amount.toLocaleString());
     return (
       <SafeAreaView style={styles.container}>

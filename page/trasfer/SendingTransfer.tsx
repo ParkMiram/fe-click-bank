@@ -18,19 +18,27 @@ import { getAccountUserInfo } from '../../component/api/AccountTranfer';
 // };
 
 type data = {
-  account: String;
-  nickName: String;
+  account: string;
+  nickName: string;
   amount: number;
+}
+
+type props = {
+  bank: string;
+  accountNumber: string;
+  account: string;
+  moneyAmount: Number;
 }
 
 const SendingTransfer = ({ navigation, route }: any) => {
   const [amount, setAmount] = useState('');
   const [userInfo, setUserInfo] = useState<data | undefined>(undefined);
-  const { bank, accountNumber } = route.params;
+  const { bank, accountNumber, account, moneyAmount }: props = route.params;
+  const token: string = route.params?.token;
 
-  const fetchUserInfo = async (account: string) => {
+  const fetchUserInfo = async (account: string, token: string) => {
     try {
-      const response = await getAccountUserInfo(account);
+      const response = await getAccountUserInfo(account, token);
       console.log(response.data);
       setUserInfo(response.data);
     } catch (error) {
@@ -40,7 +48,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
   };
 
   useEffect(() => {
-    fetchUserInfo(accountNumber);
+    fetchUserInfo(accountNumber, token);
   }, [accountNumber])
 
   const handleNumberPress = (num: string) => {
@@ -58,7 +66,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
   const handleSend = () => {
     if (!Number.isNaN(parseInt(amount)) && parseInt(amount) !== 0) {
       if (userInfo && userInfo.nickName) {
-        navigation.navigate('ReminingTranfer', { name: userInfo.nickName, amount: parseInt(amount) });
+        navigation.navigate('ReminingTranfer', { name: userInfo.nickName, amount: parseInt(amount), accountNumber, account, moneyAmount, token });
       } else {
         Alert.alert('', '사용자 정보가 없습니다.');
       }

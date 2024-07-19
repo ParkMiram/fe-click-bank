@@ -1,6 +1,35 @@
-import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity} from 'react-native';
+import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
+import { saveAccount } from '../../component/api/NewAccountApi';
 
-export default function AccountComplete( {  navigation }: any ) {
+type data = {
+    accountStatus: string;
+    token: string;
+    accountPassword: string;
+}
+
+export default function AccountComplete( {  navigation, route }: any ) {
+    const { accountStatus, token, accountPassword }: data = route.params;
+
+    const body = {
+        accountStatus: accountStatus,
+        accountPassword: accountPassword
+    }
+
+    const handleSaveAccount = async () => {
+        try {
+            const response = await saveAccount(token, body);
+
+            if (response && response.status == 201) {
+                navigation.navigate('AccountHome');
+            } else {
+                alert('서버에 이상이 있습니다.');
+            }
+        } catch (error) {
+            console.error('Failed to create account:', error);
+            Alert.alert('계좌 생성 실패', '계좌 생성 중 오류가 발생했습니다. 다시 시도해 주세요.');
+        }
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -9,7 +38,7 @@ export default function AccountComplete( {  navigation }: any ) {
             source={require('../../assets/image/Click_logo.png')}
             style={styles.imageStyle} resizeMode="contain"/>
             <Text style = {styles.textcontainer}>축! 개설완료!</Text>  
-            <TouchableOpacity style={styles.button} onPress={() => alert('메인으로 이동합니다')}>
+            <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
                 <Text style={styles.buttonText}>메인으로</Text>
             </TouchableOpacity>
             {/* <StatusBar style="auto"/> */}
