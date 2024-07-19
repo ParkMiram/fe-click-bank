@@ -1,11 +1,12 @@
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Platform, StatusBar, Alert } from 'react-native';
 // import { RootStackParamList } from '../../App';
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RouteProp } from '@react-navigation/native';
 import { Path, Svg } from 'react-native-svg';
+import { getAccountUserInfo } from '../../component/api/AccountTranfer';
 
 // type SendingTransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Transfer'>
 
@@ -16,11 +17,31 @@ import { Path, Svg } from 'react-native-svg';
 //   route: SendingTransferRouteProp;
 // };
 
+type data = {
+  account: String;
+  nickName: String;
+  amount: number;
+}
+
 const SendingTransfer = ({ navigation, route }: any) => {
   const [amount, setAmount] = useState('');
-  
-  const name: string = '난쟁이미람';
+  const [userInfo, setUserInfo] = useState<data | undefined>(undefined);
   const { bank, accountNumber } = route.params;
+
+  const fetchUserInfo = async (account: string) => {
+    try {
+      const response = await getAccountUserInfo(account);
+      console.log(response.data);
+      setUserInfo(response.data);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
+    }
+  };
+
+  useEffect(() => {
+    fetchUserInfo(accountNumber);
+  }, [accountNumber])
 
   const handleNumberPress = (num: string) => {
     setAmount(amount + num);
@@ -36,11 +57,22 @@ const SendingTransfer = ({ navigation, route }: any) => {
 
   const handleSend = () => {
     if (!Number.isNaN(parseInt(amount)) && parseInt(amount) !== 0) {
-      navigation.navigate('ReminingTranfer', { name, amount: parseInt(amount) });
+      if (userInfo && userInfo.nickName) {
+        navigation.navigate('ReminingTranfer', { name: userInfo.nickName, amount: parseInt(amount) });
+      } else {
+        Alert.alert('', '사용자 정보가 없습니다.');
+      }
     } else {
       Alert.alert('', '돈 입력 안하냐? ***');
     }
   };
+
+    // 금액이 잔액을 초과할 경우 글자색을 빨간색으로 변경
+    const amountTextStyle = { color: parseInt(amount, 10) > (userInfo?.amount || 0) ? 'red' : 'black' };
+
+    // 잔액을 초과하면 보내기 버튼을 비활성화 (회색 배경)
+    const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (userInfo?.amount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };
+    const sendButtonDisabled = parseInt(amount, 10) > (userInfo?.amount || 0) || amount === '';
 
   return (
     
@@ -54,19 +86,19 @@ const SendingTransfer = ({ navigation, route }: any) => {
         <View style={styles.textContainer}>
           <Text style={styles.label}>예금주</Text>
           <Text style={styles.recipient}>
-            <Text style={styles.boldText}>{name}</Text>님에게
+            <Text style={styles.boldText}>{userInfo?.nickName}</Text>님에게
           </Text>
-          <Text style={styles.accountInfo}>{bank} {accountNumber}</Text>
+          <Text style={styles.accountInfo}>{bank} {userInfo?.account}</Text>
           <Text style={styles.question}>얼마를 보낼까요?</Text>
         </View>
         <View style={styles.amountContainer}>
-          <Text style={styles.amountText}>{amount}</Text>
+          <Text style={[styles.amountText, amountTextStyle]}>{amount}</Text>
         </View>
         <View style={styles.greenLine}></View>
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>잔액</Text>
-          <Text style={styles.balance}>100,000,000원</Text>
+          <Text style={styles.balance}>{userInfo?.amount.toLocaleString()}원</Text>
         </View>
 
         <View style={styles.predefinedAmounts}>
@@ -95,7 +127,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
             <Image source={require('../../assets/image/Symbol.png')} resizeMode="contain" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+        <TouchableOpacity style={[styles.sendButton, sendButtonStyle]} onPress={handleSend} disabled={sendButtonDisabled}>
           <Text style={styles.sendButtonText}>보내기</Text>
         </TouchableOpacity>
       </View>
