@@ -34,7 +34,7 @@ export default function FriendsComponent({ route }: any) {
     // 친구 목록 조회
     const getFriendList = async (): Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.get('http://192.168.0.22:8080/api/v1/friends', {
+            const response: AxiosResponse<any, any> = await axios.get('http://34.44.62.106:30000/api/v1/friends', {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -43,17 +43,24 @@ export default function FriendsComponent({ route }: any) {
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                alert(error.response.data);
+                Alert.alert(
+                    "내 친구",
+                    error.response.data
+                );
             } else {
                 console.log('Error:', error.message);
-                alert(error.message);
+                Alert.alert(
+                    "내 친구",
+                    error.message
+                );
             }
         }
     };
     // 친구 요청 목록 조회
     const getFriendRequestList = async ():Promise<void> => {
+        setFriendRequestListData([]);
         try {
-            const response: AxiosResponse<any, any> = await axios.get('http://192.168.0.22:8080/api/v1/friends/request', {
+            const response: AxiosResponse<any, any> = await axios.get('http://34.44.62.106:30000/api/v1/friends/request', {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -62,10 +69,16 @@ export default function FriendsComponent({ route }: any) {
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                alert(error.response.data);
+                Alert.alert(
+                    "Error",
+                    error.response.data
+                );
             } else {
                 console.log('Error:', error.message);
-                alert(error.message);
+                Alert.alert(
+                    "Error",
+                    error.response
+                );
             }
         }
     }
@@ -73,27 +86,36 @@ export default function FriendsComponent({ route }: any) {
     const confirmRequest = async (code: string):Promise<void> => {
         console.log(code);
         try {
-            const response: AxiosResponse<any, any> = await axios.put(`http://192.168.0.22:8080/api/v1/friends/request/confirm/${code}`, {}, {
+            const response: AxiosResponse<any, any> = await axios.put(`http://34.44.62.106:30000/api/v1/friends/request/confirm/${code}`, {}, {
                 headers: {
                     Authorization: bearerToken
                 }
             });
-            alert(`${response.data}🤝`);
+            Alert.alert(
+                "친구 요청",
+                `${response.data}🤝`
+            );
             getFriendRequestList();
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                alert(error.response.data);
+                Alert.alert(
+                    "친구 요청",
+                    error.response.data
+                );
             } else {
                 console.log('Error:', error.message);
-                alert(error.message);
+                Alert.alert(
+                    "친구 요청",
+                    error.message
+                );
             }
         }
     }
     // 친구 요청 거절
     const rejectRequest = (code: string): void => {
         Alert.alert(
-            "친구 요청 거절",
+            "친구 요청",
             "거절하시겠습니까?",
             [
                 {
@@ -105,20 +127,29 @@ export default function FriendsComponent({ route }: any) {
                     style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://192.168.0.22:8080/api/v1/friends/request/reject/${code}`, {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.44.62.106:30000/api/v1/friends/request/reject/${code}`, {
                                 headers: {
                                     Authorization: bearerToken
                                 }
                             });
-                            alert(response.data);
+                            Alert.alert(
+                                "친구 요청",
+                                response.data
+                            );
                             getFriendRequestList();
                         } catch (error: any) {
                             if (error.response) {
                                 console.log('Error:', error.response.data);
-                                alert(error.response.data);
+                                Alert.alert(
+                                    "친구 요청",
+                                    error.response.data
+                                );
                             } else {
                                 console.log('Error:', error.message);
-                                alert(error.message);
+                                Alert.alert(
+                                    "친구 요청",
+                                    error.message
+                                );
                             }
                         }
                     }
@@ -141,20 +172,29 @@ export default function FriendsComponent({ route }: any) {
                     style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://192.168.0.22:8080/api/v1/friends/${code}`, {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.44.62.106:30000/api/v1/friends/${code}`, {
                                 headers: {
                                     Authorization: bearerToken
                                 }
                             });
-                            alert(response.data);
+                            Alert.alert(
+                                "친구 요청",
+                                response.data
+                            );
                             getFriendList();
                         } catch (error: any) {
                             if (error.response) {
                                 console.log('Error:', error.response.data);
-                                alert(error.response.data);
+                                Alert.alert(
+                                    "친구 요청",
+                                    error.response.data
+                                );
                             } else {
                                 console.log('Error:', error.message);
-                                alert(error.message);
+                                Alert.alert(
+                                    "친구 요청",
+                                    error.message
+                                );
                             }
                         }
                     }
@@ -253,7 +293,7 @@ export default function FriendsComponent({ route }: any) {
                         <View>
                             {/* list */}
                             {
-                                friendListData.length !== 0 ?
+                                friendListData.length > 0 ?
                                     <SwipeListView
                                         style={styles.friendList}
                                         data={friendListData}
@@ -278,7 +318,7 @@ export default function FriendsComponent({ route }: any) {
         return (
             <>
                 {
-                    friendRequestListData.length !== 0 ?
+                    friendRequestListData.length > 0 ?
                         <FlatList
                             data={friendRequestListData}
                             keyExtractor={item => item.id}
