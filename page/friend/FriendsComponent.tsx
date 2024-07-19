@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
     Platform,
     StatusBar,
@@ -6,293 +6,372 @@ import {
     Text,
     View,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity, Image, FlatList, Alert
 } from "react-native";
 import {SwipeListView} from 'react-native-swipe-list-view';
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import FriendSearch from "./FriendSearch";
 import {Circle, Path, Rect, Svg} from "react-native-svg";
+import axios, {AxiosResponse} from "axios";
 
-const data: any[] = [
-    { friend_id: 1, user_nickname: '박성무', profile: null },
-    { friend_id: 2, user_nickname: '박분도', profile: null },
-];
+export default function FriendsComponent({ route }: any) {
+    const { token } = route.params;
+    const bearerToken: string = `Bearer ${token}`;
 
-const renderItem = (item: any, rowMap: any) => {
-    return (
-        <View style={[styles.list, item.index === data.length - 1 ? { marginBottom: 110 } : null]}>
-            <View style={styles.friend}>
-                <Svg
-                    width={40}
-                    height={40}
-                    fill="none"
-                    viewBox="0 0 30 30"
-                    style={{ marginRight: 10 }}
-                >
-                    <Path
-                        fill="#7E869E"
-                        fillOpacity={0.25}
-                        d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                    />
-                    <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5} />
-                    <Path
-                        fill="#7E869E"
-                        fillOpacity={0.5}
-                        fillRule="evenodd"
-                        d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                        clipRule="evenodd"
-                    />
-                </Svg>
-                <Text style={styles.friendName}>{item.item.user_nickname}</Text>
-            </View>
-            <TouchableOpacity style={styles.transfer}>
-                <Text style={styles.transferTxt}>송금</Text>
-            </TouchableOpacity>
-        </View>
-    )
-};
-
-const renderHiddenItem = (data: any, rowMap: any) => (
-    <View style={styles.hiddenItemWrap}>
-        <TouchableOpacity style={styles.hiddenItem}>
-            <Text style={styles.hiddenItemTxt}>삭제</Text>
-        </TouchableOpacity>
-    </View>
-);
-
-const FriendList = () => {
-    return (
-        <>
-            <View style={styles.wrap}>
-                {/* search */}
-                <View style={styles.searchWrap}>
-                    <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기' />
-                    <TouchableOpacity>
-                        {/*<Image source={require('../../assets/image/search.png')} style={styles.searchIcon} />*/}
-                        <Svg
-                            width={14}
-                            height={14}
-                            fill="none"
-                        >
-                            <Circle cx={6.25} cy={6.25} r={5.25} stroke="#404040" />
-                            <Path stroke="#404040" strokeLinecap="round" d="m13 13-3-3" />
-                        </Svg>
-                    </TouchableOpacity>
-                </View>
-                <View style={styles.listWrap}>
-                    <View style={styles.listMap}>
-                        {/* list */}
-                        <SwipeListView
-                            style={styles.friendList}
-                            data={data}
-                            renderItem={renderItem}
-                            renderHiddenItem={renderHiddenItem}
-                            rightOpenValue={-55}
-                        />
-                    </View>
-                </View>
-            </View>
-            {/*<FriendTab />*/}
-        </>
-    )
-};
-
-const FriendRequestList = () => {
-    return (
-        <>
-            <View style={styles.listWrap}>
-                {/* list */}
-                <View style={styles.list}>
-                    <View style={styles.friend}>
-                        {/*<Image source={require('../../assets/image/basicProfile.png')} style={styles.profile}/>*/}
-                        <Svg
-                            width={40}
-                            height={40}
-                            fill="none"
-                            viewBox="0 0 30 30"
-                            style={{ marginRight: 10 }}
-                        >
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.25}
-                                d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                            />
-                            <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5} />
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.5}
-                                fillRule="evenodd"
-                                d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                                clipRule="evenodd"
-                            />
-                        </Svg>
-                        <Text style={styles.friendName}>임서연</Text>
-                    </View>
-                    <View style={styles.requestBtnWrap}>
-                        <TouchableOpacity style={styles.confirmBtn}>
-                            {/*<Image source={require('../../assets/image/confirm.png')}/>*/}
-                            <Svg
-                                width={12}
-                                height={9}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#007378"
-                                    strokeLinecap="round"
-                                    d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.rejectBtn}>
-                            {/*<Image source={require('../../assets/image/reject.png')}/>*/}
-                            <Svg
-                                width={10}
-                                height={10}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#5F5F5F"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9 1 1 9M1 1l8 8"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.list}>
-                    <View style={styles.friend}>
-                        {/*<Image source={require('../../assets/image/basicProfile.png')} style={styles.profile}/>*/}
-                        <Svg
-                            width={40}
-                            height={40}
-                            fill="none"
-                            viewBox="0 0 30 30"
-                            style={{ marginRight: 10 }}
-                        >
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.25}
-                                d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                            />
-                            <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5} />
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.5}
-                                fillRule="evenodd"
-                                d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                                clipRule="evenodd"
-                            />
-                        </Svg>
-                        <Text style={styles.friendName}>이수진</Text>
-                    </View>
-                    <View style={styles.requestBtnWrap}>
-                        <TouchableOpacity style={styles.confirmBtn}>
-                            {/*<Image source={require('../../assets/image/confirm.png')}/>*/}
-                            <Svg
-                                width={12}
-                                height={9}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#007378"
-                                    strokeLinecap="round"
-                                    d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.rejectBtn}>
-                            {/*<Image source={require('../../assets/image/reject.png')}/>*/}
-                            <Svg
-                                width={10}
-                                height={10}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#5F5F5F"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9 1 1 9M1 1l8 8"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.list}>
-                    <View style={styles.friend}>
-                        {/*<Image source={require('../../assets/image/basicProfile.png')} style={styles.profile}/>*/}
-                        <Svg
-                            width={40}
-                            height={40}
-                            fill="none"
-                            viewBox="0 0 30 30"
-                            style={{ marginRight: 10 }}
-                        >
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.25}
-                                d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                            />
-                            <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5} />
-                            <Path
-                                fill="#7E869E"
-                                fillOpacity={0.5}
-                                fillRule="evenodd"
-                                d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                                clipRule="evenodd"
-                            />
-                        </Svg>
-                        <Text style={styles.friendName}>김재민</Text>
-                    </View>
-                    <View style={styles.requestBtnWrap}>
-                        <TouchableOpacity style={styles.confirmBtn}>
-                            {/*<Image source={require('../../assets/image/confirm.png')}/>*/}
-                            <Svg
-                                width={12}
-                                height={9}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#007378"
-                                    strokeLinecap="round"
-                                    d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.rejectBtn}>
-                            {/*<Image source={require('../../assets/image/reject.png')}/>*/}
-                            <Svg
-                                width={10}
-                                height={10}
-                                fill="none"
-                            >
-                                <Path
-                                    stroke="#5F5F5F"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M9 1 1 9M1 1l8 8"
-                                />
-                            </Svg>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-        </>
-    )
-};
-
-const Tab = createBottomTabNavigator();
-
-export default function FriendsComponent() {
+    // state
+    // 친구 목록
+    const [friendListData, setFriendListData] = useState([]);
+    // 친구 요청 목록
+    const [friendRequestListData, setFriendRequestListData] = useState([{
+        id: '',
+        code: '',
+        img: '',
+        name: ''
+    }]);
+    // 친구 추가
     const [isModalVisible, setModalVisible] = useState(false);
+
+    // 친구 목록 조회
+    const getFriendList = async (): Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.get('http://192.168.0.22:8080/api/v1/friends', {
+                headers: {
+                    Authorization: bearerToken
+                }
+            });
+            setFriendListData(response.data);
+        } catch (error: any) {
+            if (error.response) {
+                console.log('Error:', error.response.data);
+                alert(error.response.data);
+            } else {
+                console.log('Error:', error.message);
+                alert(error.message);
+            }
+        }
+    };
+    // 친구 요청 목록 조회
+    const getFriendRequestList = async ():Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.get('http://192.168.0.22:8080/api/v1/friends/request', {
+                headers: {
+                    Authorization: bearerToken
+                }
+            });
+            setFriendRequestListData(response.data);
+        } catch (error: any) {
+            if (error.response) {
+                console.log('Error:', error.response.data);
+                alert(error.response.data);
+            } else {
+                console.log('Error:', error.message);
+                alert(error.message);
+            }
+        }
+    }
+    // 친구 요청 수락
+    const confirmRequest = async (code: string):Promise<void> => {
+        console.log(code);
+        try {
+            const response: AxiosResponse<any, any> = await axios.put(`http://192.168.0.22:8080/api/v1/friends/request/confirm/${code}`, {}, {
+                headers: {
+                    Authorization: bearerToken
+                }
+            });
+            alert(`${response.data}🤝`);
+            getFriendRequestList();
+        } catch (error: any) {
+            if (error.response) {
+                console.log('Error:', error.response.data);
+                alert(error.response.data);
+            } else {
+                console.log('Error:', error.message);
+                alert(error.message);
+            }
+        }
+    }
+    // 친구 요청 거절
+    const rejectRequest = (code: string): void => {
+        Alert.alert(
+            "친구 요청 거절",
+            "거절하시겠습니까?",
+            [
+                {
+                    text: "취소",
+                    style: "default"
+                },
+                {
+                    text: "거절",
+                    style: "destructive",
+                    onPress: async (): Promise<void> => {
+                        try {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://192.168.0.22:8080/api/v1/friends/request/reject/${code}`, {
+                                headers: {
+                                    Authorization: bearerToken
+                                }
+                            });
+                            alert(response.data);
+                            getFriendRequestList();
+                        } catch (error: any) {
+                            if (error.response) {
+                                console.log('Error:', error.response.data);
+                                alert(error.response.data);
+                            } else {
+                                console.log('Error:', error.message);
+                                alert(error.message);
+                            }
+                        }
+                    }
+                }
+            ]
+        );
+    }
+    // 친구 삭제
+    const deleteFriend = (code: string): void => {
+        Alert.alert(
+            "친구 삭제",
+            "친구를 정말 삭제하시겠습니까?",
+            [
+                {
+                    text: "취소",
+                    style: "default"
+                },
+                {
+                    text: "삭제",
+                    style: "destructive",
+                    onPress: async (): Promise<void> => {
+                        try {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://192.168.0.22:8080/api/v1/friends/${code}`, {
+                                headers: {
+                                    Authorization: bearerToken
+                                }
+                            });
+                            alert(response.data);
+                            getFriendList();
+                        } catch (error: any) {
+                            if (error.response) {
+                                console.log('Error:', error.response.data);
+                                alert(error.response.data);
+                            } else {
+                                console.log('Error:', error.message);
+                                alert(error.message);
+                            }
+                        }
+                    }
+                }
+            ]
+        );
+    }
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     };
+
+    // useEffect
+    useEffect(() => {
+        getFriendList();
+        getFriendRequestList();
+    }, []);
+
+    const renderItem = (data: any) => {
+        return (
+            <FlatList
+                data={friendListData}
+                keyExtractor={({id}) => id}
+                renderItem={({item: {img, name}}) => {
+                    return (
+                        <View style={[styles.list, data.index === friendListData.length - 1 ? { marginBottom: 110 } : null]}>
+                            <View style={styles.friend}>
+                                {
+                                    img === '' ?
+                                    <Svg
+                                        width={40}
+                                        height={40}
+                                        fill="none"
+                                        viewBox="0 0 30 30"
+                                        style={{ marginRight: 10 }}
+                                    >
+                                        <Path
+                                            fill="#7E869E"
+                                            fillOpacity={0.25}
+                                            d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
+                                        />
+                                        <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
+                                        <Path
+                                            fill="#7E869E"
+                                            fillOpacity={0.5}
+                                            fillRule="evenodd"
+                                            d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
+                                            clipRule="evenodd"
+                                        />
+                                    </Svg>
+                                    :
+                                    <Image source={{ uri: img }} style={ styles.profile } />
+                                }
+                                <Text style={styles.friendName}>{name}</Text>
+                            </View>
+                            <TouchableOpacity style={styles.transfer}>
+                                <Text style={styles.transferTxt}>송금</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
+                }
+            />
+        )
+    };
+
+    const renderHiddenItem = (data: any, rowMap: any) => (
+        <View style={styles.hiddenItemWrap}>
+            <TouchableOpacity
+                style={styles.hiddenItem}
+                onPress={() => deleteFriend(data.item.code)}
+            >
+                <Text style={styles.hiddenItemTxt}>삭제</Text>
+            </TouchableOpacity>
+        </View>
+    );
+
+    const FriendList = () => {
+        return (
+            <>
+                <View style={styles.wrap}>
+                    {/* search */}
+                    <View style={styles.searchWrap}>
+                        <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기'/>
+                        <TouchableOpacity>
+                            <Svg
+                                width={14}
+                                height={14}
+                                fill="none"
+                            >
+                                <Circle cx={6.25} cy={6.25} r={5.25} stroke="#404040"/>
+                                <Path stroke="#404040" strokeLinecap="round" d="m13 13-3-3"/>
+                            </Svg>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.listWrap}>
+                        <View>
+                            {/* list */}
+                            {
+                                friendListData.length !== 0 ?
+                                    <SwipeListView
+                                        style={styles.friendList}
+                                        data={friendListData}
+                                        renderItem={renderItem}
+                                        renderHiddenItem={renderHiddenItem}
+                                        rightOpenValue={-55}
+                                    />
+                                    :
+                                    <View style={styles.noList}>
+                                        <Text style={styles.noListTxt}>친구가 없습니다.</Text>
+                                    </View>
+                            }
+                        </View>
+                    </View>
+                </View>
+                {/*<FriendTab />*/}
+            </>
+        )
+    };
+
+    const FriendRequestList = () => {
+        return (
+            <>
+                {
+                    friendRequestListData.length !== 0 ?
+                        <FlatList
+                            data={friendRequestListData}
+                            keyExtractor={item => item.id}
+                            style={styles.listWrap}
+                            renderItem={({item}) => {
+                                return (
+                                    <View style={styles.list}>
+                                        <View style={styles.friend}>
+                                            {
+                                                item.img === '' ?
+                                                    <Svg
+                                                        width={40}
+                                                        height={40}
+                                                        fill="none"
+                                                        viewBox="0 0 30 30"
+                                                        style={{marginRight: 10}}
+                                                    >
+                                                        <Path
+                                                            fill="#7E869E"
+                                                            fillOpacity={0.25}
+                                                            d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
+                                                        />
+                                                        <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
+                                                        <Path
+                                                            fill="#7E869E"
+                                                            fillOpacity={0.5}
+                                                            fillRule="evenodd"
+                                                            d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
+                                                            clipRule="evenodd"
+                                                        />
+                                                    </Svg>
+                                                    :
+                                                    <Image source={{ uri: item.img }} style={ styles.profile } />
+                                            }
+                                            <Text style={styles.friendName}>{item.name}</Text>
+                                        </View>
+                                        <View style={styles.requestBtnWrap}>
+                                            <TouchableOpacity
+                                                style={styles.confirmBtn}
+                                                onPress={() => confirmRequest(item.code)}
+                                            >
+                                                <Svg
+                                                    width={12}
+                                                    height={9}
+                                                    fill="none"
+                                                >
+                                                    <Path
+                                                        stroke="#007378"
+                                                        strokeLinecap="round"
+                                                        d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
+                                                    />
+                                                </Svg>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity
+                                                style={styles.rejectBtn}
+                                                onPress={() => rejectRequest(item.code)}
+                                            >
+                                                <Svg
+                                                    width={10}
+                                                    height={10}
+                                                    fill="none"
+                                                >
+                                                    <Path
+                                                        stroke="#5F5F5F"
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M9 1 1 9M1 1l8 8"
+                                                    />
+                                                </Svg>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                )}
+                            }
+                        />
+                        :
+                        <View style={styles.listWrap}>
+                            <View style={styles.noList}>
+                                <Text style={styles.noListTxt}>요청이 없습니다.</Text>
+                            </View>
+                        </View>
+                }
+            </>
+        )
+    };
+
+    const Tab = createBottomTabNavigator();
+
     return (
         // <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
             <Tab.Navigator
+                initialRouteName="내 친구"
                 screenOptions={{
                     tabBarStyle: {
                         ...styles.tabWrap
@@ -308,13 +387,12 @@ export default function FriendsComponent() {
                     options={{
                         tabBarLabel: '내 친구',
                         tabBarIcon: () => (
-                            // <Image source={require('../../assets/image/list.png')} />
                             <Svg
                                 width={14}
                                 height={17}
                                 fill="none"
                             >
-                                <Rect width={14} height={17} fill="#7E869E" fillOpacity={0.25} rx={2} />
+                                <Rect width={14} height={17} fill="#7E869E" fillOpacity={0.25} rx={2}/>
                                 <Path
                                     stroke="#007378"
                                     strokeLinecap="round"
@@ -333,6 +411,11 @@ export default function FriendsComponent() {
                             />
                         ),
                     }}
+                    listeners={{
+                        tabPress: e => {
+                            getFriendList();
+                        }
+                    }}
                 />
                 <Tab.Screen
                     name="친구 요청"
@@ -340,7 +423,6 @@ export default function FriendsComponent() {
                     options={{
                         tabBarLabel: '친구 요청',
                         tabBarIcon: () => (
-                            // <Image source={require('../../assets/image/send.png')} />
                             <Svg
                                 width={16}
                                 height={16}
@@ -354,7 +436,7 @@ export default function FriendsComponent() {
                                 />
                             </Svg>
                         ),
-                        tabBarBadge: 3,
+                        tabBarBadge: friendRequestListData.length,
                         tabBarButton: (props: any) => (
                             <TouchableOpacity
                                 {...props}
@@ -364,6 +446,11 @@ export default function FriendsComponent() {
                                 }}
                             />
                         ),
+                    }}
+                    listeners={{
+                        tabPress: e => {
+                            getFriendRequestList();
+                        }
                     }}
                 />
                 <Tab.Screen
@@ -379,7 +466,6 @@ export default function FriendsComponent() {
                                 }}
                                 onPress={toggleModal}
                             >
-                                {/*<Image source={require('../../assets/image/add.png')}/>*/}
                                 <Svg
                                     width={14}
                                     height={14}
@@ -402,6 +488,7 @@ export default function FriendsComponent() {
                 <FriendSearch
                     isModalVisible={isModalVisible}
                     toggleModal={toggleModal}
+                    bearerToken={bearerToken}
                 />
             }
         </View>
@@ -459,13 +546,19 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#fff',
     },
-    listMap: {
-
-    },
     friendList: {
         position: 'relative',
         backgroundColor: '#ffffff',
-        paddingBottom: 120
+        paddingBottom: 120,
+        width: '100%'
+    },
+    noList: {
+        width: '100%',
+        alignItems: "center",
+        justifyContent: 'center',
+    },
+    noListTxt: {
+        color: '#aaa',
     },
     list: {
         flexDirection: 'row',
@@ -575,9 +668,6 @@ const styles = StyleSheet.create({
     },
     on: {
         backgroundColor: '#ffffff',
-    },
-    tabTxt: {
-
     },
     add: {
         width: 40,
