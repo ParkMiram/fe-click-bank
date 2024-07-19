@@ -22,23 +22,23 @@ export default function AccountHome({ route, navigation }: any) {
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
 
-    useEffect(() => {
-        if (token) {
-            fetchAccountsByUserId(token);
-        }
-    }, [token]);
+    // useEffect(() => {
+    //     if (token) {
+    //         fetchAccountsByUserId(token);
+    //     }
+    // }, [token]);
 
-    const fetchAccountsByUserId = async (token: string): Promise<any> => {
-        try {
-            const response: AxiosResponse<UserAccountResponse> = await getAccountByUserId(token);
-            const { accounts, userName, userImg } = response.data;
-            setAccount(accounts);
-            setUserName(userName);
-            setUserImg(userImg);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+    // const fetchAccountsByUserId = async (token: string): Promise<any> => {
+    //     try {
+    //         const response: AxiosResponse<UserAccountResponse> = await getAccountByUserId(token);
+    //         const { accounts, userName, userImg } = response.data;
+    //         setAccount(accounts);
+    //         setUserName(userName);
+    //         setUserImg(userImg);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // };
 
     const numberShow = () => {
         setNumberHidden(!numberHidden);

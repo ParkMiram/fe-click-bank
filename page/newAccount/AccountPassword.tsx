@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { Keyboard,TouchableWithoutFeedback, Text, TextInput, TouchableOpacity, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { Keyboard,TouchableWithoutFeedback, Text, TextInput, TouchableOpacity, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
-export default function AccountPassword( {  navigation }: any ) {
+type data = {
+  accountStatus: string;
+  token: string;
+  nickName: string;
+}
+
+export default function AccountPassword( {  navigation, route }: any ) {
     const [password, setPassword] = useState('');
     const [purpose, setPurpose] = useState('계좌사용용도');
     const [firstQuestion, setFirstQuestion] = useState(false);
     const [secondQuestion, setSecondQuestion] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
+
+    const { accountStatus, token, nickName }: data = route.params;
+
     const dismissKeyboard = () => {
       Keyboard.dismiss();
     };
@@ -33,17 +42,10 @@ export default function AccountPassword( {  navigation }: any ) {
         keyboardType="number-pad"
         placeholder="0000"
         maxLength={4}
-         secureTextEntry={true} 
-        //  key
-
+         secureTextEntry={true}
       />
-      
         </View> 
-       
       </View>
-      
-      
-      
       <Text style={styles.subtitle}>어떤 용도로 통장을 사용하실 건가요?</Text>
       <View style={styles.purposeContainer}>
         <Text style={styles.purposeLabel}>계좌사용용도</Text>
@@ -95,7 +97,7 @@ export default function AccountPassword( {  navigation }: any ) {
       </View>
 
 
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountTerms')}>
+      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, nickName, AccountPassword: password, purpose })}>
         <Text style={styles.buttonText}>다음</Text>
       </TouchableOpacity>
             </View>
