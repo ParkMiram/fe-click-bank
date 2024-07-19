@@ -1,7 +1,16 @@
 import React from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, Dimensions, Platform, SafeAreaView, StatusBar } from 'react-native';
 
-export default function AccountInformation( { navigation }: any ) {
+type data = {
+    accountStatus: string;
+    token: string;
+    nickName: string,
+    accountPassword: string,
+    purpose: string
+}
+
+export default function AccountInformation( { navigation, route }: any ) {
+    const { accountStatus, token, nickName, accountPassword, purpose }: data = route.params;
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -17,22 +26,16 @@ export default function AccountInformation( { navigation }: any ) {
                 </TouchableOpacity>
                 </View>
             </View>
-            <View>
+            <View style={styles.textContainer}>
                 <Text style={styles.userText}>고객 정보:</Text>
-                <Text style={styles.userText}>이름:</Text>
-                <Text style={styles.userText}>주민등록번호:</Text>
-                <Text style={styles.userText}>영문이름:</Text>
-                <Text style={styles.userText}>휴대폰번호:</Text>
-                <Text style={styles.userText}>집 주소:</Text>
-                <View style={styles.textContainer}>
-                    <Text style={styles.userText}>거래 목적:</Text>
-                    <Text style={styles.userText}>고객 정보:</Text>
-                    <Text style={styles.userText}>자금출처:</Text>
-                </View>
+                <Text style={styles.userText}>이름: {nickName}</Text>
+                {/* <View style={styles.textContainer}> */}
+                <Text style={styles.userText}>거래 목적: {purpose}</Text>
+                {/* </View> */}
             </View>
             <TouchableOpacity 
                 style={styles.buttonApplication} 
-                onPress={() => navigation.navigate('AccountPassword')}
+                onPress={() => navigation.navigate('AccountTerms', {accountStatus, token, accountPassword})}
             >
                 <Text style={styles.buttonTextApplication}>신청하기</Text>
             </TouchableOpacity>
@@ -66,12 +69,13 @@ const styles = StyleSheet.create({
     buttonContainer:{
         width:'100%',
         justifyContent:'flex-end',
-        flexDirection:'row'
+        flexDirection:'row',
+        marginTop: Platform.OS === "ios"? 50 : 30
     },
     button: {
       
         paddingHorizontal: 15,
-        paddingVertical: 5,
+        paddingVertical: 15,
         backgroundColor: '#B7E1CE',
         borderRadius: 5,
         justifyContent:'flex-end',

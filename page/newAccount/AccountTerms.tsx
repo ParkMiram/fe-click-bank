@@ -1,8 +1,16 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import AccountType from './AccountType';
 
+type data = {
+    accountStatus: string;
+    token: string;
+    nickName: string,
+    accountPassword: string
+}
+
 export default function AccountTerms( { route,navigation }: any ) {
-    // const { accountType } = route.params;
+    const { accountStatus, token, nickName, accountPassword }: data = route.params;
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -16,7 +24,7 @@ export default function AccountTerms( { route,navigation }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('AccountComplete')}
+                onPress={() => navigation.navigate('AccountComplete', { accountStatus, token, accountPassword })}
             >
                 <Text style={styles.buttonText}>다음</Text>
             </TouchableOpacity>

@@ -20,11 +20,19 @@ const banks = [
   { label: '클릭뱅크', value: '클릭뱅크', logo: require('../../assets/image/Click_logo.png') },
 ];
 // : React.FC<Props>
-const Transfer = ({ navigation }: any) => {
+
+type data = {
+  token: String
+  account: String;
+  moneyAmount: Number;
+}
+
+const Transfer = ({ navigation, route }: any) => {
     const [accountNumber, setAccountNumber] = useState('');
     const [isModalVisible, setModalVisible] = useState(false);
     const [selectedBank, setSelectedBank] = useState('');
-
+    const { token, account, moneyAmount }: data = route.params;
+    
     const toggleModal = () => {
       setModalVisible(!isModalVisible);
     };
@@ -92,7 +100,7 @@ const Transfer = ({ navigation }: any) => {
                     <View style={{ flex: 1 }} />
                     <TouchableOpacity 
                         style={styles.sendButton} 
-                        onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber })}
+                        onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber, account, moneyAmount, token })}
                     >
                     <Text style={styles.sendButtonText}>보내기</Text>
                     </TouchableOpacity>
@@ -135,9 +143,7 @@ const styles = StyleSheet.create({
     input: {
       borderBottomColor: '#B7E1CE',
       borderBottomWidth: 3,
-      // height: 100,
       width: 345,
-      // marginBottom: 16,
       backgroundColor: '#ffffff',
       textAlign: 'center',
       fontSize: 30,

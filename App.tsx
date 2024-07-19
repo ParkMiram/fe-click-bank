@@ -27,6 +27,7 @@ import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
 import KakaoLogout from './page/login/KakaoLogout';
+import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -73,6 +74,7 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
+                <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
 
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
                 {/* Friend */}
