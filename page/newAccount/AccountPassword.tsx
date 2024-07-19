@@ -5,7 +5,7 @@ import RNPickerSelect from 'react-native-picker-select';
 type data = {
   accountStatus: string;
   token: string;
-  nickName: string;
+  userName: string;
 }
 
 export default function AccountPassword( {  navigation, route }: any ) {
@@ -15,7 +15,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
     const [secondQuestion, setSecondQuestion] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
 
-    const { accountStatus, token, nickName }: data = route.params;
+    const { accountStatus, token, userName }: data = route.params;
 
     const dismissKeyboard = () => {
       Keyboard.dismiss();
@@ -97,7 +97,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
       </View>
 
 
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, nickName, AccountPassword: password, purpose })}>
+      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, userName, AccountPassword: password, purpose })}>
         <Text style={styles.buttonText}>다음</Text>
       </TouchableOpacity>
             </View>

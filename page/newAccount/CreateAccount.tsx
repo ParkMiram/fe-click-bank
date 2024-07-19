@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function CreateAccount( { route, navigation }: any ) {
     let accountStatus = "";
-    const { accountType, token, nickName } = route.params;
+    const { accountType, token, userName } = route.params;
 
     useEffect(() => {
         if (accountType === '입출금 통장') {
@@ -26,7 +26,7 @@ export default function CreateAccount( { route, navigation }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('AccountPassword', { accountStatus, token, nickName })}
+                onPress={() => navigation.navigate('AccountPassword', { accountStatus, token, userName })}
             >
                 <Text style={styles.buttonText}>신청하기</Text>
             </TouchableOpacity>

@@ -27,7 +27,7 @@ type props = {
   bank: string;
   accountNumber: string;
   account: string;
-  moneyAmount: Number;
+  moneyAmount: number;
 }
 
 const SendingTransfer = ({ navigation, route }: any) => {
@@ -79,8 +79,8 @@ const SendingTransfer = ({ navigation, route }: any) => {
     const amountTextStyle = { color: parseInt(amount, 10) > (userInfo?.amount || 0) ? 'red' : 'black' };
 
     // 잔액을 초과하면 보내기 버튼을 비활성화 (회색 배경)
-    const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (userInfo?.amount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };
-    const sendButtonDisabled = parseInt(amount, 10) > (userInfo?.amount || 0) || amount === '';
+    const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (moneyAmount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };
+    const sendButtonDisabled = parseInt(amount, 10) > (moneyAmount || 0) || amount === '';
 
   return (
     
@@ -106,7 +106,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>잔액</Text>
-          <Text style={styles.balance}>{userInfo?.amount.toLocaleString()}원</Text>
+          <Text style={styles.balance}>{moneyAmount.toLocaleString()}원</Text>
         </View>
 
         <View style={styles.predefinedAmounts}>
