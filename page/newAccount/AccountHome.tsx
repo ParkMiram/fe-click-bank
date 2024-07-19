@@ -22,11 +22,11 @@ export default function AccountHome({ route, navigation }: any) {
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
 
-    // useEffect(() => {
-    //     if (token) {
-    //         fetchAccountsByUserId(token);
-    //     }
-    // }, [token]);
+    useEffect(() => {
+        if (token) {
+            fetchAccountsByUserId(token);
+        }
+    }, [token]);
 
 
     
@@ -100,7 +100,7 @@ export default function AccountHome({ route, navigation }: any) {
                     />
                     <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
+                        <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}>
                             <Image
                                 source={require('../../assets/image/bell.png')}
                                 style={styles.imageBell} resizeMode="contain"
@@ -115,7 +115,7 @@ export default function AccountHome({ route, navigation }: any) {
                     contentContainerStyle={styles.flatListContainer}
                 />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}>
                 <Image
                     source={require('../../assets/image/plus.png')}
                     style={styles.imagePlus} resizeMode="contain"

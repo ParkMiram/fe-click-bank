@@ -4,12 +4,12 @@ import AccountType from './AccountType';
 type data = {
     accountStatus: string;
     token: string;
-    nickName: string,
+    userName: string,
     accountPassword: string
 }
 
 export default function AccountTerms( { route,navigation }: any ) {
-    const { accountStatus, token, nickName, accountPassword }: data = route.params;
+    const { accountStatus, token, userName, accountPassword }: data = route.params;
 
     return (
         <SafeAreaView style={styles.container}>
