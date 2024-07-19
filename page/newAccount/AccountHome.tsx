@@ -6,7 +6,7 @@ import { AxiosResponse } from 'axios';
 interface AccountResponse {
     account: string;
     accountName: string;
-    moneyAmount: number;
+    moneyAmount: number | null;
 }
 
 interface UserAccountResponse {
@@ -28,17 +28,30 @@ export default function AccountHome({ route, navigation }: any) {
     //     }
     // }, [token]);
 
-    // const fetchAccountsByUserId = async (token: string): Promise<any> => {
-    //     try {
-    //         const response: AxiosResponse<UserAccountResponse> = await getAccountByUserId(token);
-    //         const { accounts, userName, userImg } = response.data;
-    //         setAccount(accounts);
-    //         setUserName(userName);
-    //         setUserImg(userImg);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
+
+    
+    const fetchAccountsByUserId = async (token: string): Promise<void> => {
+        try {
+            const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
+            const data = response.data[0]; 
+            const { accounts, userName, userImg } = data;
+    
+            console.log('API 응답 데이터:', data);
+    
+            if (data) {
+                setAccount(accounts);
+                setUserName(userName);
+                setUserImg(userImg);
+            } else {
+                console.error('응답 데이터가 올바르지 않습니다:', data);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
+
+
 
     const numberShow = () => {
         setNumberHidden(!numberHidden);
@@ -46,7 +59,7 @@ export default function AccountHome({ route, navigation }: any) {
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('EditAccount')}>
+            <TouchableOpacity onPress={() => navigation.navigate('EditAccount', {token, account: item.account})}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
                 <Image
                     source={require('../../assets/image/more.png')}
@@ -58,14 +71,19 @@ export default function AccountHome({ route, navigation }: any) {
             </Text>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
-                    {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`}
+                    {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
+                    {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'}
+
                 </Text>
                 <TouchableOpacity style={styles.sendButton} onPress={numberShow}>
                     <Text style={styles.buttonSendText}>{numberHidden ? '보기' : '숨김'}</Text>
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.transferButton}>
+                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
+                        account: item.account,
+                        // accountName: item.accountName,
+                        moneyAmount: item.moneyAmount})}>
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>

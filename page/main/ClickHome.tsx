@@ -16,6 +16,10 @@ export default function ClickHome({ route, navigation }: any) {
                         defaultValue={token}
                     />
                 </View>
+
+               
+                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token:token})} active={true} />
+
                 <NextButton text="로그아웃"
                     press={() => navigation.reset({
                         index: 0,
@@ -23,7 +27,8 @@ export default function ClickHome({ route, navigation }: any) {
                     })}
                     active={true}
                 />
-                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token})} active={true} />
+               
+
                 <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
                 <NextButton text="내계좌내역보기" press={() => navigation.navigate('AccountHistory')} active={true} />
             </View>
