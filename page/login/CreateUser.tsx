@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
 export default function CreateUser({ navigation, route }: any) {
-    const { identity, type, password, nickname } = route.params;
+    const { identity, type, password, nickname, image } = route.params;
     const [waitMessage, setWaitMessage] = useState("잠시만 기다려주세요...");
 
     const sendCreateUser = async () => {
@@ -18,7 +18,8 @@ export default function CreateUser({ navigation, route }: any) {
                     identity: identity,
                     type: type,
                     nickname: nickname,
-                    passwd: password
+                    passwd: password,
+                    image: image
                 }
             );
             AsyncStorage.setItem("login", response.data);
