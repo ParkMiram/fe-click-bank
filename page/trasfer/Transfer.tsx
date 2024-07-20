@@ -56,12 +56,12 @@ const Transfer = ({ navigation, route }: any) => {
         <SafeAreaView style={styles.container}>
           <View style={styles.innerContainer}>
             <KeyboardAvoidingView 
-            style={styles.container}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.container}
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
             >
                 <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.inner}>
-                    <TouchableOpacity onPress={() => console.log('hello')}>
+                    <TouchableOpacity onPress={() => {navigation.navigate("AccountHome")}}>
                       <Svg
                         width={31}
                         height={23}

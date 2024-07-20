@@ -6,3 +6,9 @@ export const getAccountUserInfo = async (account: string, token: string):Promise
         'Authorization': `Bearer ${token}`
     });
 }
+
+export const setAccountMoney = async (body: any, token: string):Promise<AxiosResponse<any>> => {
+    return await api(`/api/v1/accounts/amount`, "put", body, {
+        'Authorization': `Bearer ${token}`
+    });
+}

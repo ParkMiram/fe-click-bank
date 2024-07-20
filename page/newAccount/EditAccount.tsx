@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 type props = {
     token: string;
@@ -11,13 +12,15 @@ export default function EditAccount( { route, navigation }: any ) {
     const [modalVisible, setModalVisible] = useState(false);
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [limit, setLimit] = useState('');
+    const [dailyLimit, setDailyLimit] = useState('');
+    const [onetimeLimit, setOnetimeLimit] = useState('')
     const { token, account }: props = route.params;
 
     const handleDeleteAccount = async () => {
         setModalVisible(true);
         try {
             await deleteAccount(account, token);
+            navigation.navigate('AccountHome', {token});
         } catch(error) {
             console.log(error);
         }
@@ -31,14 +34,22 @@ export default function EditAccount( { route, navigation }: any ) {
         try {
             if (name) {
                 await setAccountName({ account, accountName: name }, token);
+                navigation.navigate('AccountHome', {token});
             }
             if (password) {
                 await setAccountPassword({ account, accountPassword: password }, token);
+                navigation.navigate('AccountHome', {token});
             }
-            if (limit) {
-                await setAccountLimit({ account, accountName: name }, token);
+            if (dailyLimit && onetimeLimit) {
+                const body = {
+                    account: account,
+                    accountDailyLimit: parseInt(dailyLimit),
+                    accountOneTimeLimit: parseInt(onetimeLimit)
+                }
+                
+                await setAccountLimit(body, token);
+                navigation.navigate('AccountHome', { token });
             }
-            navigation.navigate('AccountHome');
         } catch (error) {
             console.error(error);
         }
@@ -47,94 +58,101 @@ export default function EditAccount( { route, navigation }: any ) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <View style = {styles.reContainer}>
-
-                <View style ={styles.renameContainer}>
-                <Text style = {styles.textcontainer}>계좌명 수정</Text> 
-                <TextInput
-                    style={styles.inputName}
-                    value={name}
-                    onChangeText={setName}
-                    keyboardType="default"
-                    placeholder="계좌명"
-    
-                    />
-                </View>
-
-                <View style = {styles.rePasswordContianer}>
-                <Text style = {styles.textcontainer}>계좌 비밀번호 수정</Text>
-                <TextInput
-                    style={styles.inputPassword}
-                    value={password}
-                    onChangeText={setPassword}
-                    keyboardType="number-pad"
-                    placeholder="0000"
-                    maxLength={4}
-                    secureTextEntry={true} 
-                />
-                </View>
-
-                <View style = {styles.reLimitContainer}>
-                <Text style = {styles.textcontainer}>계좌 한도 수정</Text>
-                <TextInput
-                    style={styles.inputLimit}
-                    value={limit}
-                    onChangeText={setLimit}
-                    keyboardType="number-pad"
-                    placeholder="계좌 한도 수정"
-    
-                    />
-                </View>
-
-                </View>
-
-                <View style = {styles.buttonContainer}>
-                        
-             <TouchableOpacity 
-                        style={styles.button} 
-                        onPress={() => navigation.navigate(handleSubmit)}
-                        >
-                <Text style={styles.buttonText}>자동이체</Text>
-            </TouchableOpacity>
-            </View>
-            <View style = {styles.buttonContainer}>
-            <TouchableOpacity
-                        style={styles.button}
-                        onPress={handleDeleteAccount}
-                    >
-                <Text style={styles.buttonText} onPress={handleDeleteAccount}>계좌 삭제</Text>
-            </TouchableOpacity>
-                </View>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={closeModal}
+                <KeyboardAvoidingView 
+                    // style={styles.container}
+                    behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalView}>
-                            <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>
-                            <View style={styles.modalButtonContainer}>
-                                <TouchableOpacity
-                                    style={[styles.buttonAccount, styles.buttonClose]}
-                                    onPress={closeModal}
-                                >
-                                    <Text style={styles.buttonText}>취소</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={[styles.buttonAccount, styles.buttonDelete]}
-                                    onPress={() => {
-                                        closeModal();
-                                        
-                                    }}
-                                >
-                                    <Text style={styles.buttonText}>삭제</Text>
-                                </TouchableOpacity>
+                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+                        <View style = {styles.reContainer}>
+                            <View style ={styles.renameContainer}>
+                                <Text style = {styles.textcontainer}>계좌명 수정</Text> 
+                                <TextInput
+                                    style={styles.inputName}
+                                    value={name}
+                                    onChangeText={setName}
+                                    keyboardType="default"
+                                    placeholder="계좌명"
+                                />
+                            </View>
+                            <View style = {styles.rePasswordContianer}>
+                                <Text style = {styles.textcontainer}>계좌 비밀번호 수정</Text>
+                                <TextInput
+                                    style={styles.inputPassword}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    keyboardType="number-pad"
+                                    placeholder="0000"
+                                    maxLength={4}
+                                    secureTextEntry={true} 
+                            />
+                            </View>
+                            <View style = {styles.reLimitContainer}>
+                                <Text style = {styles.textcontainer}>일일 한도 수정</Text>
+                                <TextInput
+                                    style={styles.inputLimit}
+                                    value={dailyLimit}
+                                    onChangeText={setDailyLimit}
+                                    keyboardType="number-pad"
+                                    placeholder="50,000,000"
+                                />
+                            </View>
+                            <View style = {styles.reLimitContainer}>
+                                <Text style = {styles.textcontainer}>회별 한도 수정</Text>
+                                <TextInput
+                                    style={styles.inputLimit}
+                                    value={onetimeLimit}
+                                    onChangeText={setOnetimeLimit}
+                                    keyboardType="number-pad"
+                                    placeholder="10,000,000"
+                                />
                             </View>
                         </View>
+                    </TouchableWithoutFeedback>
+                    <View style = {styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={handleSubmit}
+                        >
+                            <Text style={styles.buttonText}>계좌 변경</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-
+                    <View style = {styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={handleDeleteAccount}
+                        >
+                            <Text style={styles.buttonText}>계좌 삭제</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={modalVisible}
+                        onRequestClose={closeModal}
+                    >
+                        <View style={styles.modalContainer}>
+                            <View style={styles.modalView}>
+                                <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>
+                                <View style={styles.modalButtonContainer}>
+                                    <TouchableOpacity
+                                        style={[styles.buttonAccount, styles.buttonClose]}
+                                        onPress={closeModal}
+                                    >
+                                        <Text style={styles.buttonText}>취소</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[styles.buttonAccount, styles.buttonDelete]}
+                                        onPress={() => {
+                                            closeModal();
+                                        }}
+                                    >
+                                        <Text style={styles.buttonText}>삭제</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                </KeyboardAvoidingView>
             </View>
         </SafeAreaView>
     );

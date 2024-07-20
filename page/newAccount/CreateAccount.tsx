@@ -10,6 +10,7 @@ export default function CreateAccount( { route, navigation }: any ) {
 
     useEffect(() => {
         if (accountType === '입출금 통장') {
+            accountStatus = 'account'
         }
     }, [accountType]);
 

@@ -1,7 +1,8 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, Alert } from "react-native";
 // import { RootStackParamList } from "../../App";
-import React from "react";
+import React, { useEffect } from "react";
+import { setAccountMoney } from "../../component/api/AccountTranfer";
 
 // type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
@@ -20,11 +21,38 @@ type data = {
 
 const ResultTransfer = ({ navigation, route }: any) => {
     const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
-    if (typeof amount === 'number') {
-        console.log(amount);
-    } else {
-        console.log("Amount is not a string");
-    }
+
+    useEffect(() => {
+      const performTransfer = async () => {
+          const bodyToRecipient = {
+              accountStatus: "deposit",
+              account: accountNumber,
+              moneyAmount: amount,
+          };
+
+          const bodyToSender = {
+              accountStatus: "transfer",
+              account: account,
+              moneyAmount: amount,
+          };
+          
+
+          console.log(bodyToRecipient.moneyAmount);
+          console.log(bodyToSender.moneyAmount);
+
+          try {
+              await setAccountMoney(bodyToRecipient, token);
+              await setAccountMoney(bodyToSender, token);
+              console.log("Transfer successful");
+          } catch (error) {
+              console.error("Failed to set account money:", error);
+              Alert.alert("Transfer Failed", "An error occurred during the transfer. Please try again.");
+          }
+      };
+
+      performTransfer();
+    }, [amount, accountNumber, account, token]);
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
@@ -33,7 +61,7 @@ const ResultTransfer = ({ navigation, route }: any) => {
             <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('Transfer')}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('AccountHome', {token})}>
                 <Text style={styles.sendButtonText}>메인으로</Text>
             </TouchableOpacity>
         </View>
