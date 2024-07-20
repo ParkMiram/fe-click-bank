@@ -18,9 +18,10 @@ export default function AccountComplete( {  navigation, route }: any ) {
     const handleSaveAccount = async () => {
         try {
             const response = await saveAccount(token, body);
-
+            
             if (response && response.status == 201) {
-                navigation.navigate('AccountHome');
+                console.log(response.status);
+                navigation.navigate('AccountHome', {token});
             } else {
                 alert('서버에 이상이 있습니다.');
             }

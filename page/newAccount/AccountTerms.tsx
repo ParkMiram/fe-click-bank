@@ -9,7 +9,7 @@ type data = {
 }
 
 export default function AccountTerms( { route,navigation }: any ) {
-    const { accountStatus, token, userName, accountPassword }: data = route.params;
+    const { accountStatus, token, accountPassword }: data = route.params;
 
     return (
         <SafeAreaView style={styles.container}>

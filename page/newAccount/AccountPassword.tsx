@@ -25,9 +25,8 @@ export default function AccountPassword( {  navigation, route }: any ) {
         { label: '생활비 관리', value: '생활비 관리' },
         { label: '적금 자동이체', value: '적금 자동이체' },
         { label: '예금가입', value: '예금가입' }
-      ];
-
-
+    ];
+      
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <SafeAreaView style={styles.container}>
@@ -60,8 +59,6 @@ export default function AccountPassword( {  navigation, route }: any ) {
           />
         </View> 
       </View>
-    
-
       <Text style={styles.question1}>타인으로부터 통장대여 요청을 받은 사실이 있나요?</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity 
@@ -71,15 +68,12 @@ export default function AccountPassword( {  navigation, route }: any ) {
           <Text>예 </Text>
         </TouchableOpacity>
         <TouchableOpacity 
-        
           onPress={() => setFirstQuestion(false)} 
           style={[styles.radioRight, firstQuestion === false && styles.selectedRadio]}
         >
           <Text>아니요 </Text>
         </TouchableOpacity>
       </View>
-
-
       <Text style={styles.question2}>타인으로부터 신용정보 상환, 대출 등의 목적으로 통장 개설을 요청받은 사실이 있나요?</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity 
@@ -95,9 +89,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
           <Text>아니요 </Text>
         </TouchableOpacity>
       </View>
-
-
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, userName, AccountPassword: password, purpose })}>
+      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, userName, accountPassword: password, purpose })}>
         <Text style={styles.buttonText}>다음</Text>
       </TouchableOpacity>
             </View>

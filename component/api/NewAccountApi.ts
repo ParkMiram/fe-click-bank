@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from "axios";
 import { api } from "../../config/network";
 
 export const saveAccount = async (token:string, body: any): Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts`, "post", body, {
+    return api(`/api/v1/accounts`, "post", body, {
         'Authorization': `Bearer ${token}`
     });
 }
@@ -41,12 +41,6 @@ export const setAccountPassword = async (body: object, token: string):Promise<Ax
 
 export const setAccountLimit = async (body: object, token: string):Promise<AxiosResponse<any>> => {
     return await api(`/api/v1/accounts/limit`, "put", body, {
-        'Authorization': `Bearer ${token}`
-    });
-}
-
-export const setAccountMoney = async (body: object, token: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts/amount`, "put", body, {
         'Authorization': `Bearer ${token}`
     });
 }

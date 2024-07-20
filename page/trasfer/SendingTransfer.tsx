@@ -100,7 +100,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
           <Text style={styles.question}>얼마를 보낼까요?</Text>
         </View>
         <View style={styles.amountContainer}>
-          <Text style={[styles.amountText, amountTextStyle]}>{amount}</Text>
+          <Text style={[styles.amountText, amountTextStyle]}>{parseInt(amount).toLocaleString()}</Text>
         </View>
         <View style={styles.greenLine}></View>
 
