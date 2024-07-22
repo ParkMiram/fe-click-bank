@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
@@ -61,20 +61,20 @@ export default function SimpleLogin({ navigation, route }: any) {
     }
 
     return (
-        <View style={Container.container}>
-        <View style={Container.innerContainer}>
-            <Image
-                style={styles.logo}
-                source={require('../../assets/image/Click_logo.png')}
-            />
-            <Text>간편 로그인</Text>
-            <View style={styles.passwordBox}>
-                <Text style={styles.passwordStar}>{toStar}</Text>
-                <Text>{infoText}</Text>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
+                <Image
+                    style={styles.logo}
+                    source={require('../../assets/image/Click_logo.png')}
+                />
+                <Text>간편 로그인</Text>
+                <View style={styles.passwordBox}>
+                    <Text style={styles.passwordStar}>{toStar}</Text>
+                    <Text>{infoText}</Text>
+                </View>
+                <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
             </View>
-            <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
-        </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

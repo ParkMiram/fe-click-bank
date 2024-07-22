@@ -1,4 +1,4 @@
-import { Image, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, Keyboard, SafeAreaView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
 import { useState } from 'react';
@@ -33,32 +33,34 @@ export default function SetNickName({ navigation, route }: any) {
 
     return (
         <SafeAreaView style={Container.container}>
-            <View style={Container.innerContainer}>
-                <Text style={styles.titleText}>
-                    닉네임 설정
-                </Text>
-                <Text>
-                    나를 표현할 이름을 설정해 주세요.
-                </Text>
-                <View style={styles.nameBox}>
-                    <View style={styles.nameBoxImageArea}>
-                        <Image 
-                            style={styles.profileImage}
-                            source={image == "" ? require("../../assets/image/default_profile.jpeg") : {uri:image}}
-                        />
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <View style={Container.innerContainer}>
+                    <Text style={styles.titleText}>
+                        닉네임 설정
+                    </Text>
+                    <Text>
+                        나를 표현할 이름을 설정해 주세요.
+                    </Text>
+                    <View style={styles.nameBox}>
+                        <View style={styles.nameBoxImageArea}>
+                            <Image 
+                                style={styles.profileImage}
+                                source={image == "" ? require("../../assets/image/default_profile.jpeg") : {uri:image}}
+                            />
+                        </View>
+                        <View style={styles.nameBoxInputArea}>
+                            <TextInput
+                                style={styles.nameInput}
+                                defaultValue={nickname}
+                                onChangeText={(text) => changeNickname(text)}
+                                maxLength={8}
+                            />
+                            <Text>{infoText}</Text>
+                        </View>
                     </View>
-                    <View style={styles.nameBoxInputArea}>
-                        <TextInput
-                            style={styles.nameInput}
-                            defaultValue={nickname}
-                            onChangeText={(text) => changeNickname(text)}
-                            maxLength={8}
-                        />
-                        <Text>{infoText}</Text>
-                    </View>
+                    <NextButton  text="이제 끝인가요" press={goNext} active={canGoNext} />
                 </View>
-                <NextButton  text="이제 끝인가요" press={goNext} active={canGoNext} />
-            </View>
+            </TouchableWithoutFeedback>
         </SafeAreaView>
     );
 }
