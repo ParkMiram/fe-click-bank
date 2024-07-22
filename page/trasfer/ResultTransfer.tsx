@@ -10,12 +10,16 @@ import React from "react";
 // };
 
 type data = {
-    name: String;
+    name: string;
     amount: number;
-}
+    account: string;
+    accountNumber: string;
+    moneyAmount: number;
+    token: string;
+  }
 
 const ResultTransfer = ({ navigation, route }: any) => {
-    const { name, amount }:data = route.params;
+    const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
     if (typeof amount === 'number') {
         console.log(amount);
     } else {

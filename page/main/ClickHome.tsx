@@ -23,8 +23,9 @@ export default function ClickHome({ route, navigation }: any) {
                     })}
                     active={true}
                 />
-                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome')} active={true} />
-                <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent')} active={true} />
+                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token})} active={true} />
+                <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
+                <NextButton text="내계좌내역보기" press={() => navigation.navigate('AccountHistory')} active={true} />
             </View>
         </SafeAreaView>
     );
