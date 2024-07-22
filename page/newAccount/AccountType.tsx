@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect,useState } from 'react';
 import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View,TouchableOpacity,Text } from 'react-native';
 
 // type TransferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AccountType'>
@@ -14,6 +14,11 @@ type data = {
 export default function AccountType( {  navigation, route }: any ) {
     
     const { token, userName }: data = route.params;
+    // const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcxYTkwMzY2LTMwZTYtNGU3ZS1hMjU5LTAxYTc5NDdmZjg2NiIsIm5hbWUiOiLrsJXrr7jrnowiLCJpbWciOiIiLCJjb2RlIjoiRVhSVFlZIiwicmFuayI6MX0.tzce8VPFIufgW3zefJoOD-79MVDX79Zy7P2xSakkadw";
+    // const nickName: string = "박미람";
+    useEffect(() => {
+        console.log('userName:', userName);
+    }, [userName]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -21,13 +26,14 @@ export default function AccountType( {  navigation, route }: any ) {
             <TouchableOpacity style={styles.buttonAccount} onPress={() => navigation.navigate('CreateAccount',{ accountType: '입출금 통장', token, userName })} >
         <Text style={styles.buttonText}>입출금 통장</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount', { accountType: '모임 통장', userName })}>
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount', { accountType: '모임 통장', token,userName  })}>
+        co
         <Text style={styles.buttonText}>모임 통장</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount',{ accountType: '적금', userName })} >
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount',{ accountType: '적금', token,userName })} >
         <Text style={styles.buttonText}>적금</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount', { accountType: '예금', userName })} >
+    <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount', { accountType: '예금', token,userName })} >
         <Text style={styles.buttonText}>예금
         </Text>
     </TouchableOpacity>
