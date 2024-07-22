@@ -29,6 +29,8 @@ import AccountTerms from './page/newAccount/AccountTerms';
 import KakaoLogout from './page/login/KakaoLogout';
 import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 import EditAccount from './page/newAccount/EditAccount';
+import QrCodeScanner from './page/camera/QrCodeScanner';
+import QrCodeTest from './page/camera/QrCodeTest';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -78,6 +80,8 @@ export default function App() {
                 <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
+                <Stack.Screen name="QrCodeScanner" component={QrCodeScanner}/>
+                <Stack.Screen name="QrCodeTest" component={QrCodeTest}/>
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 
