@@ -11,6 +11,7 @@ type data = {
 
 export default function AccountInformation( { navigation, route }: any ) {
     const { accountStatus, token, userName, accountPassword, purpose }: data = route.params;
+    console.log(accountPassword);
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>

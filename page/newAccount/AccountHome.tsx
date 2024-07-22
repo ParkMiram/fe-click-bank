@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
 
@@ -21,14 +22,6 @@ export default function AccountHome({ route, navigation }: any) {
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
-
-    useEffect(() => {
-        if (token) {
-            fetchAccountsByUserId(token);
-        }
-    }, [token]);
-
-
     
     const fetchAccountsByUserId = async (token: string): Promise<void> => {
         try {
@@ -50,9 +43,6 @@ export default function AccountHome({ route, navigation }: any) {
         }
     };
     
-
-
-
     const numberShow = () => {
         setNumberHidden(!numberHidden);
     };
@@ -90,6 +80,12 @@ export default function AccountHome({ route, navigation }: any) {
         </View>
     );
 
+    useEffect(() => {
+        if (token) {
+            fetchAccountsByUserId(token);
+        }
+    }, [token])
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -115,7 +111,7 @@ export default function AccountHome({ route, navigation }: any) {
                     contentContainerStyle={styles.flatListContainer}
                 />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName})}>
                 <Image
                     source={require('../../assets/image/plus.png')}
                     style={styles.imagePlus} resizeMode="contain"

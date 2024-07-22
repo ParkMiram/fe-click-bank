@@ -14,8 +14,6 @@ type data = {
 export default function AccountType( {  navigation, route }: any ) {
     
     const { token, userName }: data = route.params;
-    // const token: string = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjcxYTkwMzY2LTMwZTYtNGU3ZS1hMjU5LTAxYTc5NDdmZjg2NiIsIm5hbWUiOiLrsJXrr7jrnowiLCJpbWciOiIiLCJjb2RlIjoiRVhSVFlZIiwicmFuayI6MX0.tzce8VPFIufgW3zefJoOD-79MVDX79Zy7P2xSakkadw";
-    // const nickName: string = "박미람";
 
     return (
         <SafeAreaView style={styles.container}>

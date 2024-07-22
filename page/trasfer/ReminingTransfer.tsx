@@ -44,7 +44,7 @@ const ReminingTranfer = ({ navigation, route }: any) => {
             <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보낼까요?</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { name, amount })}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { name, amount, accountNumber, account, moneyAmount, token })}>
             <Text style={styles.sendButtonText}>보내기</Text>
             </TouchableOpacity>
         </View>
