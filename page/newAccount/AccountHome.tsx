@@ -17,12 +17,19 @@ interface UserAccountResponse {
 }
 
 export default function AccountHome({ route, navigation }: any) {
-    const [numberHidden, setNumberHidden] = useState(false);
+    // const [numberHidden, setNumberHidden] = useState(false);
+    const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
+
     const [account, setAccount] = useState<AccountResponse[]>([]);
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
-    
+    const toggleNumberHidden = (accountId: string) => {
+        setNumberHidden(prevState => ({
+            ...prevState,
+            [accountId]: !prevState[accountId]
+        }));
+    };
     const fetchAccountsByUserId = async (token: string): Promise<void> => {
         try {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
@@ -43,9 +50,9 @@ export default function AccountHome({ route, navigation }: any) {
         }
     };
     
-    const numberShow = () => {
-        setNumberHidden(!numberHidden);
-    };
+    // const numberShow = () => {
+    //     setNumberHidden(!numberHidden);
+    // };
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
@@ -62,11 +69,12 @@ export default function AccountHome({ route, navigation }: any) {
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
                     {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
-                    {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'}
-
+                    {/* {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'} */}
+                    {numberHidden[item.account] ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'}
                 </Text>
-                <TouchableOpacity style={styles.sendButton} onPress={numberShow}>
-                    <Text style={styles.buttonSendText}>{numberHidden ? '보기' : '숨김'}</Text>
+                <TouchableOpacity style={styles.sendButton} onPress={() => toggleNumberHidden(item.account)}>
+                    <Text style={styles.buttonSendText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
+                    
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
@@ -80,12 +88,20 @@ export default function AccountHome({ route, navigation }: any) {
         </View>
     );
 
-    useEffect(() => {
-        if (token) {
-            fetchAccountsByUserId(token);
-        }
-    }, [token])
-
+    //useFocusEffect를 사용하여 화면이 포커스될 때 API를 호출
+    useFocusEffect(
+        useCallback(() => {
+            if (token) {
+                fetchAccountsByUserId(token);
+            }
+        }, [token])
+    );
+    
+ // useEffect(() => {
+    //     if (token) {
+    //         fetchAccountsByUserId(token);
+    //     }
+    // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -96,20 +112,23 @@ export default function AccountHome({ route, navigation }: any) {
                     />
                     <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}>
+                        {/* <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}> */}
                             <Image
                                 source={require('../../assets/image/bell.png')}
                                 style={styles.imageBell} resizeMode="contain"
                             />
-                        </TouchableOpacity>
+                        {/* </TouchableOpacity> */}
                     </View>
                 </View>
+                
                 <FlatList
                     data={account}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
+                    extraData={numberHidden} 
                     contentContainerStyle={styles.flatListContainer}
-                />
+/>
+
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName})}>
                 <Image
