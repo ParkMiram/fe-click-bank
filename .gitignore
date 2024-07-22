@@ -2,8 +2,11 @@
 
 # dependencies
 node_modules/
-pakage*.json
+package*.json
 yarn.lock
+
+#Jetbrain
+.idea/
 
 # Expo
 .expo/

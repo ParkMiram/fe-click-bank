@@ -3,11 +3,14 @@ import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
 
 export default function TermOfUse({ navigation, route }: any) {
+    const { identity, type, nickname, image } = route.params;
     
     const goNext = () => {
         navigation.navigate('UserSetPassword', {
-            identity: route.params.identity,
-            type: route.params.type
+            identity: identity,
+            type: type,
+            nickname: nickname,
+            image: image
         });
     }
 

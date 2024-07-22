@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import { Keyboard,TouchableWithoutFeedback, Text, TextInput, TouchableOpacity, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { Keyboard,TouchableWithoutFeedback, Text, TextInput, TouchableOpacity, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
-export default function AccountPassword( {  navigation }: any ) {
+type data = {
+  accountStatus: string;
+  token: string;
+  userName: string;
+}
+
+export default function AccountPassword( {  navigation, route }: any ) {
     const [password, setPassword] = useState('');
     const [purpose, setPurpose] = useState('계좌사용용도');
     const [firstQuestion, setFirstQuestion] = useState(false);
     const [secondQuestion, setSecondQuestion] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
+
+    const { accountStatus, token, userName }: data = route.params;
+
     const dismissKeyboard = () => {
       Keyboard.dismiss();
     };
@@ -16,15 +25,14 @@ export default function AccountPassword( {  navigation }: any ) {
         { label: '생활비 관리', value: '생활비 관리' },
         { label: '적금 자동이체', value: '적금 자동이체' },
         { label: '예금가입', value: '예금가입' }
-      ];
-
-
+    ];
+      
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
             <View style={styles.purposeContainer}>
-        <Text style={styles.title}>통방 비밀번호 만들기</Text>
+        <Text style={styles.title}>통장 비밀번호 만들기</Text>
         <View style={styles.purposeInput}>
         <TextInput
         style={styles.input}
@@ -33,31 +41,24 @@ export default function AccountPassword( {  navigation }: any ) {
         keyboardType="number-pad"
         placeholder="0000"
         maxLength={4}
-         secureTextEntry={true} // 비밀번호 입력을 안전하게 처리
-
+         secureTextEntry={true}
       />
-      
         </View> 
-       
       </View>
-      
-      
-      
       <Text style={styles.subtitle}>어떤 용도로 통장을 사용하실 건가요?</Text>
       <View style={styles.purposeContainer}>
         <Text style={styles.purposeLabel}>계좌사용용도</Text>
-        <View style={styles.purposeInput}>
+        <View style={styles.pickerWrapper}>
           <RNPickerSelect
             onValueChange={(value) => setPurpose(value)}
+            useNativeAndroidPickerStyle={false} 
             items={purposes}
-            placeholder={{ label: '선택하세요', value: '',color:'black' }}
+            placeholder={{ label: '선택하세요', value: 'null',color:'black' }}
             value={purpose}
             style={pickerSelectStyles}
           />
         </View> 
       </View>
-    
-
       <Text style={styles.question1}>타인으로부터 통장대여 요청을 받은 사실이 있나요?</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity 
@@ -67,15 +68,12 @@ export default function AccountPassword( {  navigation }: any ) {
           <Text>예 </Text>
         </TouchableOpacity>
         <TouchableOpacity 
-        
           onPress={() => setFirstQuestion(false)} 
           style={[styles.radioRight, firstQuestion === false && styles.selectedRadio]}
         >
           <Text>아니요 </Text>
         </TouchableOpacity>
       </View>
-
-
       <Text style={styles.question2}>타인으로부터 신용정보 상환, 대출 등의 목적으로 통장 개설을 요청받은 사실이 있나요?</Text>
       <View style={styles.radioContainer}>
         <TouchableOpacity 
@@ -91,9 +89,7 @@ export default function AccountPassword( {  navigation }: any ) {
           <Text>아니요 </Text>
         </TouchableOpacity>
       </View>
-
-
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountTerms')}>
+      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, userName, accountPassword: password, purpose })}>
         <Text style={styles.buttonText}>다음</Text>
       </TouchableOpacity>
             </View>
@@ -110,7 +106,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'white'
+      
     },
     container: {
         flex: 1,
@@ -136,11 +132,24 @@ const styles = StyleSheet.create({
        
       },
       purposeInput: {
+        flex: 1,
         height: 40,
         justifyContent: 'center',
         backgroundColor: '#B7E1CE',
         paddingHorizontal: 10,
         marginBottom: 20,
+        
+      },
+      pickerWrapper: {
+        flex: 1,
+        height: 40,
+        justifyContent: 'center',
+        backgroundColor: '#B7E1CE',
+        paddingHorizontal: 10,
+        marginBottom: 20,
+        // borderWidth: 1,
+        borderColor: 'black',
+        borderRadius: 5,
       },
       input: {
         height: 40,
@@ -215,10 +224,13 @@ const styles = StyleSheet.create({
       button: {
         backgroundColor: '#B7E1CE',
         // padding: 15,
+        borderRadius:8,
+        width:'100%',
         alignItems: 'center',
-        marginTop:60,
-        height:60,
-        width:350,
+        marginTop:80,
+        maxWidth: 325,
+        // height:60,
+        // width:350,
         paddingHorizontal: 10,
         paddingVertical: 20,
       },
@@ -234,18 +246,16 @@ const pickerSelectStyles = StyleSheet.create({
       borderRadius: 5,
       color:'black',
       fontSize:16
+      
      
     },
     inputAndroid: {
-      height: 40,
-      backgroundColor: '#B7E1CE',
-      paddingHorizontal: 10,
-      paddingVertical: 8,
-      borderRadius: 5,
-      fontSize:16
-
+      fontSize: 16,
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30, 
     },
     placeholder: {
-        color: 'black',  // placeholder 텍스트 색상
+        color: 'black',  
       },
   });

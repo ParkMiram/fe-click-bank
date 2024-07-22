@@ -1,8 +1,16 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import AccountType from './AccountType';
 
+type data = {
+    accountStatus: string;
+    token: string;
+    userName: string,
+    accountPassword: string
+}
+
 export default function AccountTerms( { route,navigation }: any ) {
-    // const { accountType } = route.params;
+    const { accountStatus, token, accountPassword }: data = route.params;
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -16,7 +24,7 @@ export default function AccountTerms( { route,navigation }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('AccountComplete')}
+                onPress={() => navigation.navigate('AccountComplete', { accountStatus, token, accountPassword })}
             >
                 <Text style={styles.buttonText}>다음</Text>
             </TouchableOpacity>
@@ -33,7 +41,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'white'
+    
     },
     container: {
         flex: 1,
@@ -60,15 +68,24 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     button: {
-        paddingHorizontal: 100,
-        paddingVertical: 20,
+        // paddingHorizontal: 100,
+        // paddingVertical: 20,
+        // backgroundColor: '#B7E1CE',
+        // borderRadius: 5,
+        // position: "static",
+        // marginBottom: 10,
+        marginTop: 16,
+        marginBottom: 30,
         backgroundColor: '#B7E1CE',
-        borderRadius: 5,
-        position: "static",
-        marginBottom: 10,
+        padding: 16,
+        alignItems: 'center',
+        borderRadius: 8,
+        width: '100%',
+        maxWidth: 325,
+        alignSelf: 'center',
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'black',
     },
 });
