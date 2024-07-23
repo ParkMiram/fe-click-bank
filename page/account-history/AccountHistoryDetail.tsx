@@ -14,6 +14,7 @@ import {
     getAccountHistoryDetail,
     updateAccountHistoryMemo
 } from "../../component/api/AccountHistoryApi";
+import {Path, Svg} from "react-native-svg";
 
 interface Category {
     id: number;
@@ -94,7 +95,19 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                 <View style={styles.top}>
                     <Text style={styles.topFont}>거래 내역 조회</Text>
                     <TouchableOpacity onPress={goBack}>
-                        <Image source={require('../../assets/image/close.png')}/>
+                        <Svg
+                            width={24}
+                            height={24}
+                            fill="none"
+                        >
+                            <Path
+                                stroke="#33363F"
+                                strokeLinecap="square"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M18 6 6 18M6 6l12 12"
+                            />
+                        </Svg>
                     </TouchableOpacity>
                 </View>
 
