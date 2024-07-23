@@ -34,7 +34,7 @@ export default function FriendsComponent({ route }: any) {
     // 친구 목록 조회
     const getFriendList = async (): Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.get('http://35.184.235.5:30000/api/v1/friends', {
+            const response: AxiosResponse<any, any> = await axios.get('http://34.135.133.145:30000/api/v1/friends', {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -60,7 +60,7 @@ export default function FriendsComponent({ route }: any) {
     const getFriendRequestList = async ():Promise<void> => {
         setFriendRequestListData([]);
         try {
-            const response: AxiosResponse<any, any> = await axios.get('http://35.184.235.5:30000/api/v1/friends/request', {
+            const response: AxiosResponse<any, any> = await axios.get('http://34.135.133.145:30000/api/v1/friends/request', {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -85,7 +85,7 @@ export default function FriendsComponent({ route }: any) {
     // 친구 요청 수락
     const confirmRequest = async (code: string):Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.put(`http://35.184.235.5:30000/api/v1/friends/request/confirm/${code}`, {}, {
+            const response: AxiosResponse<any, any> = await axios.put(`http://34.135.133.145:30000/api/v1/friends/request/confirm/${code}`, {}, {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -126,7 +126,7 @@ export default function FriendsComponent({ route }: any) {
                     style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://35.184.235.5:30000/api/v1/friends/request/reject/${code}`, {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.135.133.145:30000/api/v1/friends/request/reject/${code}`, {
                                 headers: {
                                     Authorization: bearerToken
                                 }
@@ -171,7 +171,7 @@ export default function FriendsComponent({ route }: any) {
                     style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://35.184.235.5:30000/api/v1/friends/${code}`, {
+                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.135.133.145:30000/api/v1/friends/${code}`, {
                                 headers: {
                                     Authorization: bearerToken
                                 }
@@ -613,7 +613,8 @@ const styles = StyleSheet.create({
     profile: {
         marginRight: 10,
         width: 40,
-        height: 40
+        height: 40,
+        borderRadius: 20
     },
     friendName: {
         fontWeight: '500',

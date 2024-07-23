@@ -16,3 +16,7 @@ export const updateAccountHistoryMemo = async (data: any): Promise<void> => {
 export const getAccountHistoryStatistics = async (data: any): Promise<AxiosResponse<any>> => {
     return await api(`/api/v1/histories/statistics?month=${data.month}&account=${data.account}`, "get")
 }
+
+export const getAccountBudget = async (account: string) : Promise<AxiosResponse<any>> => {
+    return await api(`/api/v1/histories/budget?myAccount=${account}`, "get");
+}

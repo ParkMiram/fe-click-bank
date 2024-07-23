@@ -63,7 +63,7 @@ export default function FriendSearch(props: any) {
     // 친구 요청
     const requestFriend = async (code: string):Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.post(`http://35.184.235.5:30000/api/v1/friends/request/${code}`,{}, {
+            const response: AxiosResponse<any, any> = await axios.post(`http://34.135.133.145:30000/api/v1/friends/request/${code}`,{}, {
                 headers: {
                     Authorization: bearerToken
                 }
@@ -265,7 +265,8 @@ const styles = StyleSheet.create({
     profile: {
         marginRight: 10,
         width: 40,
-        height: 40
+        height: 40,
+        borderRadius: 20
     },
     friendName: {
         fontWeight: '500',
