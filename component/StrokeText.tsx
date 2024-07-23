@@ -1,9 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 
-export default function StrokeText(props: any) {
-    const { text, size, color, strokeColor } = props;
+type props = {
+    text: string;
+    size: number;
+    color: string;
+    strokeColor: string;
+}
 
-    console.log(text);
+export default function StrokeText(props: any) {
+    const { text, size, color, strokeColor }: props = props;
 
     const styles = StyleSheet.create({
         container: {
@@ -51,5 +56,4 @@ export default function StrokeText(props: any) {
             </Text> */}
         </View>
     );
-    
 }

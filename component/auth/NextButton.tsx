@@ -2,9 +2,11 @@ import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { Shadow } from '../../css/sujin/Shadow';
 
 export default function NextButton(props: any) {
+    const {active, text, width, press} = props;
+
     const isPress = () => {
-        if (props.active) {
-            props.press();
+        if (active) {
+            press();
         }
     }
 
@@ -12,10 +14,10 @@ export default function NextButton(props: any) {
         <TouchableOpacity
             onPress={isPress} 
             activeOpacity={.5}
-            disabled={!props.active}
-            style={[styles.nextButton, Shadow.dropShadow, {width: props.width?props.width:"70%"}]}>
-            <Text style={[styles.nextButtonText, {color:props.active?"#000":"#aaa"}]}>
-                {props.text}
+            disabled={!active}
+            style={[styles.nextButton, Shadow.dropShadow, {width: width?width:"70%"}]}>
+            <Text style={[styles.nextButtonText, {color:active?"#000":"#aaa"}]}>
+                {text}
             </Text>
         </TouchableOpacity >
     );

@@ -21,9 +21,9 @@ export default function QrCodeScanner({ navigation }: any) {
 	}
 
 	const onScanned = (e:BarcodeScanningResult) => {
-		// if (e.type == 'qr') {
-		// 	navigation.navigate('QrCodeTest', {data: e.data});
-		// }
+		if (e.data.startsWith("clickpay://")){
+			navigation.navigate('QrCodeTest', {data: e.data.replace("clickpay://", "http://")});
+		}
 	}
 
 	return (
