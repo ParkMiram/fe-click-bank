@@ -7,6 +7,12 @@ export const saveAccount = async (token:string, body: any): Promise<AxiosRespons
     });
 }
 
+export const getUserInfo = async (token: string): Promise<AxiosResponse<any>> => {
+    return api(`/api/v1/users`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
 export const getAccountByUserId = async (token: string): Promise<AxiosResponse<any>> => {
     try {
         const response = await api('/api/v1/accounts/user-account', "GET", undefined, {

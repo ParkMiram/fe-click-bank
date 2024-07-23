@@ -27,7 +27,6 @@ export default function AccountType( {  navigation, route }: any ) {
         <Text style={styles.buttonText}>입출금 통장</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount', { accountType: '모임 통장', token,userName  })}>
-        co
         <Text style={styles.buttonText}>모임 통장</Text>
     </TouchableOpacity>
     <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAccount',{ accountType: '적금', token,userName })} >
