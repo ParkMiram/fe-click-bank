@@ -17,7 +17,8 @@ import { getAccountUserInfo } from '../../component/api/AccountTranfer';
 //   route: SendingTransferRouteProp;
 // };
 
-type data = {
+type userInfo = {
+  userId: string;
   account: string;
   nickName: string;
   amount: number;
@@ -28,13 +29,27 @@ type props = {
   accountNumber: string;
   account: string;
   moneyAmount: number;
+  category: number
 }
 
 const SendingTransfer = ({ navigation, route }: any) => {
   const [amount, setAmount] = useState('');
-  const [userInfo, setUserInfo] = useState<data | undefined>(undefined);
-  const { bank, accountNumber, account, moneyAmount }: props = route.params;
+  const [userInfo, setUserInfo] = useState<userInfo | undefined>(undefined);
+  const { bank, accountNumber, account, moneyAmount, category}: props = route.params;
   const token: string = route.params?.token;
+  console.log(userInfo)       // 상대 유저 정보
+  console.log(bank)
+  console.log(accountNumber) // 상대 계좌
+  console.log(account)      
+  console.log(moneyAmount) // 본인 잔액
+  console.log(category)
+
+  const data = {
+    bank: bank,
+    account: account,
+    transferAmount: parseInt(amount),
+    category: category
+  }
 
   const fetchUserInfo = async (account: string, token: string) => {
     try {
@@ -66,7 +81,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
   const handleSend = () => {
     if (!Number.isNaN(parseInt(amount)) && parseInt(amount) !== 0) {
       if (userInfo && userInfo.nickName) {
-        navigation.navigate('ReminingTranfer', { name: userInfo.nickName, amount: parseInt(amount), accountNumber, account, moneyAmount, token });
+        navigation.navigate('ReminingTranfer', { userInfo: userInfo, data: data, token });
       } else {
         Alert.alert('', '사용자 정보가 없습니다.');
       }
@@ -76,7 +91,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
   };
 
     // 금액이 잔액을 초과할 경우 글자색을 빨간색으로 변경
-    const amountTextStyle = { color: parseInt(amount, 10) > (userInfo?.amount || 0) ? 'red' : 'black' };
+    const amountTextStyle = { color: parseInt(amount, 10) > (moneyAmount || 0) ? 'red' : 'black' };
 
     // 잔액을 초과하면 보내기 버튼을 비활성화 (회색 배경)
     const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (moneyAmount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };

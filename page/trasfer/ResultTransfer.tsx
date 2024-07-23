@@ -10,30 +10,55 @@ import { setAccountMoney } from "../../component/api/AccountTranfer";
 //   navigation: ReminingTranferNavigationProp;
 // };
 
+type userInfo = {
+  userId: string;
+  account: string;
+  nickName: string;
+  amount: number; // 상대방 잔액
+}
+
+type props = {
+  bank: string;
+  account: string;
+  transferAmount: number; // 보낼 금액
+  category: number
+}
+
 type data = {
     name: string;
     amount: number;
     account: string;
     accountNumber: string;
     moneyAmount: number;
+    category: number;
     token: string;
   }
 
 const ResultTransfer = ({ navigation, route }: any) => {
-    const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
+    const userInfo: userInfo = route.params.userInfo;
+    const data: props = route.params.data;
+    const token: string = route.params.token;
+    // const { name, amount, account, moneyAmount, token }: data = route.params;
+    console.log(userInfo);
+    console.log(data);
+    console.log(token);
 
     useEffect(() => {
       const performTransfer = async () => {
           const bodyToRecipient = {
               accountStatus: "deposit",
-              account: accountNumber,
-              moneyAmount: amount,
+              account: userInfo.account,
+              transferAccount: data.account,
+              moneyAmount: data.transferAmount,
+              category: data.category
           };
 
           const bodyToSender = {
               accountStatus: "transfer",
-              account: account,
-              moneyAmount: amount,
+              account: data.account,
+              tranferAccount: userInfo.account,
+              moneyAmount: data.transferAmount,
+              category: data.category
           };
           
 
@@ -51,14 +76,14 @@ const ResultTransfer = ({ navigation, route }: any) => {
       };
 
       performTransfer();
-    }, [amount, accountNumber, account, token]);
+    }, [data.transferAmount, userInfo?.account, data.account, token]);
 
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
-            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{name}님에게</Text>
-            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
+            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{userInfo.nickName}님에게</Text>
+            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{data.transferAmount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
             <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('AccountHome', {token})}>

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-import { getAccountByUserId } from "../../component/api/NewAccountApi";
+import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
 
 interface AccountResponse {
@@ -24,12 +24,14 @@ export default function AccountHome({ route, navigation }: any) {
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
+
     const toggleNumberHidden = (accountId: string) => {
         setNumberHidden(prevState => ({
             ...prevState,
             [accountId]: !prevState[accountId]
         }));
     };
+
     const fetchAccountsByUserId = async (token: string): Promise<void> => {
         try {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
@@ -44,9 +46,43 @@ export default function AccountHome({ route, navigation }: any) {
                 setUserImg(userImg);
             } else {
                 console.error('응답 데이터가 올바르지 않습니다:', data);
+                const userInfoResponse: AxiosResponse<any> = await getUserInfo(token);
+                const userInfoData = userInfoResponse.data;
+
+            // 유저 정보 데이터 확인
+                if (userInfoData) {
+                    const { userName, userImg } = userInfoData;
+                    console.log('User Info API 응답 데이터:', userInfoData);
+
+                    // 상태 업데이트
+                    setAccount([]);
+                    setUserName(userName || '');
+                    setUserImg(userImg || '');
+                } else {
+                    console.error('User Info API 응답 데이터가 올바르지 않습니다:', userInfoData);
+                }
             }
         } catch (error) {
             console.log(error);
+            try {
+                const userInfoResponse: AxiosResponse<any> = await getUserInfo(token);
+                const userInfoData = userInfoResponse.data;
+    
+                // 유저 정보 데이터 확인
+                if (userInfoData) {
+                    const { userName, userImg } = userInfoData;
+                    console.log('User Info API 응답 데이터:', userInfoData);
+    
+                    // 상태 업데이트
+                    setAccount([]);
+                    setUserName(userName || '');
+                    setUserImg(userImg || '');
+                } else {
+                    console.error('User Info API 응답 데이터가 올바르지 않습니다:', userInfoData);
+                }
+            } catch (userInfoError) {
+                console.error('getUserInfo 호출 중 에러 발생:', userInfoError);
+            }
         }
     };
     

@@ -41,7 +41,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
         keyboardType="number-pad"
         placeholder="0000"
         maxLength={4}
-         secureTextEntry={true}
+        secureTextEntry={true}
       />
         </View> 
       </View>
@@ -51,7 +51,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
         <View style={styles.pickerWrapper}>
           <RNPickerSelect
             onValueChange={(value) => setPurpose(value)}
-            useNativeAndroidPickerStyle={false} 
+            useNativeAndroidPickerStyle={false}
             items={purposes}
             placeholder={{ label: '선택하세요', value: 'null',color:'black' }}
             value={purpose}
@@ -234,8 +234,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 20,
       },
-      
 });
+
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
       height: 40,
@@ -246,8 +246,6 @@ const pickerSelectStyles = StyleSheet.create({
       borderRadius: 5,
       color:'black',
       fontSize:16
-      
-     
     },
     inputAndroid: {
       fontSize: 16,
