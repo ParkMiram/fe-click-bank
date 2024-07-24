@@ -20,3 +20,7 @@ export const getAccountHistoryStatistics = async (data: any): Promise<AxiosRespo
 export const getAccountBudget = async (account: string) : Promise<AxiosResponse<any>> => {
     return await api(`/api/v1/histories/budget?myAccount=${account}`, "get");
 }
+
+export const updateNewBudget = async (data: any) : Promise<void> => {
+    await api(`/api/v1/histories/budget?myAccount=${data.account}`, "put", data.budget, { "Content-Type": "application/json" });
+}

@@ -14,6 +14,7 @@ import React, {useEffect, useState} from "react";
 import {PieChart} from "react-native-chart-kit";
 import {getAccountBudget, getAccountHistoryStatistics} from "../../component/api/AccountHistoryApi";
 import {Path, Svg} from "react-native-svg";
+import BudgetUpdate from "../../component/account-history/BudgetUpdate";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -38,16 +39,24 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
     const [statistics, setStatistics] = useState<any>([]);
     const [budget, setBudget] = useState<Budget | null>(null);
     const [percentage, setPercentage] = useState<number>(0);
+    const [isModalVisible, setModalVisible] = useState<boolean>(false)
     const account = route.params.account;
+    const month = new Date().getMonth()+1;
 
     useEffect(()=> {
         getStatistics();
-        getBudget()
-    },[]);
+        if (!isModalVisible){
+            getBudget();
+        }
+    },[isModalVisible]);
 
     const goBack = () => {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
     };
+
+    const toggleModal = () => {
+        setModalVisible(!isModalVisible);
+    }
 
     const getBudget = async (): Promise<any> => {
         try {
@@ -55,14 +64,14 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
             setBudget(response.data);
             if (response.data.mbBudget !== 0) {
                 const per = (response.data.mbExpenditure / response.data.mbBudget) * 100;
+                console.log(response.data.mbExpenditure, response.data.mbBudget)
                 setPercentage(parseFloat(per.toFixed(2)));
+                console.log(per)
             }
         } catch (error) {
             console.log(error);
         }
     };
-
-    console.log(budget);
 
     const getStatistics = async (): Promise<any> => {
         const date: Date = new Date();
@@ -94,15 +103,6 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
         ));
     };
 
-    // const calculatePercent = (budget: Budget | null) => {
-    //     if (!budget || budget.mbBudget === 0) {
-    //         return `0%`;
-    //     } else {
-    //         const per: number = (budget.mbExpenditure / budget.mbBudget) * 100;
-    //         return `${per.toFixed(2)}%`;
-    //     }
-    // };
-
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
@@ -121,7 +121,7 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
 
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.monthExpenditure}>
-                        <Text style={styles.expenditureFont1}>7월 지출</Text>
+                        <Text style={styles.expenditureFont1}>{month}월 지출</Text>
                         <Text style={styles.expenditureFont2}>{budget?.mbExpenditure.toLocaleString()}원</Text>
                     </View>
 
@@ -130,25 +130,30 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
                             <Text style={styles.budgetFont}>예산</Text>
                             <View style={styles.budgetFontArea2}>
                                 <Text style={styles.budgetFont}>{budget?.mbBudget.toLocaleString()}원</Text>
-                                <Svg
-                                    width={11}
-                                    height={10}
-                                    fill="none"
+                                <TouchableOpacity
+                                    style={[{padding: 10, paddingRight: 15, paddingLeft: 5}]}
+                                    onPress={toggleModal}
                                 >
-                                    <Path
-                                        fill="#222"
-                                        fillRule="evenodd"
-                                        d="M8.634 4.046 9.64 3.04c.305-.305.458-.458.54-.623a1.12 1.12 0 0 0 0-.994c-.082-.165-.235-.318-.54-.623-.305-.305-.458-.458-.623-.54a1.12 1.12 0 0 0-.994 0C7.858.342 7.705.495 7.4.8L6.38 1.818a6.104 6.104 0 0 0 2.253 2.228ZM5.567 2.633 1.72 6.48c-.239.238-.358.357-.436.504-.078.146-.111.311-.177.641L.762 9.348c-.037.186-.056.28-.003.333.053.053.147.034.333-.003l1.723-.345c.33-.066.495-.099.641-.177.146-.079.265-.198.504-.436l3.858-3.858a7.225 7.225 0 0 1-2.251-2.23Z"
-                                        clipRule="evenodd"
-                                    />
-                                </Svg>
+                                    <Svg
+                                        width={11}
+                                        height={10}
+                                        fill="none"
+                                    >
+                                        <Path
+                                            fill="#222"
+                                            fillRule="evenodd"
+                                            d="M8.634 4.046 9.64 3.04c.305-.305.458-.458.54-.623a1.12 1.12 0 0 0 0-.994c-.082-.165-.235-.318-.54-.623-.305-.305-.458-.458-.623-.54a1.12 1.12 0 0 0-.994 0C7.858.342 7.705.495 7.4.8L6.38 1.818a6.104 6.104 0 0 0 2.253 2.228ZM5.567 2.633 1.72 6.48c-.239.238-.358.357-.436.504-.078.146-.111.311-.177.641L.762 9.348c-.037.186-.056.28-.003.333.053.053.147.034.333-.003l1.723-.345c.33-.066.495-.099.641-.177.146-.079.265-.198.504-.436l3.858-3.858a7.225 7.225 0 0 1-2.251-2.23Z"
+                                            clipRule="evenodd"
+                                        />
+                                    </Svg>
+                                </TouchableOpacity>
                             </View>
                         </View>
                         <View style={styles.budgetGraphArea}>
                             <View style={styles.budgetBaseGraph}>
                                 <View style={[{ width: `${percentage}%` }, styles.budgetGraph]} />
                                 <Text style={styles.budgetGraphFont}>
-                                    {percentage === 0 ? '예산을 설정해주세요' : `${percentage}%`}
+                                    {budget?.mbBudget === 0 ? '예산을 설정해주세요' : `${percentage}%`}
                                 </Text>
                             </View>
                         </View>
@@ -179,6 +184,15 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
                     </View>
 
                 </ScrollView>
+                {
+                    isModalVisible &&
+                    <BudgetUpdate
+                        account={account}
+                        mbBudget={budget?.mbBudget}
+                        isModalVisible={isModalVisible}
+                        toggleModal={toggleModal}
+                    />
+                }
             </View>
         </SafeAreaView>
     );
@@ -236,7 +250,8 @@ const styles = StyleSheet.create({
     budgetFontArea1: {
         flexDirection: "row",
         justifyContent: 'space-between',
-        padding: 20
+        padding: 20,
+        paddingRight: 10
     },
     budgetFontArea2: {
         flexDirection: "row",
@@ -249,7 +264,7 @@ const styles = StyleSheet.create({
     },
     budgetFont: {
         fontSize: 26,
-        marginRight: 10
+        marginRight: 5
     },
     budgetGraphArea: {
         marginTop: 10,
