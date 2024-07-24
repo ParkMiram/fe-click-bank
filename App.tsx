@@ -26,6 +26,9 @@ import CreateAccount from './page/newAccount/CreateAccount';
 import AccountPassword from './page/newAccount/AccountPassword';
 import AccountComplete from './page/newAccount/AccountComplete';
 import AccountTerms from './page/newAccount/AccountTerms';
+import KakaoLogout from './page/login/KakaoLogout';
+import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
+import EditAccount from './page/newAccount/EditAccount';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -55,6 +58,7 @@ export default function App() {
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="KakaoLogout" component={KakaoLogout} />
                 <Stack.Screen name="SimpleLogin" component={SimpleLogin} />
                 <Stack.Screen name="UserTermOfUse" component={TermOfUse} />
                 <Stack.Screen name="UserSetPassword" component={SetPassword} />
@@ -71,7 +75,8 @@ export default function App() {
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
-
+                <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
+                <Stack.Screen name="EditAccount" component={EditAccount}/>
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />

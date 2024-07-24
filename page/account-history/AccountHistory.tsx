@@ -15,6 +15,7 @@ import React, {useEffect, useState} from "react";
 import {getAccountHistory} from "../../component/api/AccountHistoryApi";
 import {AxiosResponse} from "axios";
 import RNPickerSelect from "react-native-picker-select";
+import {Path, Rect, Svg} from "react-native-svg";
 
 interface Category {
     id: number;
@@ -40,6 +41,11 @@ export default function AccountHistory({ navigation }: any) {
         { label: '출금', value: '출금' },
     ];
 
+    const goBack = () => {
+        navigation.goBack(); // 이전 화면으로 돌아가는 함수
+    };
+
+
     useEffect(()=> {
         getAccountHistories();
     },[]);
@@ -52,7 +58,7 @@ export default function AccountHistory({ navigation }: any) {
         try {
             const account: string = "110-486-119643";
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
-            console.log(response.data);
+            console.log(response.data); //TODO 나중에 지우기
             setHistories(response.data);
         } catch (error) {
             console.log(error);
@@ -72,11 +78,23 @@ export default function AccountHistory({ navigation }: any) {
         navigation.navigate('AccountHistoryDetail', { history });
     };
 
+    const goToStatistics = (account: string) => {
+        navigation.navigate('AccountHistoryStatistics', { account });
+    };
+
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
                 <View style={styles.top}>
-                    <Image source={require('../../assets/image/back_btn.png')} style={styles.topImage}/>
+                    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>
+                        <Svg
+                            width={9}
+                            height={14}
+                            fill="none"
+                        >
+                            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
+                        </Svg>
+                    </TouchableOpacity>
                     <Text style={styles.topFont}>거래 내역 조회</Text>
                 </View>
 
@@ -85,19 +103,40 @@ export default function AccountHistory({ navigation }: any) {
                         <View style={styles.account}>
                             <View style={styles.accountSub}>
                                 <Text style={styles.accountFont}>재민이의 텅...장</Text>
-                                <Image source={require('../../assets/image/edit.png')} />
+                                <Svg
+                                    width={11}
+                                    height={10}
+                                    fill="none"
+                                >
+                                    <Path
+                                        fill="#222"
+                                        fillRule="evenodd"
+                                        d="M8.634 4.046 9.64 3.04c.305-.305.458-.458.54-.623a1.12 1.12 0 0 0 0-.994c-.082-.165-.235-.318-.54-.623-.305-.305-.458-.458-.623-.54a1.12 1.12 0 0 0-.994 0C7.858.342 7.705.495 7.4.8L6.38 1.818a6.104 6.104 0 0 0 2.253 2.228ZM5.567 2.633 1.72 6.48c-.239.238-.358.357-.436.504-.078.146-.111.311-.177.641L.762 9.348c-.037.186-.056.28-.003.333.053.053.147.034.333-.003l1.723-.345c.33-.066.495-.099.641-.177.146-.079.265-.198.504-.436l3.858-3.858a7.225 7.225 0 0 1-2.251-2.23Z"
+                                        clipRule="evenodd"
+                                    />
+                                </Svg>
                             </View>
                             <View style={styles.accountSub}>
                                 <Text style={styles.accountFont}>938002-00-537764</Text>
-                                <Image source={require('../../assets/image/copy.png')} />
+                                <Svg
+                                    width={18}
+                                    height={18}
+                                    fill="none"
+                                >
+                                    <Path
+                                        stroke="#222"
+                                        d="M10.5 5.25c0-.232 0-.348-.01-.446A2 2 0 0 0 8.696 3.01C8.598 3 8.482 3 8.25 3h-1.5c-1.644 0-2.466 0-3.019.454a2.001 2.001 0 0 0-.277.277C3 4.284 3 5.106 3 6.75v1.5c0 .232 0 .348.01.446a2 2 0 0 0 1.794 1.794c.098.01.214.01.446.01"
+                                    />
+                                    <Rect width={7.5} height={7.5} x={7.5} y={7.5} stroke="#222" rx={2} />
+                                </Svg>
                             </View>
                             <View style={styles.balanceArea}>
-                                <Text style={styles.balanceFont}>1,000,000,000 원</Text>
+                                <Text style={styles.balanceFont}>{histories[histories.length-1]?.bhBalance.toLocaleString()} 원</Text>
                             </View>
                         </View>
 
                         <View style={styles.accountBtnArea}>
-                            <TouchableOpacity style={styles.accountBtn}>
+                            <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics("110-486-119643")}>
                                 <Text style={styles.accountBtnFont}>분석 / 예산</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.accountBtn}>
@@ -113,9 +152,18 @@ export default function AccountHistory({ navigation }: any) {
                                     placeholder={{ label: '전체', value: '전체', color:'black' }}
                                     value={purpose}
                                     Icon={() => {
-                                        return <Image style={imageStyles.icon} source={require('../../assets/image/select.png')} />;
+                                        return <Svg
+                                            width={20}
+                                            height={10}
+                                            fill="none"
+                                            viewBox="0 0 10 5"
+                                            style={imageStyles.icon}
+                                        >
+                                            <Path stroke="#222" strokeWidth={0.7} d="M9.6.3 5.4 4.5 1.2.3" />
+                                        </Svg>;
                                     }}
                                     style={pickerSelectStyles}
+                                    useNativeAndroidPickerStyle={false}
                                 />
                                 {/*<Image source={require('../../assets/image/select.png')} />*/}
                             </View>
@@ -135,6 +183,8 @@ export default function AccountHistory({ navigation }: any) {
                             ))}
                         </View>
                     </View>
+
+
                 </ScrollView>
             </View>
         </SafeAreaView>
@@ -292,6 +342,11 @@ const pickerSelectStyles = StyleSheet.create({
         fontSize:16,
     },
     inputAndroid: {
+        width: 80,
+        height: '100%',
+        color: 'black',
+        paddingHorizontal: 20,
+        fontSize:16,
     },
     placeholder: {
         color: 'black',  // placeholder 텍스트 색상

@@ -1,13 +1,13 @@
 import { StyleSheet, Text, SafeAreaView } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
+const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
 export default function CreateUser({ navigation, route }: any) {
-    const { identity, type, password, nickname } = route.params;
+    const { identity, type, password, nickname, image } = route.params;
     const [waitMessage, setWaitMessage] = useState("잠시만 기다려주세요...");
 
     const sendCreateUser = async () => {
@@ -18,7 +18,8 @@ export default function CreateUser({ navigation, route }: any) {
                     identity: identity,
                     type: type,
                     nickname: nickname,
-                    passwd: password
+                    passwd: password,
+                    image: image
                 }
             );
             AsyncStorage.setItem("login", response.data);
@@ -32,6 +33,8 @@ export default function CreateUser({ navigation, route }: any) {
                 });
             }, 1000);
         } catch (error) {
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
             alert(error);
         }
     }

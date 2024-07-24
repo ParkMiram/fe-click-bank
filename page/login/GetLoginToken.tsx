@@ -1,30 +1,31 @@
 import { StyleSheet, View, SafeAreaView, Text } from 'react-native';
 import { Container } from '../../css/sujin/Container';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const SERVER_URI = "http://192.168.0.16:8080/api/v1/auth";
+const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
 export default function GetLoginToken({ route, navigation }: any) {
     const { url } = route.params;
 
-    const getToken = async (identity:string, type:string) => {
+    const getToken = async (identity:string, type:string, image:string) => {
         try {
-            const response = await axios.get(`${SERVER_URI}/login/token?identity=${identity}&type=${type}`);
+            const response = await axios.get(`${SERVER_URI}/login/token?identity=${identity}&type=${type}&image=${image}`);
             AsyncStorage.setItem("login", response.data);
             navigation.reset({
                 index: 0,
                 routes: [{name: 'SimpleLogin', params: {token: response.data}}]
             });
         } catch (error) {
-            // alert(error);
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
         }
     }
     const getData = async () => {
         try {
             const response = await axios.get(url+"&isFront=true");
             if (response.data.isAlready) {
-                getToken(response.data.identity, response.data.type);
+                getToken(response.data.identity, response.data.type, response.data.image ?? "");
             } else {
                 navigation.reset({
                     index: 1,
@@ -40,7 +41,8 @@ export default function GetLoginToken({ route, navigation }: any) {
                 });
             }
         } catch (error) {
-            alert(error);
+            const {response} = error as unknown as AxiosError;
+            if (response) alert("STATUS: " + response.status + "\nDATA: " + response.data);
         }
     }
     

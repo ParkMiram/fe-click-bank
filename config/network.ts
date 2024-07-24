@@ -7,14 +7,16 @@ interface ApiRequestBody {
 export const api = async (
     url: string,
     method: Method,
-    body?: ApiRequestBody
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://192.168.0.23:8080";
+    axios.defaults.baseURL = "http://192.168.0.29:8080";
 
     const res = await axios({
         url,
         method,
         data: body,
+        headers: headers
     });
 
     return res;

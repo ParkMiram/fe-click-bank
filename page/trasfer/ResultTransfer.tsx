@@ -1,7 +1,8 @@
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar, Alert } from "react-native";
 // import { RootStackParamList } from "../../App";
-import React from "react";
+import React, { useEffect } from "react";
+import { setAccountMoney } from "../../component/api/AccountTranfer";
 
 // type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
@@ -9,27 +10,83 @@ import React from "react";
 //   navigation: ReminingTranferNavigationProp;
 // };
 
-type data = {
-    name: String;
-    amount: number;
+type userInfo = {
+  userId: string;
+  account: string;
+  nickName: string;
+  amount: number; // 상대방 잔액
 }
 
+type props = {
+  bank: string;
+  account: string;
+  transferAmount: number; // 보낼 금액
+  category: number
+}
+
+type data = {
+    name: string;
+    amount: number;
+    account: string;
+    accountNumber: string;
+    moneyAmount: number;
+    category: number;
+    token: string;
+  }
+
 const ResultTransfer = ({ navigation, route }: any) => {
-    const { name, amount }:data = route.params;
-    if (typeof amount === 'number') {
-        console.log(amount);
-    } else {
-        console.log("Amount is not a string");
-    }
+    const userInfo: userInfo = route.params.userInfo;
+    const data: props = route.params.data;
+    const token: string = route.params.token;
+    // const { name, amount, account, moneyAmount, token }: data = route.params;
+    console.log(userInfo);
+    console.log(data);
+    console.log(token);
+
+    useEffect(() => {
+      const performTransfer = async () => {
+          const bodyToRecipient = {
+              accountStatus: "deposit",
+              account: userInfo.account,
+              transferAccount: data.account,
+              moneyAmount: data.transferAmount,
+              category: data.category
+          };
+
+          const bodyToSender = {
+              accountStatus: "transfer",
+              account: data.account,
+              tranferAccount: userInfo.account,
+              moneyAmount: data.transferAmount,
+              category: data.category
+          };
+          
+
+          console.log(bodyToRecipient.moneyAmount);
+          console.log(bodyToSender.moneyAmount);
+
+          try {
+              await setAccountMoney(bodyToRecipient, token);
+              await setAccountMoney(bodyToSender, token);
+              console.log("Transfer successful");
+          } catch (error) {
+              console.error("Failed to set account money:", error);
+              Alert.alert("Transfer Failed", "An error occurred during the transfer. Please try again.");
+          }
+      };
+
+      performTransfer();
+    }, [data.transferAmount, userInfo?.account, data.account, token]);
+
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
-            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{name}님에게</Text>
-            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
+            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{userInfo.nickName}님에게</Text>
+            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{data.transferAmount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('Transfer')}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('AccountHome', {token})}>
                 <Text style={styles.sendButtonText}>메인으로</Text>
             </TouchableOpacity>
         </View>
@@ -71,7 +128,6 @@ const ResultTransfer = ({ navigation, route }: any) => {
       },
       sendButtonText: {
         fontSize: 16,
-        // fontWeight: 'bold',
       },
   })
 

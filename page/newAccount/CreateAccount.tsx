@@ -1,8 +1,19 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import AccountType from './AccountType';
+import { useEffect, useState } from 'react';
 
-export default function CreateAccount( { route,navigation }: any ) {
-    const { accountType } = route.params;
+
+
+export default function CreateAccount( { route, navigation }: any ) {
+    let accountStatus = "";
+    const { accountType, token, userName } = route.params;
+
+    useEffect(() => {
+        if (accountType === '입출금 통장') {
+            accountStatus = 'account'
+        }
+    }, [accountType]);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -16,7 +27,7 @@ export default function CreateAccount( { route,navigation }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('AccountInformation')}
+                onPress={() => navigation.navigate('AccountPassword', { accountStatus, token, userName })}
             >
                 <Text style={styles.buttonText}>신청하기</Text>
             </TouchableOpacity>
@@ -33,7 +44,7 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor:'white'
+       
     },
     container: {
         flex: 1,
@@ -60,15 +71,24 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     button: {
-        paddingHorizontal: 100,
-        paddingVertical: 20,
+        // paddingHorizontal: 100,
+        // paddingVertical: 20,
+        // backgroundColor: '#B7E1CE',
+        // borderRadius: 5,
+        // position: "static",
+        // marginBottom: 10,
+        marginTop: 16,
+        marginBottom: 30,
         backgroundColor: '#B7E1CE',
-        borderRadius: 5,
-        position: "static",
-        marginBottom: 10,
+        padding: 16,
+        alignItems: 'center',
+        borderRadius: 8,
+        width: '100%',
+        maxWidth: 325,
+        alignSelf: 'center',
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'black',
     },
 });
