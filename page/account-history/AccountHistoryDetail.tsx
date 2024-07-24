@@ -5,55 +5,158 @@ import {
     StyleSheet,
     Text,
     View,
-    StatusBar,Animated
+    StatusBar, Animated, TouchableOpacity, TextInput
 } from "react-native";
+import {useEffect, useState} from "react";
+import {AxiosResponse} from "axios";
+import {
+    getAccountHistory,
+    getAccountHistoryDetail,
+    updateAccountHistoryMemo
+} from "../../component/api/AccountHistoryApi";
+import {Path, Svg} from "react-native-svg";
 
-export default function AccountHistoryDetail({ navigation }: any) {
+interface Category {
+    id: number;
+    name: string;
+}
+
+interface History {
+    historyId: number;
+    bhAt: Date;
+    bhName: string;
+    bhAmount: number;
+    bhStatus: string;
+    bhBalance: number;
+    categoryId: Category;
+}
+
+interface Detail {
+    historyId: number;
+    bhOutType: number;
+    cardId: number;
+    bhReceive: string;
+    bhMemo: string;
+}
+
+export default function AccountHistoryDetail({ route, navigation }: any) {
+    const [detail, setDetail] = useState<Detail>();
+    const [memo, setMemo] = useState('');
+    const {history} = route.params;
+    const id: number = history.historyId;
+
+    const goBack = () => {
+        navigation.goBack(); // 이전 화면으로 돌아가는 함수
+    };
+
+    useEffect(()=> {
+        getDetail();
+    },[]);
+
+    useEffect(() => {
+        if (detail && detail.bhMemo) {
+            setMemo(detail.bhMemo);
+        }
+    }, [detail]);
+
+    const getDetail = async (): Promise<any> => {
+        try {
+            const response: AxiosResponse<Detail> = await getAccountHistoryDetail(id);
+            setDetail(response.data)
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const updateMemo = async (memo: string): Promise<any> => {
+        if (memo && memo.length > 0) {
+            try {
+                const data = {id, memo};
+                await updateAccountHistoryMemo(data);
+            } catch (error) {
+                console.log(error);
+            }
+        } else if(memo.length == 0) {
+            try {
+                memo = "";
+                const data = {id, memo}
+                await updateAccountHistoryMemo(data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        goBack();
+    };
+
 
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
                 <View style={styles.top}>
                     <Text style={styles.topFont}>거래 내역 조회</Text>
-                    <Image source={require('../../assets/image/close.png')}/>
+                    <TouchableOpacity onPress={goBack}>
+                        <Svg
+                            width={24}
+                            height={24}
+                            fill="none"
+                        >
+                            <Path
+                                stroke="#33363F"
+                                strokeLinecap="square"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M18 6 6 18M6 6l12 12"
+                            />
+                        </Svg>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.wrap}>
                     <View style={[{marginBottom: 30}]}>
-                        <Text style={styles.title}>카카오페이</Text>
+                        <Text style={styles.title}>{history.bhName}</Text>
                         <Text style={styles.memoFont}>메모</Text>
                         <View style={styles.memoData}>
                             <Text style={styles.memoDataFont}>직접 작성</Text>
                             <Image source={require('../../assets/image/select.png')}/>
                         </View>
                         <View style={styles.inputBox}>
-                            <Text style={styles.inputTextFont}>메모 입력(최대 20자)</Text>
+                            <TextInput
+                                style={styles.inputTextFont}
+                                placeholder="메모 입력(최대 20자)"
+                                value={memo}
+                                onChangeText={setMemo}
+                                maxLength={20}
+                            />
                         </View>
                     </View>
                     <View style={styles.historyDetailData}>
-                        <Text style={styles.historyDate}>2024.07.07 12:46:44</Text>
-                        <Text style={styles.historyTitle}>카카오페이</Text>
+                        <Text style={styles.historyDate}>{new Date(history.bhAt).toLocaleString()}</Text>
+                        <Text style={styles.historyTitle}>{history.bhName}</Text>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>거래 금액</Text>
                             <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
-                                <Text style={styles.historyDataFont}>출금</Text>
-                                <Text style={[styles.historyDataFont, {color: 'red', fontWeight: 'bold'}]}>10,000</Text>
+                                <Text style={styles.historyDataFont}>{history.bhStatus}</Text>
+                                <Text style={[styles.historyDataFont, {fontWeight: 'bold', color: history.bhStatus === '입금' ? 'blue' : 'red'}]}>{history.bhAmount.toLocaleString()}</Text>
                                 <Text style={styles.historyDataFont}>원</Text>
                             </View>
                         </View>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>거래 후 잔액</Text>
-                            <Text style={styles.historyDataFont}>100,000,000원</Text>
+                            <Text style={styles.historyDataFont}>{history.bhBalance.toLocaleString()}원</Text>
                         </View>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>거래 유형</Text>
-                            <Text style={styles.historyDataFont}>이체</Text>
+                            <Text style={styles.historyDataFont}>{detail?.bhOutType}</Text>
                         </View>
                     </View>
                 </View>
-                <View style={styles.bottom}>
-                    <Text style={styles.bottomText}>확인</Text>
-                </View>
+
+                <TouchableOpacity onPress={() => updateMemo(memo)}>
+                    <View style={styles.bottom}>
+                        <Text style={styles.bottomText}>확인</Text>
+                    </View>
+                </TouchableOpacity>
+
             </View>
         </SafeAreaView>
     );
@@ -63,7 +166,6 @@ const styles = StyleSheet.create({
     whole: {
         flex: 1,
         backgroundColor: 'white',
-        // alignItems: 'center',
     },
     innerContainer: {
         flex: 1,

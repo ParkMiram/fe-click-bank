@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Text, View, StyleSheet, Image, TouchableOpacity, SafeAreaView, Platform, StatusBar } from "react-native";
 // import { RootStackParamList } from "../../App";
 import React from "react";
+import { Path, Svg } from "react-native-svg";
 
 // type ReminingTranferNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ReminingTranfer'>
 
@@ -9,28 +10,57 @@ import React from "react";
 //   navigation: ReminingTranferNavigationProp;
 // };
 
+type userInfo = {
+  userId: string;
+  account: string;
+  nickName: string;
+  amount: number; // 상대방 잔액
+}
+
+type props = {
+  bank: string;
+  account: string;
+  transferAmount: number; // 보낼 금액
+  category: number
+}
+
 type data = {
   name: string;
   amount: number;
+  account: string;
+  accountNumber: string;
+  moneyAmount: number;
+  token: string;
 }
 
 const ReminingTranfer = ({ navigation, route }: any) => {
-    const { name, amount }: data = route.params;
-    console.log(amount.toLocaleString());
+    const userInfo: userInfo = route.params.userInfo;
+    const data: props = route.params.data;
+    const token: string = route.params.token;
+    // const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
+
+    console.log(data.transferAmount.toLocaleString());
     return (
       <SafeAreaView style={styles.container}>
-        <View style={styles.innerContainer}>  
+        <View style={styles.innerContainer}>
             <View>
                 <TouchableOpacity onPress={() => { navigation.goBack(); }}>
-                    <Image style={styles.markImage} source={require('../../assets/image/Expand_left.png')} resizeMode="contain" onError={(e) => console.log(e.nativeEvent.error)}></Image>
+                    <Svg
+                      width={31}
+                      height={23}
+                      fill="none"
+                      style={styles.markImage}
+                    >
+                      <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+                    </Svg>
                 </TouchableOpacity>
             </View>
             <Image style={styles.image} source={require('../../assets/image/Click_logo.png')} resizeMode="contain"></Image>
-            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{name}님에게</Text>
-            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{amount.toLocaleString()}원을</Text>
+            <Text style={{width: 200, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000', marginTop: 70}}>{userInfo.nickName}님에게</Text>
+            <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{data.transferAmount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보낼까요?</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { name, amount: String })}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('ResultTransfer', { userInfo, data, token })}>
             <Text style={styles.sendButtonText}>보내기</Text>
             </TouchableOpacity>
         </View>

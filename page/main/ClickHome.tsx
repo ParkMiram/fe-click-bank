@@ -1,23 +1,51 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, TextInput } from 'react-native';
+import { Container } from '../../css/sujin/Container';
+import NextButton from '../../component/auth/NextButton';
+import * as Clipboard from 'expo-clipboard';
+
 
 export default function ClickHome({ route, navigation }: any) {
-    const { code } = route.params;
+    const { token } = route.params;
+
+    const copyTokenToClipboard = async () => {
+        await Clipboard.setStringAsync(token);
+      };
 
     return (
-        <View style={styles.container}>
-            <Text>Click home</Text>
-            <Text>
-                {code}
-            </Text>
-        </View>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
+                <Text>Click home</Text>
+                <View style={styles.tokenContatiner}>
+                    <Text>유저 토큰</Text>
+                    <TextInput 
+                        style={{height:30}}
+                        defaultValue={token}
+                    />
+                </View>
+                <NextButton text="토큰 복사하기" press={copyTokenToClipboard} active={true} />
+                <NextButton text="로그아웃"
+                    press={() => navigation.reset({
+                        index: 0,
+                        routes: [{name: 'KakaoLogout'}]
+                    })}
+                    active={true}
+                />
+                <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
+                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token:token})} active={true} />
+                <NextButton text="내계좌내역보기" press={() => navigation.navigate('AccountHistory')} active={true} />
+
+
+            </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
+    tokenContatiner: {
+        paddingHorizontal: 20,
+        marginTop: 12,
+        marginBottom: 20,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+    }
 });
