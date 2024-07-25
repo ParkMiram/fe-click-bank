@@ -10,7 +10,7 @@ export const api = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://192.168.0.29:8080";
+    axios.defaults.baseURL = "http://35.223.135.5:32041";
 
     const res = await axios({
         url,
