@@ -20,7 +20,11 @@ export default function FriendsComponent({ route }: any) {
 
     // state
     // 친구 목록
-    const [friendListData, setFriendListData] = useState([]);
+    const [friendListData, setFriendListData] = useState([{
+        id: '',
+        img: '',
+        name: ''
+    }]);
     // 친구 요청 목록
     const [friendRequestListData, setFriendRequestListData] = useState([{
         id: '',
@@ -214,48 +218,40 @@ export default function FriendsComponent({ route }: any) {
 
     const renderItem = (data: any) => {
         return (
-            <FlatList
-                data={friendListData}
-                keyExtractor={({id}) => id}
-                renderItem={({item: {img, name}}) => {
-                    return (
-                        <View style={[styles.list, data.index === friendListData.length - 1 ? { marginBottom: 110 } : null]}>
-                            <View style={styles.friend}>
-                                {
-                                    img === '' ?
-                                    <Svg
-                                        width={40}
-                                        height={40}
-                                        fill="none"
-                                        viewBox="0 0 30 30"
-                                        style={{ marginRight: 10 }}
-                                    >
-                                        <Path
-                                            fill="#7E869E"
-                                            fillOpacity={0.25}
-                                            d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                                        />
-                                        <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
-                                        <Path
-                                            fill="#7E869E"
-                                            fillOpacity={0.5}
-                                            fillRule="evenodd"
-                                            d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                                            clipRule="evenodd"
-                                        />
-                                    </Svg>
-                                    :
-                                    <Image source={{ uri: img }} style={ styles.profile } />
-                                }
-                                <Text style={styles.friendName}>{name}</Text>
-                            </View>
-                            <TouchableOpacity style={styles.transfer}>
-                                <Text style={styles.transferTxt}>송금</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
-                }
-            />
+            <View style={[styles.list, data.index === friendListData.length - 1 ? { marginBottom: 110 } : null]}>
+                <View style={styles.friend}>
+                    {
+                        data.item.img === '' ?
+                            <Svg
+                                width={40}
+                                height={40}
+                                fill="none"
+                                viewBox="0 0 30 30"
+                                style={{ marginRight: 10 }}
+                            >
+                                <Path
+                                    fill="#7E869E"
+                                    fillOpacity={0.25}
+                                    d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
+                                />
+                                <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
+                                <Path
+                                    fill="#7E869E"
+                                    fillOpacity={0.5}
+                                    fillRule="evenodd"
+                                    d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
+                                    clipRule="evenodd"
+                                />
+                            </Svg>
+                            :
+                            <Image source={{ uri: data.item.img }} style={ styles.profile } />
+                    }
+                    <Text style={styles.friendName}>{data.item.name}</Text>
+                </View>
+                <TouchableOpacity style={styles.transfer}>
+                    <Text style={styles.transferTxt}>송금</Text>
+                </TouchableOpacity>
+            </View>
         )
     };
 
