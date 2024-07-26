@@ -1,9 +1,15 @@
 import { StyleSheet, View, Text, SafeAreaView, TextInput } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import NextButton from '../../component/auth/NextButton';
+import * as Clipboard from 'expo-clipboard';
+
 
 export default function ClickHome({ route, navigation }: any) {
     const { token } = route.params;
+
+    const copyTokenToClipboard = async () => {
+        await Clipboard.setStringAsync(token);
+      };
 
     return (
         <SafeAreaView style={Container.container}>
@@ -16,10 +22,7 @@ export default function ClickHome({ route, navigation }: any) {
                         defaultValue={token}
                     />
                 </View>
-
-               
-                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token:token})} active={true} />
-
+                <NextButton text="토큰 복사하기" press={copyTokenToClipboard} active={true} />
                 <NextButton text="로그아웃"
                     press={() => navigation.reset({
                         index: 0,
@@ -27,10 +30,11 @@ export default function ClickHome({ route, navigation }: any) {
                     })}
                     active={true}
                 />
-               
-
                 <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
+                <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token:token})} active={true} />
                 <NextButton text="내계좌내역보기" press={() => navigation.navigate('AccountHistory')} active={true} />
+
+
             </View>
         </SafeAreaView>
     );

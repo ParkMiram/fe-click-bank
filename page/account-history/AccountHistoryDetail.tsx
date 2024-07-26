@@ -7,14 +7,15 @@ import {
     View,
     StatusBar, Animated, TouchableOpacity, TextInput
 } from "react-native";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {AxiosResponse} from "axios";
 import {
     getAccountHistory,
-    getAccountHistoryDetail,
+    getAccountHistoryDetail, updateAccountHistoryCategory,
     updateAccountHistoryMemo
 } from "../../component/api/AccountHistoryApi";
 import {Path, Svg} from "react-native-svg";
+import RNPickerSelect from "react-native-picker-select";
 
 interface Category {
     id: number;
@@ -44,6 +45,19 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
     const [memo, setMemo] = useState('');
     const {history} = route.params;
     const id: number = history.historyId;
+    const [purpose, setPurpose] = useState<number>(history.categoryId.categoryId);
+    const purposes = [
+        { label: '식비', value: 1 },
+        { label: '생활', value: 2 },
+        { label: '쇼핑', value: 3 },
+        { label: '교통', value: 4 },
+        { label: '의료/건강', value: 5 },
+        { label: '문화/여가', value: 6 },
+        { label: '교육', value: 7 },
+        { label: '경조/선물', value: 8 },
+        { label: '수입', value: 9 },
+        { label: '기타', value: 10 },
+    ]
 
     const goBack = () => {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
@@ -68,11 +82,15 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
         }
     };
 
-    const updateMemo = async (memo: string): Promise<any> => {
+    const updateMemo = async (param: any): Promise<any> => {
+        let memo = param.memo;
+        const categoryId = param.purpose;
         if (memo && memo.length > 0) {
             try {
                 const data = {id, memo};
                 await updateAccountHistoryMemo(data);
+                const data2 = {id, categoryId};
+                await updateAccountHistoryCategory(data2);
             } catch (error) {
                 console.log(error);
             }
@@ -81,13 +99,14 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                 memo = "";
                 const data = {id, memo}
                 await updateAccountHistoryMemo(data);
+                const data2 = {id, categoryId};
+                await updateAccountHistoryCategory(data2);
             } catch (error) {
                 console.log(error);
             }
         }
         goBack();
     };
-
 
     return (
         <SafeAreaView style={styles.whole}>
@@ -115,10 +134,7 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                     <View style={[{marginBottom: 30}]}>
                         <Text style={styles.title}>{history.bhName}</Text>
                         <Text style={styles.memoFont}>메모</Text>
-                        <View style={styles.memoData}>
-                            <Text style={styles.memoDataFont}>직접 작성</Text>
-                            <Image source={require('../../assets/image/select.png')}/>
-                        </View>
+
                         <View style={styles.inputBox}>
                             <TextInput
                                 style={styles.inputTextFont}
@@ -148,10 +164,32 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                             <Text style={styles.historyDataFont}>거래 유형</Text>
                             <Text style={styles.historyDataFont}>{detail?.bhOutType}</Text>
                         </View>
+                        <View style={styles.historyData}>
+                            <Text style={styles.historyDataFont}>카테고리</Text>
+                            <RNPickerSelect
+                                onValueChange={(value) => setPurpose(value)}
+                                items={purposes}
+                                value={purpose}
+                                Icon={() => {
+                                    return <Svg
+                                        width={20}
+                                        height={10}
+                                        fill="none"
+                                        viewBox="0 0 10 5"
+                                        style={imageStyles.icon}
+                                    >
+                                        <Path stroke="#222" strokeWidth={0.7} d="M9.6.3 5.4 4.5 1.2.3" />
+                                    </Svg>;
+                                }}
+                                style={pickerSelectStyles}
+                                useNativeAndroidPickerStyle={false}
+                            />
+                            {/*<Text style={styles.historyDataFont}>{history?.categoryId.categoryName}</Text>*/}
+                        </View>
                     </View>
                 </View>
 
-                <TouchableOpacity onPress={() => updateMemo(memo)}>
+                <TouchableOpacity onPress={() => updateMemo({memo,purpose})}>
                     <View style={styles.bottom}>
                         <Text style={styles.bottomText}>확인</Text>
                     </View>
@@ -201,7 +239,8 @@ const styles = StyleSheet.create({
     memoFont: {
         fontSize: 18,
         color: '#acacac',
-        marginVertical: 20
+        marginVertical: 20,
+        marginBottom: 10
     },
     memoData: {
         borderBottomColor: '#000',
@@ -265,4 +304,32 @@ const styles = StyleSheet.create({
     bottomText: {
         fontSize: 26,
     }
+});
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+        width: 120,
+        // height: '100%',
+        color: 'black',
+        paddingRight: 10,
+        fontSize:22,
+        textAlign: "center"
+    },
+    inputAndroid: {
+        width: 120,
+        // height: '100%',
+        color: 'black',
+        paddingRight: 10,
+        fontSize:22,
+        textAlign: "center"
+    },
+    placeholder: {
+        color: 'black',  // placeholder 텍스트 색상
+    },
+});
+
+const imageStyles = StyleSheet.create({
+    icon: {
+        marginTop: 8,
+    },
 });
