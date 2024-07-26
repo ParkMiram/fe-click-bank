@@ -1,6 +1,6 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import AccountType from './AccountType';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 
 
@@ -11,6 +11,8 @@ export default function CreateAccount( { route, navigation }: any ) {
     useEffect(() => {
         if (accountType === '입출금 통장') {
             accountStatus = 'account'
+        } else if (accountType === '모임 통장') {
+            accountStatus = 'group'
         }
     }, [accountType]);
 
@@ -39,12 +41,10 @@ export default function CreateAccount( { route, navigation }: any ) {
 const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
-       
         width: "100%",
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-       
     },
     container: {
         flex: 1,

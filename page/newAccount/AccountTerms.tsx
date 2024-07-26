@@ -4,8 +4,8 @@ import AccountType from './AccountType';
 type data = {
     accountStatus: string;
     token: string;
-    userName: string,
-    accountPassword: string
+    userName: string;
+    accountPassword: string;
 }
 
 export default function AccountTerms( { route,navigation }: any ) {
