@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as paymentApi from '../../component/api/PaymentApi';
 import NextButton from '../../component/auth/NextButton';
+import * as LocalAuthentication from 'expo-local-authentication';
 import {Path, Svg} from "react-native-svg";
 
 interface PaymentData {
@@ -42,6 +43,18 @@ export default function Payment({ navigation, route }: any) {
 
     const selectCard = () => {
         // navigation.navigate('FriendsComponent');
+    }
+
+    const nextAndAuth = async () => {
+        const available:LocalAuthentication.AuthenticationType[] = await LocalAuthentication.supportedAuthenticationTypesAsync();
+        if (available.length == 0) {
+            alert("생체인증이 지원되지 않는 기기에서는 진행할 수 없습니다.");
+            // ...
+        } else {
+            const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
+            alert(`인증결과: ${result.success}`);
+            // ...
+        }
     }
 
     const getData = async () => {
@@ -111,7 +124,7 @@ export default function Payment({ navigation, route }: any) {
                 <TouchableOpacity onPress={() => {}}>
                     <Text style={{marginBottom: 14, fontSize: 13}}>✔ 필수 결제 정보 확인 및 정보 제공 동의</Text>
                 </TouchableOpacity>
-                <NextButton text="동의하고 결제하기" press={() => {}} active={true}/>
+                <NextButton text="동의하고 결제하기" press={nextAndAuth} active={true}/>
             </View>
         </SafeAreaView>
     );
