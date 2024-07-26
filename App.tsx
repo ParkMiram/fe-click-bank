@@ -3,6 +3,7 @@ import LoginPage from './page/login/LoginPage';
 import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import * as Linking from 'expo-linking';
 import SplashLogo from './page/splash/SplashLogo';
 import ClickHome from './page/main/ClickHome';
 import TermOfUse from './page/login/TermOfUse';
@@ -44,9 +45,20 @@ export type RootStackParamList = {
 };
 const Stack = createStackNavigator();
 
+const prefix = Linking.createURL("/path/into/app");
+
 export default function App() {
+    const linking = { 
+        prefixes: [prefix],
+        config: {
+            screens: {
+                Payment: 'pay/:pay_id',
+            }
+        },
+    };
+
     return (
-        <NavigationContainer>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
             <Stack.Navigator 
                 initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}

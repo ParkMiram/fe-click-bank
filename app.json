@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "Click_Auth",
-    "slug": "Click_Auth",
+    "name": "Click",
+    "slug": "Click",
+    "scheme": "clickbank",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
