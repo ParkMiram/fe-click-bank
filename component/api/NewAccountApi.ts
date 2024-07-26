@@ -13,6 +13,12 @@ export const getUserInfo = async (token: string): Promise<AxiosResponse<any>> =>
     });
 }
 
+export const getGroupAccount = async (token: string, account: string): Promise<AxiosResponse<any>> => {
+    return api(`/api/v1/accounts/group?account=${account}`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
 export const getAccountByUserId = async (token: string): Promise<AxiosResponse<any>> => {
     try {
         const response = await api('/api/v1/accounts/user-account', "GET", undefined, {

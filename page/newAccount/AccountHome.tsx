@@ -92,7 +92,7 @@ export default function AccountHome({ route, navigation }: any) {
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('EditAccount', {token, account: item.account})}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
                 <Image
                     source={require('../../assets/image/more.png')}
@@ -100,7 +100,7 @@ export default function AccountHome({ route, navigation }: any) {
                 />
             </TouchableOpacity>
             <Text style={styles.accountNumber}>
-                {item.account.replace(/\B(?=(\d{4})+(?!\d))/g, "-")}
+                {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
@@ -166,7 +166,7 @@ export default function AccountHome({ route, navigation }: any) {
 />
 
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName})}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
                 <Image
                     source={require('../../assets/image/plus.png')}
                     style={styles.imagePlus} resizeMode="contain"

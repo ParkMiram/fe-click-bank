@@ -21,7 +21,11 @@ export default function AccountComplete( {  navigation, route }: any ) {
             
             if (response && response.status == 201) {
                 console.log(response.status);
-                navigation.navigate('AccountHome', {token});
+                if (accountStatus === 'group') {
+                    navigation.navigate('FriendsComponent', {token})
+                } else {
+                    navigation.navigate('AccountHome', {token});
+                }
             } else {
                 alert('서버에 이상이 있습니다.');
             }
@@ -42,7 +46,6 @@ export default function AccountComplete( {  navigation, route }: any ) {
             <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
                 <Text style={styles.buttonText}>메인으로</Text>
             </TouchableOpacity>
-            {/* <StatusBar style="auto"/> */}
             </View>
         </SafeAreaView>
     );
