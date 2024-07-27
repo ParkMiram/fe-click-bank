@@ -30,6 +30,8 @@ import KakaoLogout from './page/login/KakaoLogout';
 import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 import EditAccount from './page/newAccount/EditAccount';
 import { AccountDetail } from './page/newAccount/AccountDetail';
+import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
+import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -52,10 +54,6 @@ export default function App() {
                 initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
-                <Stack.Screen name="Transfer" component={Transfer} />
-                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
-                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
-                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
@@ -68,6 +66,8 @@ export default function App() {
                 <Stack.Screen name="UserCreate" component={CreateUser} />
                 <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
+
+                {/* Account */}
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
@@ -79,7 +79,14 @@ export default function App() {
                 <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
                 <Stack.Screen name="AccountDetail" component={AccountDetail} />
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
+                <Stack.Screen name='AccountInviteFriends' component={AccountInviteFriends} />
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
+                <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
+                <Stack.Screen name="Transfer" component={Transfer} />
+                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
+                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
+                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
+
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 
