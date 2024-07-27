@@ -22,7 +22,7 @@ export default function AccountComplete( {  navigation, route }: any ) {
             if (response && response.status == 201) {
                 console.log(response.status);
                 if (accountStatus === 'group') {
-                    navigation.navigate('FriendsComponent', {token})
+                    navigation.navigate('AccountHome', {token})
                 } else {
                     navigation.navigate('AccountHome', {token});
                 }

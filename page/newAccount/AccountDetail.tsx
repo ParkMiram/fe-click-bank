@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context"
 import { Circle, Path, Svg } from "react-native-svg"
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useState } from "react";
-import { getGroupAccount } from "../../component/api/NewAccountApi";
+import { deleteAccount, deleteGroupMember, getGroupAccount } from "../../component/api/NewAccountApi";
 
 type data = {
     token: string;
@@ -34,6 +34,26 @@ export const AccountDetail = ({ navigation, route }: any) => {
         };
         fetchData();
     }, []);
+
+    const handleDeleteAccount = async () => {
+        setModalVisible(true);
+        try {
+            await deleteAccount(token, account);
+            navigation.navigate('AccountHome', {token});
+        } catch(error) {
+            console.log(error);
+        }
+    };
+
+    const handleDeleteGroupMember = async () => {
+        setModalVisible(true);
+        try {
+            await deleteGroupMember(token, account);
+            navigation.navigate('AccountHome', {token});
+        } catch(error) {
+            console.log(error);
+        }
+    };
 
     const ProfileComponent = ({ userImg }: any) => {
         return (
@@ -188,7 +208,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={() => {/* Confirm action */}}>
+                            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
                                 <Text style={styles.buttonText}>확인</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
@@ -214,7 +234,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                 </Svg>
             </TouchableOpacity>
             <View style={[styles.line, {width: '100%'}]} />
-            <TouchableOpacity style={styles.settingOption}>
+            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate('AccountInvitedUser', { token, account })}}>
                 <Text style={styles.settingText}>참여 중 멤버</Text>
                 <View style={styles.membersInfo}>
                     <GroupImages members={friend} />
@@ -229,7 +249,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                 </Svg>
             </TouchableOpacity>
             <View style={[styles.line, {width: '100%'}]} />
-            <TouchableOpacity style={styles.settingOption}>
+            <TouchableOpacity style={styles.settingOption} onPress={() => navigation.navigate('AccountInviteFriends', {token, account})}>
                 <Text style={styles.settingText}>친구 초대</Text>
                 <Svg
                     width={24}
@@ -260,7 +280,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalText}>모임 통장을 삭제하시겠습니까?</Text>
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={() => {/* Confirm action */}}>
+                            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
                                 <Text style={styles.buttonText}>확인</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={() => setModalGroupVisible(false)}>
@@ -290,7 +310,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     <View style={styles.modalContent}>
                         <Text style={styles.modalText}>모임을 탈퇴 하시겠습니까?</Text>
                         <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={() => {/* Confirm action */}}>
+                            <TouchableOpacity style={styles.button} onPress={handleDeleteGroupMember}>
                                 <Text style={styles.buttonText}>확인</Text>
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>

@@ -7,14 +7,39 @@ export const saveAccount = async (token:string, body: any): Promise<AxiosRespons
     });
 }
 
+export const saveGroup = async (token:string, body: any): Promise<AxiosResponse<any>> => {
+    return api(`/api/v1/accounts/group`, "post", body, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const waitGroupMember = async (token:string, account: string, body: any): Promise<AxiosResponse<any>> => {
+    return api(`/api/v1/accounts/group/wait?account=${account}`, "post", body, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+
 export const getUserInfo = async (token: string): Promise<AxiosResponse<any>> => {
     return api(`/api/v1/users`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
 
+export const acceptGroupAccount = async (token: string): Promise<AxiosResponse<any>> => {
+    return api(`/api/v1/accounts/group/accept`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
 export const getGroupAccount = async (token: string, account: string): Promise<AxiosResponse<any>> => {
     return api(`/api/v1/accounts/group?account=${account}`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const getFriends = async (token: string, account: string): Promise<AxiosResponse<any>> => {
+    return api(`api/v1/accounts/friends?account=${account}`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
@@ -57,8 +82,14 @@ export const setAccountLimit = async (body: object, token: string):Promise<Axios
     });
 }
 
-export const deleteAccount = async (account: string, token: string):Promise<AxiosResponse<any>> => {
+export const deleteAccount = async (token: string, account: string):Promise<AxiosResponse<any>> => {
     return await api(`/api/v1/accounts?account=${account}`, "delete", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const deleteGroupMember = async (token: string, account: string):Promise<AxiosResponse<any>> => {
+    return await api(`/api/v1/accounts/group?account=${account}`, "delete", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
