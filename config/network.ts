@@ -28,7 +28,7 @@ export const apiAccount = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://35.192.67.71:32001";
+    axios.defaults.baseURL = process.env.ACCOUNT;
 
     const res = await axios({
         url,
