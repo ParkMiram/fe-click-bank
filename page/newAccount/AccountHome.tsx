@@ -94,10 +94,14 @@ export default function AccountHome({ route, navigation }: any) {
         <View style={styles.accountCard}>
             <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
+                <View style={styles.imageWrapper}>
+
                 <Image
                     source={require('../../assets/image/more.png')}
                     style={styles.imageMore} resizeMode="contain"
                 />
+                </View>
+
             </TouchableOpacity>
             <Text style={styles.accountNumber}>
                 {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
@@ -144,7 +148,7 @@ export default function AccountHome({ route, navigation }: any) {
                 <View style={styles.nameContainer}>
                     <Image
                         source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
-                        style={styles.imagePerson} resizeMode="contain"
+                        style={styles.imagePerson}resizeMode="cover"
                     />
                     <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
@@ -206,10 +210,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
     },
-    imagePerson: {
-        width: 45,
-        height: 45,
-        marginLeft: 20,
+    imagePerson:{
+        width:45,
+        height:45,
+        borderRadius:50,
+        marginLeft:20
     },
     imageMore: {
         width: 50,
@@ -221,6 +226,13 @@ const styles = StyleSheet.create({
     imageBell: {
         width: 80,
         height: 80,
+    },
+    imageWrapper: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        overflow: 'hidden',
+        marginLeft: 20,
     },
     text: {
         textAlign: 'left',
