@@ -21,3 +21,21 @@ export const api = async (
 
     return res;
 };
+
+export const apiAccount = async (
+    url: string,
+    method: Method,
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
+): Promise<AxiosResponse<any>> => {
+    axios.defaults.baseURL = "http://35.192.67.71:32001";
+
+    const res = await axios({
+        url,
+        method,
+        data: body,
+        headers: headers
+    });
+
+    return res;
+};
