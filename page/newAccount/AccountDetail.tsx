@@ -48,7 +48,9 @@ export const AccountDetail = ({ navigation, route }: any) => {
     const handleDeleteGroupMember = async () => {
         setModalVisible(true);
         try {
-            await deleteGroupMember(token, account);
+            
+            const res = await deleteGroupMember(token, account);
+            console.log(res.data);
             navigation.navigate('AccountHome', {token});
         } catch(error) {
             console.log(error);
