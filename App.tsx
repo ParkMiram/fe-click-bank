@@ -31,6 +31,7 @@ import KakaoLogout from './page/login/KakaoLogout';
 import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 import EditAccount from './page/newAccount/EditAccount';
 import Payment from './page/payment/Payment';
+import Success from './page/payment/Success';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -53,7 +54,7 @@ export default function App() {
         prefixes: [prefix],
         config: {
             screens: {
-                Payment: 'pay/:pay_id',
+                Payment: 'pay/:payment_id',
             }
         },
     };
@@ -92,6 +93,7 @@ export default function App() {
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
                 <Stack.Screen name="Payment" component={Payment}/>
+                <Stack.Screen name="PaymentSuccess" component={Success}/>
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 

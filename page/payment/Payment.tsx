@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,8 @@ interface PaymentData {
     name: string;
     store: string;
     amount: number;
+    successRedirect: string;
+    failRedirect: string;
 }
 interface CardData {
     account: string;
@@ -30,6 +32,8 @@ export default function Payment({ navigation, route }: any) {
         name: "분도의 갬성가득한 밤",
         store: "T82",
         amount: 58500,
+        successRedirect: '',
+        failRedirect: '',
     }
     const testCardData:CardData = {
         account: "012012012345",
@@ -52,8 +56,14 @@ export default function Payment({ navigation, route }: any) {
             // ...
         } else {
             const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
-            alert(`인증결과: ${result.success}`);
-            // ...
+            if (result.success) {
+                navigation.reset({
+                    index: 0,
+                    routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirect}}]
+                });
+            } else {
+                alert("인증에 실패했습니다.");
+            }
         }
     }
 
