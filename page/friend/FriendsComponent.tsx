@@ -13,6 +13,7 @@ import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import FriendSearch from "./FriendSearch";
 import {Circle, Path, Rect, Svg} from "react-native-svg";
 import axios, {AxiosResponse} from "axios";
+import FriendInvite from "./FriendInvite";
 
 export default function FriendsComponent({ route }: any) {
     const { token } = route.params;
@@ -33,7 +34,8 @@ export default function FriendsComponent({ route }: any) {
         name: ''
     }]);
     // 친구 추가
-    const [isModalVisible, setModalVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isInviteModalVisible, setisInviteModalVisible] = useState(false);
 
     // 친구 목록 조회
     const getFriendList = async (): Promise<void> => {
@@ -206,9 +208,13 @@ export default function FriendsComponent({ route }: any) {
         );
     }
 
-    const toggleModal = () => {
-        setModalVisible(!isModalVisible);
+    const toggleModal = (): void => {
+        setIsModalVisible(!isModalVisible);
     };
+
+    const toggleInviteModal = (): void => {
+        setisInviteModalVisible(!isInviteModalVisible);
+    }
 
     // useEffect
     useEffect(() => {
@@ -272,8 +278,26 @@ export default function FriendsComponent({ route }: any) {
                 <View style={styles.wrap}>
                     {/* search */}
                     <View style={styles.searchWrap}>
+                        <TouchableOpacity
+                            style={styles.bell}
+                            onPress={toggleInviteModal}
+                        >
+                            <Svg
+                                width={18}
+                                height={18}
+                                fill="none"
+                            >
+                                <Path
+                                    fill="#FF9318"
+                                    d="M3 6a6 6 0 0 1 12 0v1.83a7.83 7.83 0 0 0 1.116 4.03l.553.922c.367.612.551.918.564 1.168a1 1 0 0 1-.529.932c-.22.118-.577.118-1.29.118H2.586c-.713 0-1.07 0-1.29-.118a1 1 0 0 1-.529-.932c.013-.25.197-.556.564-1.168l.553-.922A7.83 7.83 0 0 0 3 7.83V6ZM11.35 16a.14.14 0 0 1 .143.15c-.045.475-.3.925-.725 1.264C10.298 17.79 9.663 18 9 18s-1.299-.21-1.768-.586c-.424-.34-.68-.789-.725-1.264A.14.14 0 0 1 6.65 16h4.7Z"
+                                />
+                            </Svg>
+                            <Text style={styles.inviteTxt}>모임통장</Text>
+                        </TouchableOpacity>
                         <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기'/>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.searchIcon}
+                        >
                             <Svg
                                 width={14}
                                 height={14}
@@ -304,7 +328,6 @@ export default function FriendsComponent({ route }: any) {
                         </View>
                     </View>
                 </View>
-                {/*<FriendTab />*/}
             </>
         )
     };
@@ -526,6 +549,14 @@ export default function FriendsComponent({ route }: any) {
                     bearerToken={bearerToken}
                 />
             }
+            {
+                isInviteModalVisible &&
+                <FriendInvite
+                    isInviteModalVisible={isInviteModalVisible}
+                    toggleInviteModal={toggleInviteModal}
+                    bearerToken={bearerToken}
+                />
+            }
         </View>
         // </SafeAreaView>
     )
@@ -566,15 +597,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
+    },
+    bell: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 50,
+        width: 50
+    },
+    inviteTxt: {
+        fontSize: 10,
+        marginTop: 5,
+        color: '#888888'
     },
     searchInpt: {
         flex: 1,
     },
     searchIcon: {
         flex: 0,
-        marginLeft: 10
+        marginLeft: 10,
+        paddingHorizontal: 15,
+        paddingVertical: 20
     },
     listWrap: {
         height: '100%',
