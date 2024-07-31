@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import {Circle, Path, Svg} from "react-native-svg";
 import axios, {AxiosResponse} from "axios";
+import {saveGroup} from "../../component/api/NewAccountApi";
 
 export default function  FriendInvite (props: any) {
 
@@ -52,11 +53,7 @@ export default function  FriendInvite (props: any) {
     // 초대 수락
     const inviteAccept = async () => {
         try {
-            await axios.post('http://35.192.67.71:32001/api/v1/accounts/group', { status: true }, {
-                headers: {
-                    Authorization: bearerToken
-                }
-            });
+            await saveGroup(bearerToken, { status: true })
             Alert.alert(
                 '모임 통장',
                 '모임 통장에 가입되었습니다.🤝'
