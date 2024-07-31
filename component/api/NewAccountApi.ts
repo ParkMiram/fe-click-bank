@@ -21,19 +21,13 @@ export const waitGroupMember = async (token:string, account: string, body: any):
 
 
 export const getUserInfo = async (token: string): Promise<AxiosResponse<any>> => {
-    return apiAccount(`/api/v1/users`, "get", undefined, {
+    return apiAccount(`/api/v1/accounts/users`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
 
 export const acceptGroupAccount = async (token: string): Promise<AxiosResponse<any>> => {
     return apiAccount(`/api/v1/accounts/group/accept`, "get", undefined, {
-        'Authorization': `Bearer ${token}`
-    });
-}
-
-export const acceptGroupAccount = async (token: string): Promise<AxiosResponse<any>> => {
-    return api(`/api/v1/accounts/group/accept`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
@@ -46,12 +40,6 @@ export const getGroupAccount = async (token: string, account: string): Promise<A
 
 export const getFriends = async (token: string, account: string): Promise<AxiosResponse<any>> => {
     return apiAccount(`api/v1/accounts/friends?account=${account}`, "get", undefined, {
-        'Authorization': `Bearer ${token}`
-    });
-}
-
-export const getFriends = async (token: string, account: string): Promise<AxiosResponse<any>> => {
-    return api(`api/v1/accounts/friends?account=${account}`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
@@ -102,12 +90,6 @@ export const deleteAccount = async (token: string, account: string):Promise<Axio
 
 export const deleteGroupMember = async (token: string, account: string):Promise<AxiosResponse<any>> => {
     return await apiAccount(`/api/v1/accounts/group?account=${account}`, "delete", undefined, {
-        'Authorization': `Bearer ${token}`
-    });
-}
-
-export const deleteGroupMember = async (token: string, account: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts/group?account=${account}`, "delete", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
