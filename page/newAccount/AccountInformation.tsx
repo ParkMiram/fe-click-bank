@@ -4,9 +4,9 @@ import { View, StyleSheet, Text, TouchableOpacity, Dimensions, Platform, SafeAre
 type data = {
     accountStatus: string;
     token: string;
-    userName: string,
-    accountPassword: string,
-    purpose: string
+    userName: string;
+    accountPassword: string;
+    purpose: string;
 }
 
 export default function AccountInformation( { navigation, route }: any ) {
@@ -36,7 +36,7 @@ export default function AccountInformation( { navigation, route }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.buttonApplication} 
-                onPress={() => navigation.navigate('AccountTerms', {accountStatus, token, accountPassword})}
+                onPress={() => navigation.navigate('AccountTerms', {accountStatus, token, accountPassword })}
             >
                 <Text style={styles.buttonTextApplication}>신청하기</Text>
             </TouchableOpacity>

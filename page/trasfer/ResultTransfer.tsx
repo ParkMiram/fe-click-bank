@@ -42,6 +42,7 @@ const ResultTransfer = ({ navigation, route }: any) => {
     console.log(userInfo);
     console.log(data);
     console.log(token);
+    console.log(userInfo.account);
 
     useEffect(() => {
       const performTransfer = async () => {

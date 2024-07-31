@@ -152,7 +152,7 @@ const Transfer = ({ navigation, route }: any) => {
                       style={styles.sendButton} 
                       onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber, account, moneyAmount, category: selectedCategoryID, token })}
                   >
-                  <Text style={styles.sendButtonText}>보내기</Text>
+                    <Text style={styles.sendButtonText}>보내기</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>

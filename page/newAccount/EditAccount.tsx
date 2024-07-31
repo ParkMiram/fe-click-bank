@@ -96,7 +96,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                     placeholder="50,000,000"
                                 />
                             </View>
-                            <View style = {styles.reLimitContainer}>
+                            <View style = {[styles.reLimitContainer]}>
                                 <Text style = {styles.textcontainer}>회별 한도 수정</Text>
                                 <TextInput
                                     style={styles.inputLimit}
@@ -119,7 +119,6 @@ export default function EditAccount( { route, navigation }: any ) {
                     <View style = {styles.buttonContainer}>
                         <TouchableOpacity
                             style={styles.button}
-                            onPress={handleDeleteAccount}
                         >
                             <Text style={styles.buttonText}>계좌 삭제</Text>
                         </TouchableOpacity>
@@ -146,7 +145,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                             closeModal();
                                         }}
                                     >
-                                        <Text style={styles.buttonText}>삭제</Text>
+                                        <Text style={styles.buttonText} onPress={handleDeleteAccount}>삭제</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -203,7 +202,6 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
         marginBottom:30
-
     },
     passwordText:{
 
@@ -213,8 +211,7 @@ const styles = StyleSheet.create({
         width:'90%',
         justifyContent:'space-between',
         alignItems:'center',
-    
-
+        marginBottom:30
     },
     limitText:{
         
