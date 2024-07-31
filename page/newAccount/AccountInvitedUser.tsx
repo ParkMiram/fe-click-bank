@@ -24,6 +24,7 @@ export const AccountInvitedUser = ({ navigation, route}: any) => {
     useEffect(() => {
         const fetchGroupAccount = async () => {
             try {
+                console.log(`usertap/ token: ${token}, account: ${account}`);
                 const response = await getGroupAccount(token, account);
                 const groupMembers: GroupMemberInfo[] = response.data.groupAccountMemberResponses;
                 setMembers(groupMembers);

@@ -222,6 +222,11 @@ export const AccountDetail = ({ navigation, route }: any) => {
         </>
     );
 
+    const goInvitedUser = () => {
+        console.log(`detail tap/ token: ${token}, account: ${account}`);
+        navigation.navigate('AccountInvitedUser', { token, account });
+    }
+
     const GroupAccountSettings = () => (
         <>
             <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate("EditAccount", {token})}}>
@@ -235,7 +240,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                 </Svg>
             </TouchableOpacity>
             <View style={[styles.line, {width: '100%'}]} />
-            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate('AccountInvitedUser', { token, account })}}>
+            <TouchableOpacity style={styles.settingOption} onPress={goInvitedUser}>
                 <Text style={styles.settingText}>참여 중 멤버</Text>
                 <View style={styles.membersInfo}>
                     <GroupImages members={friend} />
