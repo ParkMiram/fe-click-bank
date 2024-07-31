@@ -3,6 +3,7 @@ import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View
 import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
+import { Container } from '../../css/sujin/Container';
 
 interface AccountResponse {
     account: string;
@@ -92,17 +93,17 @@ export default function AccountHome({ route, navigation }: any) {
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+            <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <View style={styles.imageWrapper}>
-
-                <Image
-                    source={require('../../assets/image/more.png')}
-                    style={styles.imageMore} resizeMode="contain"
-                />
-                </View>
-
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+                    <View style={styles.imageWrapper}>
+                        <Image
+                            source={require('../../assets/image/more.png')}
+                            style={styles.imageMore} resizeMode="contain"
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
             <Text style={styles.accountNumber}>
                 {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
@@ -118,12 +119,14 @@ export default function AccountHome({ route, navigation }: any) {
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
-                        account: item.account,
-                        // accountName: item.accountName,
-                        moneyAmount: item.moneyAmount})}>
-                    <Text style={styles.buttonText}>이체</Text>
-                </TouchableOpacity>
+                <View style={styles.transferButton}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Transfer',{ token: token,
+                            account: item.account,
+                            // accountName: item.accountName,
+                            moneyAmount: item.moneyAmount})}>
+                        <Text style={styles.buttonText}>이체</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -144,7 +147,7 @@ export default function AccountHome({ route, navigation }: any) {
     // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+            <View style={Container.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Image
                         source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
@@ -167,8 +170,7 @@ export default function AccountHome({ route, navigation }: any) {
                     keyExtractor={(item, index) => index.toString()}
                     extraData={numberHidden} 
                     contentContainerStyle={styles.flatListContainer}
-/>
-
+                />
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
                 <Image
@@ -192,6 +194,11 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    accountDetailContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 30
     },
     flatListContainer: {
         width: '100%',
