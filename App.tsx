@@ -29,6 +29,17 @@ import AccountTerms from './page/newAccount/AccountTerms';
 import KakaoLogout from './page/login/KakaoLogout';
 import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 import EditAccount from './page/newAccount/EditAccount';
+import CardList from './page/card/CardList';
+import MyCardInformation from './page/card/CardInformation';
+import AddCardList from './page/card/AddCardList';
+import CreateCard from './page/card/CreateCard';
+import CardInformation from './page/card/CardInformation';
+
+
+import CardComplete from './page/card/CardComplete';
+import ApplicantInformation from './page/card/ApplicantInformation';
+import CardPassword from './page/card/CardPassword';
+import MyCard from './page/card/MyCard';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -78,6 +89,17 @@ export default function App() {
                 <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
+                <Stack.Screen name="CardList" component={CardList}/>
+                <Stack.Screen name="CardInformation" component={CardInformation}/>
+                <Stack.Screen name="AddCardList" component={AddCardList}/>
+                <Stack.Screen name="CreateCard" component={CreateCard}/>
+                <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
+                <Stack.Screen name="MyCard" component={MyCard}/>
+                 <Stack.Screen name="CardPassword" component={CardPassword}/>
+                <Stack.Screen name="CardComplete" component={CardComplete}/>
+
+
+
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 
