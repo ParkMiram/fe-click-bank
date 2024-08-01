@@ -1,38 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
-import MyCardInformation from './CardInformation';
-
+import { getAllMyCard } from "../../component/api/CardListApi";
 
 interface CardResponse {
-    cardImg: string;
+    cardId: number;
+    cardName: string;
+    cardProduct: {
+        cardImg: string;
+    };
 }
 
 export default function CardList({ route, navigation }: any) {
-    const [cards, setCards] = useState<CardResponse[]>([
-        // { cardImg: 'https://via.placeholder.com/150' }, 
-        // { cardImg: 'https://via.placeholder.com/150' }, 
-        { cardImg: ('../../assets/image/cardImg.png') }  
-    ]);
-
     const token = route.params?.token;
+    const [cardList, setCardList] = useState<CardResponse[]>([]);
 
-    // 카드 항목 
+    useEffect(() => {
+        if (token) {
+            getMyCardList();
+        } else {
+            console.error("Token is undefined");
+        }
+    }, [token]);
+
+    const getMyCardList = async () => {
+        try {
+            const res = await getAllMyCard(token);
+            if (res.data && res.data.data && res.data.data.getAllMyCard) {
+                setCardList(res.data.data.getAllMyCard);
+            } else {
+                console.error("Unexpected response structure", res);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const renderItem = ({ item }: { item: CardResponse }) => (
-        // <View style={styles.cardContainer}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('MyCard')}>
-                <Image source={{ uri: item.cardImg }} style={styles.cardImg} />
-            </TouchableOpacity>
-        // </View>
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('MyCard', { id: item.cardId })}>
+            <Image source={{ uri: item.cardProduct.cardImg }} style={styles.cardImg} />
+            <Text>{item.cardName}</Text>
+        </TouchableOpacity>
     );
 
-    // 카드 추가 버튼 
     const renderAddCardButton = () => (
-        // <View style={styles.cardContainer}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('AddCardList')}>
-                <Image source={require('../../assets/image/more.png')} style={styles.plusIcon} />
-            </TouchableOpacity>
-        // </View>
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('AddCardList')}>
+            <Image source={require('../../assets/image/more.png')} style={styles.plusIcon} />
+        </TouchableOpacity>
     );
+
+    const combinedData: Array<CardResponse | { cardId: number; cardName: string; cardProduct: { cardImg: string } }> = [...cardList, { cardId: -1, cardName: '', cardProduct: { cardImg: '' } }];
 
     return (
         <SafeAreaView style={styles.container}>
@@ -41,17 +57,16 @@ export default function CardList({ route, navigation }: any) {
                     <Text style={styles.cardText}>카드</Text>
                 </View>
                 <FlatList
-                    data={[...cards, { cardImg: '' }]} // 카드 리스트에 빈 항목 추가
-                    renderItem={({ item, index }) => item.cardImg === '' ? renderAddCardButton() : renderItem({ item })}
-                    keyExtractor={(item, index) => index.toString()}
+                    data={combinedData}
+                    renderItem={({ item }) => item.cardId === -1 ? renderAddCardButton() : renderItem({ item })}
+                    keyExtractor={(item) => item.cardId.toString()}
                     contentContainerStyle={styles.flatListContainer}
-                    
+                    numColumns={2}
                 />
             </View>
         </SafeAreaView>
     );
 }
-
 
 const styles = StyleSheet.create({
     innerContainer: {
@@ -69,7 +84,7 @@ const styles = StyleSheet.create({
     },
     flatListContainer: {
         width: '100%',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingBottom: 20,
     },
     nameContainer: {
@@ -84,21 +99,22 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         margin: 10,
     },
     cardButton: {
-        width: 150,
+        width: Dimensions.get('window').width / 2 - 60,
         height: 200,
         borderWidth: 1.5,
         borderColor: '#B7E1CE',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        margin: 20
     },
     cardImg: {
-        width: 140,
+        width: Dimensions.get('window').width / 2 - 60,
         height: 190,
         borderRadius: 10,
     },
