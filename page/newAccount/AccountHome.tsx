@@ -3,6 +3,7 @@ import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View
 import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
+import { Container } from '../../css/sujin/Container';
 
 interface AccountResponse {
     account: string;
@@ -92,15 +93,19 @@ export default function AccountHome({ route, navigation }: any) {
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('EditAccount', {token, account: item.account})}>
+            <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <Image
-                    source={require('../../assets/image/more.png')}
-                    style={styles.imageMore} resizeMode="contain"
-                />
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+                    <View style={styles.imageWrapper}>
+                        <Image
+                            source={require('../../assets/image/more.png')}
+                            style={styles.imageMore} resizeMode="contain"
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
             <Text style={styles.accountNumber}>
-                {item.account.replace(/\B(?=(\d{4})+(?!\d))/g, "-")}
+                {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
@@ -114,12 +119,14 @@ export default function AccountHome({ route, navigation }: any) {
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
-                        account: item.account,
-                        // accountName: item.accountName,
-                        moneyAmount: item.moneyAmount})}>
-                    <Text style={styles.buttonText}>이체</Text>
-                </TouchableOpacity>
+                <View style={styles.transferButton}>
+                    <TouchableOpacity onPress={() => navigation.navigate('Transfer',{ token: token,
+                            account: item.account,
+                            // accountName: item.accountName,
+                            moneyAmount: item.moneyAmount})}>
+                        <Text style={styles.buttonText}>이체</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
     );
@@ -140,11 +147,11 @@ export default function AccountHome({ route, navigation }: any) {
     // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+            <View style={Container.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Image
                         source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
-                        style={styles.imagePerson} resizeMode="contain"
+                        style={styles.imagePerson}resizeMode="cover"
                     />
                     <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
@@ -163,10 +170,9 @@ export default function AccountHome({ route, navigation }: any) {
                     keyExtractor={(item, index) => index.toString()}
                     extraData={numberHidden} 
                     contentContainerStyle={styles.flatListContainer}
-/>
-
+                />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName})}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
                 <Image
                     source={require('../../assets/image/plus.png')}
                     style={styles.imagePlus} resizeMode="contain"
@@ -189,6 +195,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    accountDetailContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 30
+    },
     flatListContainer: {
         width: '100%',
         alignItems: 'center',
@@ -206,10 +217,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
     },
-    imagePerson: {
-        width: 45,
-        height: 45,
-        marginLeft: 20,
+    imagePerson:{
+        width:45,
+        height:45,
+        borderRadius:50,
+        marginLeft:20
     },
     imageMore: {
         width: 50,
@@ -221,6 +233,13 @@ const styles = StyleSheet.create({
     imageBell: {
         width: 80,
         height: 80,
+    },
+    imageWrapper: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        overflow: 'hidden',
+        marginLeft: 20,
     },
     text: {
         textAlign: 'left',

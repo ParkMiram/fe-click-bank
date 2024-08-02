@@ -151,7 +151,9 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
                         </View>
                         <View style={styles.budgetGraphArea}>
                             <View style={styles.budgetBaseGraph}>
-                                <View style={[{ width: `${percentage}%` }, styles.budgetGraph]} />
+                                <View
+                                    style={[{ width: `${percentage}%`, maxWidth: '100%', backgroundColor: `${percentage>=100? "#df2323": "#1D9287"}`},
+                                        styles.budgetGraph]} />
                                 <Text style={styles.budgetGraphFont}>
                                     {budget?.mbBudget === 0 ? '예산을 설정해주세요' : `${percentage}%`}
                                 </Text>
@@ -278,7 +280,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     budgetGraph: {
-        backgroundColor: "#1D9287",
+        // backgroundColor: "#1D9287",
         // width: ,
         height: 45,
         borderRadius: 10,

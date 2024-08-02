@@ -33,6 +33,23 @@ import EditAccount from './page/newAccount/EditAccount';
 import Payment from './page/payment/Payment';
 import Success from './page/payment/Success';
 
+import CardList from './page/card/CardList';
+import MyCardInformation from './page/card/CardInformation';
+import AddCardList from './page/card/AddCardList';
+import CreateCard from './page/card/CreateCard';
+import CardInformation from './page/card/CardInformation';
+
+
+import CardComplete from './page/card/CardComplete';
+import ApplicantInformation from './page/card/ApplicantInformation';
+import CardPassword from './page/card/CardPassword';
+import MyCard from './page/card/MyCard';
+
+import { AccountDetail } from './page/newAccount/AccountDetail';
+import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
+import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
+
+
 // export type RootStackParamList = {
 //     Home: undefined;
 //     Transfer: undefined;
@@ -65,10 +82,6 @@ export default function App() {
                 initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
             >
-                <Stack.Screen name="Transfer" component={Transfer} />
-                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
-                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
-                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
@@ -81,6 +94,8 @@ export default function App() {
                 <Stack.Screen name="UserCreate" component={CreateUser} />
                 <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
                 <Stack.Screen name="ClickHome" component={ClickHome} />
+
+                {/* Account */}
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
@@ -90,8 +105,23 @@ export default function App() {
                 <Stack.Screen name="AccountHistory" component={AccountHistory} />
                 <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} />
                 <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} />
+                <Stack.Screen name="AccountDetail" component={AccountDetail} />
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
+                <Stack.Screen name='AccountInviteFriends' component={AccountInviteFriends} />
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
+                <Stack.Screen name="CardList" component={CardList}/>
+                <Stack.Screen name="CardInformation" component={CardInformation}/>
+                <Stack.Screen name="AddCardList" component={AddCardList}/>
+                <Stack.Screen name="CreateCard" component={CreateCard}/>
+                <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
+                <Stack.Screen name="MyCard" component={MyCard}/>
+                 <Stack.Screen name="CardPassword" component={CardPassword}/>
+                <Stack.Screen name="CardComplete" component={CardComplete}/>
+                <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
+                <Stack.Screen name="Transfer" component={Transfer} />
+                <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
+                <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
+                <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Payment" component={Payment}/>
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
                 {/* Friend */}

@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
     },
     wrap: {
         padding: 20,
-        // paddingBottom: 30,
     },
     searchWrap: {
         width: '100%',

@@ -1,21 +1,52 @@
 import axios, { AxiosResponse } from "axios";
-import { api } from "../../config/network";
+import { api, apiAccount } from "../../config/network";
 
 export const saveAccount = async (token:string, body: any): Promise<AxiosResponse<any>> => {
-    return api(`/api/v1/accounts`, "post", body, {
+    return apiAccount(`/api/v1/accounts`, "post", body, {
         'Authorization': `Bearer ${token}`
     });
 }
 
+export const saveGroup = async (token:string, body: any): Promise<AxiosResponse<any>> => {
+    return apiAccount(`/api/v1/accounts/group`, "post", body, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const waitGroupMember = async (token:string, account: string, body: any): Promise<AxiosResponse<any>> => {
+    return apiAccount(`/api/v1/accounts/group/wait?account=${account}`, "post", body, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+
 export const getUserInfo = async (token: string): Promise<AxiosResponse<any>> => {
-    return api(`/api/v1/users`, "get", undefined, {
+    return apiAccount(`/api/v1/accounts/users`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const acceptGroupAccount = async (token: string): Promise<AxiosResponse<any>> => {
+    return apiAccount(`/api/v1/accounts/group/accept`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const getGroupAccount = async (token: string, account: string): Promise<AxiosResponse<any>> => {
+    return apiAccount(`/api/v1/accounts/group?account=${account}`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const getFriends = async (token: string, account: string): Promise<AxiosResponse<any>> => {
+    return apiAccount(`api/v1/accounts/friends?account=${account}`, "get", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
 
 export const getAccountByUserId = async (token: string): Promise<AxiosResponse<any>> => {
     try {
-        const response = await api('/api/v1/accounts/user-account', "GET", undefined, {
+        const response = await apiAccount('/api/v1/accounts/user-account', "GET", undefined, {
             'Authorization': `Bearer ${token}`
         });
         return response;
@@ -34,25 +65,31 @@ export const getAccountByUserId = async (token: string): Promise<AxiosResponse<a
 };
 
 export const setAccountName = async (body: object, token: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts/name`, "put", body, {
+    return await apiAccount(`/api/v1/accounts/name`, "put", body, {
         'Authorization': `Bearer ${token}`
     });
 }
 
 export const setAccountPassword = async (body: object, token: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts/password`, "put", body, {
+    return await apiAccount(`/api/v1/accounts/password`, "put", body, {
         'Authorization': `Bearer ${token}`
     });
 }
 
 export const setAccountLimit = async (body: object, token: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts/limit`, "put", body, {
+    return await apiAccount(`/api/v1/accounts/limit`, "put", body, {
         'Authorization': `Bearer ${token}`
     });
 }
 
-export const deleteAccount = async (account: string, token: string):Promise<AxiosResponse<any>> => {
-    return await api(`/api/v1/accounts?account=${account}`, "delete", undefined, {
+export const deleteAccount = async (token: string, account: string):Promise<AxiosResponse<any>> => {
+    return await apiAccount(`/api/v1/accounts?account=${account}`, "delete", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
+export const deleteGroupMember = async (token: string, account: string):Promise<AxiosResponse<any>> => {
+    return await apiAccount(`/api/v1/accounts/group?account=${account}`, "delete", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }

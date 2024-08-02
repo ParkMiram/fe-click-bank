@@ -8,27 +8,12 @@ type props = {
     account: string;
 }
 
-export default function EditAccount( { route, navigation }: any ) {
-    const [modalVisible, setModalVisible] = useState(false);
+export default function EditCard( { route, navigation }: any ) {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [dailyLimit, setDailyLimit] = useState('');
     const [onetimeLimit, setOnetimeLimit] = useState('')
     const { token, account }: props = route.params;
-
-    const handleDeleteAccount = async () => {
-        setModalVisible(true);
-        try {
-            await deleteAccount(account, token);
-            navigation.navigate('AccountHome', {token});
-        } catch(error) {
-            console.log(error);
-        }
-    };
-
-    const closeModal = () => {
-        setModalVisible(false);
-    };
 
     const handleSubmit = async () => {
         try {
@@ -65,17 +50,17 @@ export default function EditAccount( { route, navigation }: any ) {
                     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                         <View style = {styles.reContainer}>
                             <View style ={styles.renameContainer}>
-                                <Text style = {styles.textcontainer}>계좌명 수정</Text> 
+                                <Text style = {styles.textcontainer}>카드명 수정</Text> 
                                 <TextInput
                                     style={styles.inputName}
                                     value={name}
                                     onChangeText={setName}
                                     keyboardType="default"
-                                    placeholder="계좌명"
+                                    placeholder="카드명"
                                 />
                             </View>
                             <View style = {styles.rePasswordContianer}>
-                                <Text style = {styles.textcontainer}>계좌 비밀번호 수정</Text>
+                                <Text style = {styles.textcontainer}>카드 비밀번호 수정</Text>
                                 <TextInput
                                     style={styles.inputPassword}
                                     value={password}
@@ -87,7 +72,7 @@ export default function EditAccount( { route, navigation }: any ) {
                             />
                             </View>
                             <View style = {styles.reLimitContainer}>
-                                <Text style = {styles.textcontainer}>일일 한도 수정</Text>
+                                <Text style = {styles.textcontainer}>카드 일일 한도 수정</Text>
                                 <TextInput
                                     style={styles.inputLimit}
                                     value={dailyLimit}
@@ -97,7 +82,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                 />
                             </View>
                             <View style = {[styles.reLimitContainer]}>
-                                <Text style = {styles.textcontainer}>회별 한도 수정</Text>
+                                <Text style = {styles.textcontainer}>카드 한달 한도 수정</Text>
                                 <TextInput
                                     style={styles.inputLimit}
                                     value={onetimeLimit}
@@ -113,17 +98,17 @@ export default function EditAccount( { route, navigation }: any ) {
                             style={styles.button}
                             onPress={handleSubmit}
                         >
-                            <Text style={styles.buttonText}>계좌 변경</Text>
+                            <Text style={styles.buttonText}>자동 이체</Text>
                         </TouchableOpacity>
                     </View>
                     <View style = {styles.buttonContainer}>
                         <TouchableOpacity
                             style={styles.button}
                         >
-                            <Text style={styles.buttonText}>계좌 삭제</Text>
+                            <Text style={styles.buttonText}>카드 재발급</Text>
                         </TouchableOpacity>
                     </View>
-                    <Modal
+                    {/* <Modal
                         animationType="slide"
                         transparent={true}
                         visible={modalVisible}
@@ -150,7 +135,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                 </View>
                             </View>
                         </View>
-                    </Modal>
+                    </Modal> */}
                 </KeyboardAvoidingView>
             </View>
         </SafeAreaView>
