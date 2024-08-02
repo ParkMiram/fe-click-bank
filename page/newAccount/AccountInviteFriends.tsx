@@ -84,7 +84,7 @@ export default function AccountInviteFriends({ navigation, route }: any) {
         try {
             const response = await waitGroupMember(token, account, members);
             console.log('API Response:', response.data);
-            navigation.navigate('AccountDetail', { token });
+            navigation.goBack();
         } catch (error) {
             // Handle error
             console.log(members);
