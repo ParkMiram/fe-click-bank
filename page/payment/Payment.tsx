@@ -23,7 +23,7 @@ interface CardData {
 }
 
 export default function Payment({ navigation, route }: any) {
-    const { payment_id } = route.params;
+    const { payment_id, token } = route.params;
     const [ payData, setPayData] = useState<PaymentData>();
     const [ cardData, setCardData] = useState<CardData>();
     
@@ -46,7 +46,7 @@ export default function Payment({ navigation, route }: any) {
     }
 
     const selectCard = () => {
-        // navigation.navigate('FriendsComponent');
+        navigation.navigate('PaymentSelectCard');
     }
 
     const nextAndAuth = async () => {

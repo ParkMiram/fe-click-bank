@@ -48,6 +48,8 @@ import MyCard from './page/card/MyCard';
 import { AccountDetail } from './page/newAccount/AccountDetail';
 import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
+import SelectCard from './page/payment/SelectCard';
+import LoginCheck from './page/payment/LoginCheck';
 
 
 // export type RootStackParamList = {
@@ -71,7 +73,7 @@ export default function App() {
         prefixes: [prefix],
         config: {
             screens: {
-                Payment: 'pay/:payment_id',
+                PaymentLogin: 'pay/:payment_id',
             }
         },
     };
@@ -124,6 +126,8 @@ export default function App() {
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Payment" component={Payment}/>
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
+                <Stack.Screen name="PaymentSelectCard" component={SelectCard}/>
+                <Stack.Screen name="PaymentLogin" component={LoginCheck}/>
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
 
