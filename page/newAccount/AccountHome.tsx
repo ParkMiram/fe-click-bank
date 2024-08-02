@@ -119,13 +119,12 @@ export default function AccountHome({ route, navigation }: any) {
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <View style={styles.transferButton}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Transfer',{ token: token,
-                            account: item.account,
-                            moneyAmount: item.moneyAmount})}>
-                        <Text style={styles.buttonText}>이체</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
+                        account: item.account,
+                        // accountName: item.accountName,
+                        moneyAmount: item.moneyAmount})}>
+                    <Text style={styles.buttonText}>이체</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );

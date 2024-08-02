@@ -1,14 +1,32 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { TouchableOpacity, Image, TextInput, Text, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
-interface CardResponse {
-    cardImg:string;
-    annualFee:number;
-    cardEvent:string;
+import {getCardProduct} from "../../component/api/CardListApi";
 
+interface CardProductResponse {
+    cardProductId: number;
+    cardProductName: string;
+    cardBenefits: string;
+    cardAnnualFee: number;
+    cardImage: string;
 }
+
 export default function CardInformation({ route, navigation }:any) {
-    const [cardImg, setCardImg] = useState<string>('');
-    const [cardEvent,setCardEvent] = useState<string>('');
+    const id:number = route.params?.id;
+    const [cardProduct, setCardProduct] = useState<CardProductResponse>();
+
+    useEffect(() => {
+        getCardProductInfo();
+    },[])
+
+    const getCardProductInfo = async ()  => {
+        try {
+            const res = await getCardProduct(id);
+            setCardProduct(res.data.data.getCardProduct);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -21,29 +39,28 @@ export default function CardInformation({ route, navigation }:any) {
                     </View>
                     <View style={styles.cardInformation}>
                         <View style={styles.cardContainer}>
-                            <Text style={styles.cardName}>카드명</Text>
+                            <Text style={styles.cardName}>{cardProduct?.cardProductName}</Text>
                             <Text style={styles.cardDescription}>카드 설명</Text>
                         </View>
                         <View style={styles.cardBenefits}>
-                            <Text style={styles.cardBenefitsText}>카드 혜택</Text>
+                            <Text style={styles.cardBenefitsText}>{cardProduct?.cardBenefits}</Text>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.feeContainer}>
                     <Text style={styles.feeText}>연회비</Text>
-                    <TextInput
-                        style={styles.feeInput}
-                        value="50,000 원"
-                        editable={false}
-                    />
+                    <Text style={styles.feeInput}>{cardProduct?.cardAnnualFee.toLocaleString()}원</Text>
+                    
                 </View>
-                <TextInput
-                    style={styles.cardDetailDescription}
-                    multiline
-                    editable={false}
-                    value="카드 상세 설명"
-                />
+                <View style={styles.cardDetailDescription}>
+                    <View style={styles.cardDetailDescriptionTitle}>
+                        <Text>카드 상세 설명</Text>
+                    </View>
+                    <View>
+                        <Text>여기는 카드 상세 설명이 들어가는 설명칸입니다. 여기는 카드 상세 설명이 들어가는 설명칸입니다. 여기는 카드 상세 설명이 들어가는 설명칸입니다. 여기는 카드 상세 설명이 들어가는 설명칸입니다. 여기는 카드 상세 설명이 들어가는 설명칸입니다. 여기는 카드 상세 설명이 들어가는 설명칸입니다.여기는 카드 상세 설명이 들어가는 설명칸입니다. </Text>
+                    </View>
+                </View>
                 <TouchableOpacity style={styles.applyButton} onPress={() => navigation.navigate('CreateCard')}>
                     <Text style={styles.applyButtonText}>신청하기</Text>
                 </TouchableOpacity>
@@ -80,58 +97,58 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '85%'
-      },
-      headerText: {
+    },
+    headerText: {
         fontSize: 18,
         fontWeight: 'bold',
-      },
-      closeButton: {
+    },
+    closeButton: {
         padding: 5,
-      },
-      closeButtonText: {
+    },
+    closeButtonText: {
         fontSize: 18,
         fontWeight: 'bold',
-      },
-      cardImageContainer: {
+    },
+    cardImageContainer: {
         alignItems: 'center',
         marginVertical: 20,
-      },
-      cardImage: {
+    },
+    cardImage: {
         width: 100,
         height: 150,
         backgroundColor: '#B7E1CE',
         borderRadius: 10,
-      },
-      cardDetails: {
+    },
+    cardDetails: {
         alignItems: 'center',
         marginVertical: 10,
         justifyContent:'space-between',
-      },
-      cardInformation: {
+    },
+    cardInformation: {
         marginLeft: 20,
         flex: 1,
         justifyContent: 'space-between'
-      },
-      cardName: {
+    },
+    cardName: {
         fontSize: 20,
         fontWeight: 'bold',
-      },
-      cardDescription: {
+    },
+    cardDescription: {
         fontSize: 16,
         color: '#666',
-      },
-      cardBenefits: {
+    },
+    cardBenefits: {
         marginVertical: 10,
         padding: 10,
         borderWidth: 1,
         borderColor: '#B7E1CE',
         borderRadius: 10,
         height: 100,
-      },
-      cardBenefitsText: {
+    },
+    cardBenefitsText: {
         fontSize: 16,
-      },
-      feeContainer: {
+    },
+    feeContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -141,15 +158,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 10,
         width:'85%'
-      },
-      feeText: {
+    },
+    feeText: {
         fontSize: 16,
-      },
-      feeInput: {
+    },
+    feeInput: {
         fontSize: 16,
         color: '#000',
-      },
-      cardDetailDescription: {
+    },
+    cardDetailDescription: {
         borderWidth: 1,
         borderColor: '#B7E1CE',
         borderRadius: 10,
@@ -158,19 +175,23 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         textAlignVertical: 'top',
         width:'85%'
-      },
-      applyButton: {
-        backgroundColor: '#B7E1CE',
-        padding: 15,
-        marginVertical:10,
-        borderRadius: 10,
-        alignItems: 'center',
-        width:'85%'
-      },
-      applyButtonText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: 'black'
-      },
-      cardContainer: {}
+    },
+    cardDetailDescriptionTitle: {
+        width:'100%',
+        height: '15%'
+    },
+    applyButton: {
+    backgroundColor: '#B7E1CE',
+    padding: 15,
+    marginVertical:10,
+    borderRadius: 10,
+    alignItems: 'center',
+    width:'85%'
+    },
+    applyButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'black'
+    },
+    cardContainer: {}
 });

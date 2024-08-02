@@ -1,6 +1,39 @@
 import { Platform,View, StatusBar,Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import {useEffect, useState} from "react";
+import {getMyCard} from "../../component/api/CardListApi";
+
+interface CardResponse {
+    cardId : number
+    cardName : string
+    cardNumber : string
+    account : string
+    cardCVC : string
+    cardMonthLimit: number
+    cardAnnualFee : number
+    cardProduct: {
+        cardImg : string
+        cardBenefits: string
+    }
+}
 
 export default function MyCard( { route, navigation }: any ) {
+    const id = route.params?.id;
+    const [myCard, setMyCard] = useState<CardResponse>()
+
+
+    useEffect(() => {
+        getMyCardInfo();
+    }, []);
+
+    const getMyCardInfo = async () => {
+        try {
+            const res = await getMyCard(id);
+            setMyCard(res.data.data.getMyCard);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -20,15 +53,15 @@ export default function MyCard( { route, navigation }: any ) {
                     <View style={styles.cardImageContainer}>
                         <Text style={styles.cardImageText}>카드 이미지</Text>
                     </View>
-                    <Text style={styles.cardName}>카드명</Text>
+                    <Text style={styles.cardName}>{myCard?.cardName}</Text>
                     <TouchableOpacity style={styles.barcodeButton}>
                         <Text style={styles.barcodeButtonText}>바코드</Text>
                     </TouchableOpacity>
-                    <Text style={styles.cardDetailText}>카드번호 전체보기</Text>
+                    <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
                     <Text style={styles.infoLabel}>포인트</Text>
                     <Text style={styles.infoValue}>100,000,000원</Text>
                     <Text style={styles.infoLabel}>연동 계좌</Text>
-                    <Text style={styles.infoValue}>110-483-037116</Text>
+                    <Text style={styles.infoValue}>{myCard?.account}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.infoButton}>
