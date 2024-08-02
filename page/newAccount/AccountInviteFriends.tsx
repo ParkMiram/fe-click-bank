@@ -30,10 +30,11 @@ interface GroupMemberInfo {
 }
 
 interface GroupMemberRequset {
-    id: string,
-    code: string,
-    img: string,
-    name: string
+    id: string;
+    code: string;
+    img: string;
+    name: string;
+    rank: number;
 }
 
 interface ToggleButtonProps {
@@ -46,6 +47,7 @@ export default function AccountInviteFriends({ navigation, route }: any) {
     const { token, account }: props = route.params;
     const [groupMember, setGroupMember] = useState<GroupMemberInfo[]>([]);
     const [members, setMembers] = useState<GroupMemberRequset[]>([]);
+    console.log("members : "+members.length)
 
     const ToggleButton = ({ item, isActive, onToggle }: ToggleButtonProps) => {
         const [color, setColor] = useState(isActive ? '#1D9287' : '#6BC29A');

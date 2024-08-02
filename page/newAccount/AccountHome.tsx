@@ -122,7 +122,6 @@ export default function AccountHome({ route, navigation }: any) {
                 <View style={styles.transferButton}>
                     <TouchableOpacity onPress={() => navigation.navigate('Transfer',{ token: token,
                             account: item.account,
-                            // accountName: item.accountName,
                             moneyAmount: item.moneyAmount})}>
                         <Text style={styles.buttonText}>이체</Text>
                     </TouchableOpacity>
@@ -140,11 +139,6 @@ export default function AccountHome({ route, navigation }: any) {
         }, [token])
     );
     
- // useEffect(() => {
-    //     if (token) {
-    //         fetchAccountsByUserId(token);
-    //     }
-    // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
             <View style={Container.innerContainer}>
