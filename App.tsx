@@ -50,6 +50,7 @@ import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
 import SelectCard from './page/payment/SelectCard';
 import LoginCheck from './page/payment/LoginCheck';
+import Cancel from './page/payment/Cancel';
 
 
 // export type RootStackParamList = {
@@ -126,6 +127,7 @@ export default function App() {
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
                 <Stack.Screen name="Payment" component={Payment}/>
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
+                <Stack.Screen name="PaymentCancel" component={Cancel}/>
                 <Stack.Screen name="PaymentSelectCard" component={SelectCard}/>
                 <Stack.Screen name="PaymentLogin" component={LoginCheck}/>
                 {/* Friend */}

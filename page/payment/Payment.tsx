@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import * as paymentApi from '../../component/api/PaymentApi';
 import NextButton from '../../component/auth/NextButton';
@@ -42,8 +42,16 @@ export default function Payment({ navigation, route }: any) {
         card_disable: false
     }
 
-    const goBack = () => {
-    }
+
+    const cancelPayment = useCallback(() => {
+        BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirect}}]
+        });
+        return true;
+    },[]);
+    BackHandler.addEventListener('hardwareBackPress', cancelPayment);
 
     const selectCard = () => {
         navigation.navigate('PaymentSelectCard');
@@ -100,7 +108,7 @@ export default function Payment({ navigation, route }: any) {
     return (
         <SafeAreaView style={Container.container}>
             <View style={Container.innerContainer}>
-                <TouchableOpacity style={{width:"25%", marginRight:"72%", marginLeft:"3%"}} onPress={goBack}>
+                <TouchableOpacity style={{width:"25%", marginRight:"72%", marginLeft:"3%"}} onPress={cancelPayment}>
                     <View style={styles.backContainer}>
                         <Svg style={{justifyContent:'center'}} width={9} height={14} fill="none">
                             <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
