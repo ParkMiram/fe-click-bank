@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { getAllMyCard } from "../../component/api/CardListApi";
 
+
 interface CardResponse {
     cardId: number;
     cardName: string;
@@ -27,6 +28,7 @@ export default function CardList({ route, navigation }: any) {
             const res = await getAllMyCard(token);
             if (res.data && res.data.data && res.data.data.getAllMyCard) {
                 setCardList(res.data.data.getAllMyCard);
+                console.log(res.data.data.getAllMyCard);
             } else {
                 console.error("Unexpected response structure", res);
             }
@@ -36,14 +38,15 @@ export default function CardList({ route, navigation }: any) {
     };
 
     const renderItem = ({ item }: { item: CardResponse }) => (
-        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('MyCard', { id: item.cardId })}>
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('MyCard', { id: item.cardId,token })}>
             <Image source={{ uri: item.cardProduct.cardImg }} style={styles.cardImg} />
             <Text>{item.cardName}</Text>
         </TouchableOpacity>
+        
     );
 
     const renderAddCardButton = () => (
-        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('AddCardList')}>
+        <TouchableOpacity style={styles.cardAddButton} onPress={() => navigation.navigate('AddCardList',{token})}>
             <Image source={require('../../assets/image/more.png')} style={styles.plusIcon} />
         </TouchableOpacity>
     );
@@ -86,6 +89,7 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'flex-start',
         paddingBottom: 20,
+        marginTop:15
     },
     nameContainer: {
         width: '100%',
@@ -104,6 +108,16 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     cardButton: {
+        width: Dimensions.get('window').width / 2 - 60,
+        height: 200,
+        // borderWidth: 1.5,
+        // borderColor: '#B7E1CE',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 20
+    },
+    cardAddButton:{
         width: Dimensions.get('window').width / 2 - 60,
         height: 200,
         borderWidth: 1.5,

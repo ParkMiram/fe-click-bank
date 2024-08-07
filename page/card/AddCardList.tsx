@@ -2,17 +2,18 @@ import React, {useEffect, useState} from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
 import MyCardInformation from './CardInformation';
 import {getAllCardProduct} from "../../component/api/CardListApi";
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 interface CardProductResponse {
     cardProductId: number;
     cardProductName: string;
-    cardImage: string;
+    cardImg: string;
 }
 
 export default function AddCardList({ route, navigation }: any) {
     const [cardProductList, setCardProductList] = useState<CardProductResponse[]>([]);
     const token = route.params?.token;
-
+    
     useEffect(() => {
         getCardProductList();
     }, []);
@@ -28,8 +29,8 @@ export default function AddCardList({ route, navigation }: any) {
     }
 
     const renderItem = ({ item }: { item: CardProductResponse }) => (
-        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('CardInformation',{ id: item.cardProductId })}>
-            <Image source={{ uri: item.cardImage  }} style={styles.cardImg} />
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('CardInformation',{ id: item.cardProductId,token })}>
+            <Image source={{ uri: item.cardImg  }} style={styles.cardImg} />
             <Text>{item.cardProductName}</Text>
         </TouchableOpacity>
     );
@@ -44,8 +45,8 @@ export default function AddCardList({ route, navigation }: any) {
                 </View>
                 <FlatList
                     data={combinedData}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({item}) => renderItem({item})}
+                    keyExtractor={(item) =>item.cardProductId.toString()}
                     contentContainerStyle={styles.flatListContainer}
                     numColumns={2} // 2개의 열로 카드 표시
                 />
@@ -92,8 +93,8 @@ const styles = StyleSheet.create({
     cardButton: {
         width: Dimensions.get('window').width / 2 - 60,
         height: 200,
-        borderWidth: 1,
-        borderColor: 'lightgrey',
+        // borderWidth: 1,
+        // borderColor: 'lightgrey',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
@@ -103,6 +104,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width / 2 - 60,
         height: 190,
         borderRadius: 10,
+        overflow:"hidden"
     },
     plusIcon: {
         width: 50,
