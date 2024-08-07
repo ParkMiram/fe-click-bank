@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
 export default function LoginCheck({ navigation, route }: any) {
-    const { payment_id } = route.params;
+    const { payData } = route.params;
     const [token, setToken] = useState<string>();
     const [password, setPassword] = useState("");
     const [toStar, setStar] = useState("");
@@ -44,7 +44,7 @@ export default function LoginCheck({ navigation, route }: any) {
                 Vibration.vibrate(60);
                 navigation.reset({
                     index: 0,
-                    routes: [{name: 'Payment', params: {payment_id: payment_id, token: data}}]
+                    routes: [{name: 'Payment', params: {payData: payData, userToken: data}}]
                 });
             }
         }
@@ -61,6 +61,7 @@ export default function LoginCheck({ navigation, route }: any) {
     const getLoginToken = async () => {
         const getToken = await AsyncStorage.getItem("login")
         if (getToken == null) {
+            alert("로그인 후 이용해 주세요.");
             BackHandler.exitApp();
         } else {
             setToken(getToken);
