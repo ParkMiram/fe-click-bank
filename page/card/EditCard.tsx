@@ -2,42 +2,41 @@ import { useState } from 'react';
 import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import RNPickerSelect from 'react-native-picker-select';
+import { updateCard } from '../../component/api/CardApi';
 
 type props = {
     token: string;
-    account: string;
+    cardId: number;
 }
 
 export default function EditCard( { route, navigation }: any ) {
+    const id = route.params?.id;
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [dailyLimit, setDailyLimit] = useState('');
-    const [onetimeLimit, setOnetimeLimit] = useState('')
-    const { token, account }: props = route.params;
-
+    const [onetimeLimit, setOnetimeLimit] = useState('');
+    const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    const days = Array.from({ length: 31 }, (_, i) => i + 1).map(day => ({
+        label: day.toString(),
+        value: day.toString(),
+      }));
+      const token = route.params?.token;
     const handleSubmit = async () => {
         try {
-            if (name) {
-                await setAccountName({ account, accountName: name }, token);
-                navigation.navigate('AccountHome', {token});
-            }
-            if (password) {
-                await setAccountPassword({ account, accountPassword: password }, token);
-                navigation.navigate('AccountHome', {token});
-            }
-            if (dailyLimit && onetimeLimit) {
-                const body = {
-                    account: account,
-                    accountDailyLimit: parseInt(dailyLimit),
-                    accountOneTimeLimit: parseInt(onetimeLimit)
-                }
-                
-                await setAccountLimit(body, token);
-                navigation.navigate('AccountHome', { token });
-            }
+            const data = {
+                password: password,
+                cardOneTimeLimit: onetimeLimit ? parseInt(onetimeLimit) : undefined,
+                cardMonthLimit: dailyLimit ? parseInt(dailyLimit) : undefined,
+                cardName: name,
+                cardPaymentDate: selectedDate
+            };
+            await updateCard(token, id, data);
+            navigation.navigate('CardHome', { token });
         } catch (error) {
             console.error(error);
         }
+ 
     };
 
     return (
@@ -60,7 +59,7 @@ export default function EditCard( { route, navigation }: any ) {
                                 />
                             </View>
                             <View style = {styles.rePasswordContianer}>
-                                <Text style = {styles.textcontainer}>카드 비밀번호 수정</Text>
+                                <Text style = {styles.textcontainer}>비밀번호 변경</Text>
                                 <TextInput
                                     style={styles.inputPassword}
                                     value={password}
@@ -72,7 +71,7 @@ export default function EditCard( { route, navigation }: any ) {
                             />
                             </View>
                             <View style = {styles.reLimitContainer}>
-                                <Text style = {styles.textcontainer}>카드 일일 한도 수정</Text>
+                                <Text style = {styles.textcontainer}>일일 한도 변경</Text>
                                 <TextInput
                                     style={styles.inputLimit}
                                     value={dailyLimit}
@@ -82,7 +81,7 @@ export default function EditCard( { route, navigation }: any ) {
                                 />
                             </View>
                             <View style = {[styles.reLimitContainer]}>
-                                <Text style = {styles.textcontainer}>카드 한달 한도 수정</Text>
+                                <Text style = {styles.textcontainer}>한달 한도 변경</Text>
                                 <TextInput
                                     style={styles.inputLimit}
                                     value={onetimeLimit}
@@ -91,6 +90,17 @@ export default function EditCard( { route, navigation }: any ) {
                                     placeholder="10,000,000"
                                 />
                             </View>
+                            <View style = {styles.reLimitContainer}>
+                            <Text style = {styles.textcontainer}>결제일 변경</Text>
+                            <RNPickerSelect
+                            onValueChange={(value) => setSelectedDate(value)}
+                            items={days}
+                            style={pickerSelectStyles}
+                            placeholder={{ label: "결제일을 선택해주세요", value: null }}
+                            value={selectedDate}
+                             />
+
+                            </View>
                         </View>
                     </TouchableWithoutFeedback>
                     <View style = {styles.buttonContainer}>
@@ -98,7 +108,7 @@ export default function EditCard( { route, navigation }: any ) {
                             style={styles.button}
                             onPress={handleSubmit}
                         >
-                            <Text style={styles.buttonText}>자동 이체</Text>
+                            <Text style={styles.buttonText}>저장</Text>
                         </TouchableOpacity>
                     </View>
                     <View style = {styles.buttonContainer}>
@@ -159,7 +169,7 @@ const styles = StyleSheet.create({
     reContainer:{
         justifyContent:'flex-start',
         alignItems:'center',
-        marginBottom:250
+        marginBottom:100
         
 
     },
@@ -174,7 +184,7 @@ const styles = StyleSheet.create({
 
     },
     textcontainer:{
-        fontSize:23,
+        fontSize:18,
         flex:1
 
     },
@@ -226,7 +236,7 @@ const styles = StyleSheet.create({
         // alignSelf: 'center',
         },
     buttonAccount:{
-        fontSize:25,
+        fontSize:18,
         borderColor: '#B7E1CE',
         borderRadius:5,
         borderWidth: 2,
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
         // backgroundColor: '#FF0000',
     },
     inputName:{
-        fontSize:25,
+        fontSize:18,
         borderColor: '#B7E1CE',
         borderRadius:5,
         borderWidth: 2,
@@ -296,7 +306,7 @@ const styles = StyleSheet.create({
     
     },
     inputPassword:{
-        fontSize:25,
+        fontSize:18,
         borderColor: '#B7E1CE',
         borderRadius:5,
         borderWidth: 2,
@@ -305,7 +315,7 @@ const styles = StyleSheet.create({
         textAlign:'center',
     },
     inputLimit:{
-        fontSize:25,
+        fontSize:18,
         borderColor: '#B7E1CE',
         borderRadius:5,
         borderWidth: 2,
@@ -314,3 +324,27 @@ const styles = StyleSheet.create({
         textAlign:'center',
     }
 });
+
+const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      textAlign: 'center',
+      fontSize: 16,
+      paddingVertical: 12,
+      borderWidth: 1,
+      borderColor: '#B7E1CE',
+      borderRadius: 4,
+      color: 'black',
+      marginTop: 30
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingHorizontal: 10,
+      paddingVertical: 8,
+      borderWidth: 0.5,
+      borderColor: 'purple',
+      borderRadius: 8,
+      color: 'black',
+      paddingRight: 30,
+      marginBottom: 16,
+    },
+  });
