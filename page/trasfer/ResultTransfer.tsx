@@ -49,7 +49,6 @@ const ResultTransfer = ({ navigation, route }: any) => {
           const bodyToRecipient = {
               accountStatus: "deposit",
               account: userInfo.account,
-              transferAccount: data.account,
               moneyAmount: data.transferAmount,
               category: data.category
           };
@@ -57,7 +56,6 @@ const ResultTransfer = ({ navigation, route }: any) => {
           const bodyToSender = {
               accountStatus: "transfer",
               account: data.account,
-              tranferAccount: userInfo.account,
               moneyAmount: data.transferAmount,
               category: data.category
           };
