@@ -58,3 +58,21 @@ export const apiAccount = async (
 
     return res;
 };
+
+export const apiPayment = async (
+    url: string,
+    method: Method,
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
+): Promise<AxiosResponse<any>> => {
+    axios.defaults.baseURL = "https://just-click.shop/api/v1/businesses";
+
+    const res = await axios({
+        url,
+        method,
+        data: body,
+        headers: headers
+    });
+
+    return res;
+}
