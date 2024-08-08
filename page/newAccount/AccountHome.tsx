@@ -38,7 +38,7 @@ export default function AccountHome({ route, navigation }: any) {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
             const { accounts, userName, userImg } = data;
-    
+            
             console.log('API 응답 데이터:', data);
     
             if (data) {
