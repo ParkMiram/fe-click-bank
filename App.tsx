@@ -48,6 +48,7 @@ import MyCard from './page/card/MyCard';
 import { AccountDetail } from './page/newAccount/AccountDetail';
 import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
+import { SavingAccountList } from './page/newAccount/SavingAccountList';
 
 
 // export type RootStackParamList = {
@@ -99,6 +100,7 @@ export default function App() {
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+                <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
@@ -115,7 +117,7 @@ export default function App() {
                 <Stack.Screen name="CreateCard" component={CreateCard}/>
                 <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
                 <Stack.Screen name="MyCard" component={MyCard}/>
-                 <Stack.Screen name="CardPassword" component={CardPassword}/>
+                <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
                 <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
                 <Stack.Screen name="Transfer" component={Transfer} />
