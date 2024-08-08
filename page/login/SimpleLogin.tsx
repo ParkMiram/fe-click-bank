@@ -46,7 +46,7 @@ export default function SimpleLogin({ navigation, route }: any) {
                 Vibration.vibrate(60);
                 navigation.reset({
                     index: 0,
-                    routes: [{name: 'ClickHome', params: {token: data}}]
+                    routes: [{name: 'Bottom', params: {token: data}}]
                 });
             }
         }

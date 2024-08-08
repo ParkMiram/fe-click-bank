@@ -46,6 +46,9 @@ import { AccountDetail } from './page/newAccount/AccountDetail';
 import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
 
+import EditCard from './page/card/EditCard';
+import Bottom from './component/bottom-bar/Bottom';
+
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -104,15 +107,15 @@ export default function App() {
                 <Stack.Screen name="MyCard" component={MyCard}/>
                  <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
-
-
-
+                <Stack.Screen name="EditCard" component={EditCard}/>
                 <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
                 <Stack.Screen name="Transfer" component={Transfer} />
                 <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
                 <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
 
+                <Stack.Screen name='Bottom' component={Bottom}/>
+             
 
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />

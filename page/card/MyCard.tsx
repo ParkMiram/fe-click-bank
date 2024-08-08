@@ -42,7 +42,7 @@ export default function MyCard({ route, navigation }: any) {
             if (myCard && myCard.cardNumber) {
                 await deleteCard(token, myCard.cardNumber);
                 setModalVisible(false); // 모달을 닫음
-                navigation.goBack(); // 카드 목록 화면으로 돌아감
+                // navigation.goBack(); // 카드 목록 화면으로 돌아감
             }
         } catch (error) {
             console.log(error);
@@ -69,9 +69,9 @@ export default function MyCard({ route, navigation }: any) {
                         {/* <Text style={styles.cardImageText}>카드 이미지</Text> */}
                     </View>
                     <Text style={styles.cardName}>{myCard?.cardName}</Text>
-                    <TouchableOpacity style={styles.barcodeButton}>
-                        <Text style={styles.barcodeButtonText}>바코드</Text>
-                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={styles.barcodeButton}> */}
+                        <Text style={styles.infoLabel}>카드 번호</Text>
+                    {/* </TouchableOpacity> */}
                     <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
                     <Text style={styles.infoLabel}>포인트</Text>
                     <Text style={styles.infoValue}>100,000,000원</Text>
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     scrollContainer: {
         alignItems: 'center',
