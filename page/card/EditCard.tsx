@@ -10,9 +10,23 @@ type props = {
     token: string;
     cardId: number;
 }
+interface CardResponse {
+    cardId: number
+    cardName: string
+    cardNumber: string
+    cardOneTimeLimit:string
+    cardMonthLimit: string
+    cardPassword: string;
+    cardPaymentDate: string;
+    // cardProduct: {
+    //     cardImg: string
+    //     cardBenefits: string
+    // }
+}
 
 export default function EditCard( { route, navigation }: any ) {
     const id = route.params?.id;
+    const [myCard, setMyCard] = useState<CardResponse>();
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [dailyLimit, setDailyLimit] = useState('');
@@ -73,7 +87,7 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={name}
                                     onChangeText={setName}
                                     keyboardType="default"
-                                    placeholder="카드명"
+                                    placeholder={myCard?.cardName}
                                 />
                             </View>
                             <View style = {styles.rePasswordContianer}>
@@ -83,11 +97,13 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={password}
                                     onChangeText={setPassword}
                                     keyboardType="number-pad"
-                                    placeholder="0000"
+                                    placeholder={myCard?.cardPassword}
                                     maxLength={4}
                                     secureTextEntry={true} 
                             />
+                                               
                             </View>
+                            
                             <View style = {styles.reLimitContainer}>
                                 <Text style = {styles.textcontainer}>일일 한도 변경</Text>
                                 <TextInput
@@ -95,7 +111,7 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={dailyLimit}
                                     onChangeText={setDailyLimit}
                                     keyboardType="number-pad"
-                                    placeholder="50,000,000"
+                                    placeholder={myCard?.cardOneTimeLimit}
                                 />
                             </View>
                             <View style = {styles.reLimitContainer}>
@@ -105,7 +121,7 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={onetimeLimit}
                                     onChangeText={setOnetimeLimit}
                                     keyboardType="number-pad"
-                                    placeholder="10,000,000"
+                                    placeholder={myCard?.cardMonthLimit}
                                 />
                             </View>
                             
@@ -158,6 +174,7 @@ export default function EditCard( { route, navigation }: any ) {
                             <Text style={styles.buttonText}>카드 재발급</Text>
                         </TouchableOpacity>
                     </View>
+                    {/* <Text style={styles.textcontainer}>{myCard?.cardName}</Text> */}
                     {/* <View style = {styles.reLimitContainer}>
                             <Text style = {styles.datecontainer}>결제일 변경</Text>
                             <RNPickerSelect

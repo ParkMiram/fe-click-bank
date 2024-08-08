@@ -18,6 +18,8 @@ export const getAllMyCard = async (token : any) : Promise<AxiosResponse<any>> =>
     return await apiCardList(`/graphql`, "post", body, {"Authorization" : "Bearer "+token});
 }
 
+
+
 export const getAllCardProduct = async ():Promise<AxiosResponse<any>> => {
     const query = `
         query {

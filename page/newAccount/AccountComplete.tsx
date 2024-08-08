@@ -1,18 +1,35 @@
-import { Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
+import { Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
 import { saveAccount } from '../../component/api/NewAccountApi';
+import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 type data = {
     accountStatus: string;
     token: string;
     accountPassword: string;
+    transferRequest: TransferReqeust;
+    savingRequest: SavingRequest;
+}
+
+interface TransferReqeust {
+    type: string | null;
+    amount: number | null;
+    transferDate: number | null;
+}
+
+interface SavingRequest {
+    interestRate: Float | null;
+    term: number | null;
+    product: string | null;
 }
 
 export default function AccountComplete( {  navigation, route }: any ) {
-    const { accountStatus, token, accountPassword }: data = route.params;
+    const { accountStatus, token, accountPassword, transferRequest, savingRequest }: data = route.params;
 
     const body = {
         accountStatus: accountStatus,
-        accountPassword: accountPassword
+        accountPassword: accountPassword,
+        transferRequest: transferRequest,
+        savingRequest: savingRequest
     }
 
     const handleSaveAccount = async () => {

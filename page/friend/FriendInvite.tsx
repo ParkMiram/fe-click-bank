@@ -67,11 +67,9 @@ export default function  FriendInvite (props: any) {
     // 초대 거절
     const inviteReject = async () => {
         try {
-            await axios.post('http://35.192.67.71:32001/api/v1/accounts/group', { status: false }, {
-                headers: {
-                    Authorization: bearerToken
-                }
-            });
+            const token = bearerToken.split(' ')[1];
+            console.log(token);
+            await saveGroup(token, { status: true })
             Alert.alert(
                 '모임 통장',
                 '모임 통장 가입을 거절했습니다.'
