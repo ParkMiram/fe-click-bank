@@ -3,6 +3,7 @@ import LoginPage from './page/login/LoginPage';
 import KakaoLogin from './page/login/KakaoLogin';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import * as Linking from 'expo-linking';
 import SplashLogo from './page/splash/SplashLogo';
 import ClickHome from './page/main/ClickHome';
 import TermOfUse from './page/login/TermOfUse';
@@ -29,6 +30,8 @@ import AccountTerms from './page/newAccount/AccountTerms';
 import KakaoLogout from './page/login/KakaoLogout';
 import AccountHistoryStatistics from "./page/account-history/AccountHistoryStatistics";
 import EditAccount from './page/newAccount/EditAccount';
+import Payment from './page/payment/Payment';
+import Success from './page/payment/Success';
 
 import CardList from './page/card/CardList';
 import MyCardInformation from './page/card/CardInformation';
@@ -64,9 +67,20 @@ export type RootStackParamList = {
 };
 const Stack = createStackNavigator();
 
+const prefix = Linking.createURL("/path/into/app");
+
 export default function App() {
+    const linking = { 
+        prefixes: [prefix],
+        config: {
+            screens: {
+                Payment: 'pay/:payment_id',
+            }
+        },
+    };
+
     return (
-        <NavigationContainer>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
             <Stack.Navigator 
                 initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
@@ -98,7 +112,6 @@ export default function App() {
                 <Stack.Screen name="EditAccount" component={EditAccount}/>
                 <Stack.Screen name='AccountInviteFriends' component={AccountInviteFriends} />
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
-
                 <Stack.Screen name="CardList" component={CardList}/>
                 <Stack.Screen name="CardInformation" component={CardInformation}/>
                 <Stack.Screen name="AddCardList" component={AddCardList}/>
@@ -107,15 +120,22 @@ export default function App() {
                 <Stack.Screen name="MyCard" component={MyCard}/>
                  <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
+
                 <Stack.Screen name="EditCard" component={EditCard}/>
+
                 <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
                 <Stack.Screen name="Transfer" component={Transfer} />
                 <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
                 <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
 
+
                 <Stack.Screen name='Bottom' component={Bottom}/>
              
+
+
+                <Stack.Screen name="Payment" component={Payment}/>
+                <Stack.Screen name="PaymentSuccess" component={Success}/>
 
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
