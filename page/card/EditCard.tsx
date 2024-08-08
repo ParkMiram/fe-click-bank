@@ -32,7 +32,7 @@ export default function EditCard( { route, navigation }: any ) {
                 cardPaymentDate: selectedDate
             };
             await updateCard(token, id, data);
-            navigation.navigate('CardHome', { token });
+            navigation.navigate('MyCard', { token });
         } catch (error) {
             console.error(error);
         }
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     reContainer:{
         justifyContent:'flex-start',
