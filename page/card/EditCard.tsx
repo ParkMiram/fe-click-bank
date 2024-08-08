@@ -4,7 +4,8 @@ import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } fr
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import { updateCard } from '../../component/api/CardApi';
-
+import { Picker } from "@react-native-picker/picker";
+import ReactNativeModal from 'react-native-modal';
 type props = {
     token: string;
     cardId: number;
@@ -17,6 +18,7 @@ export default function EditCard( { route, navigation }: any ) {
     const [dailyLimit, setDailyLimit] = useState('');
     const [onetimeLimit, setOnetimeLimit] = useState('');
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
+    const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
     const days = Array.from({ length: 31 }, (_, i) => i + 1).map(day => ({
         label: day.toString(),
         value: day.toString(),
@@ -38,16 +40,32 @@ export default function EditCard( { route, navigation }: any ) {
         }
  
     };
-
+    const toggleCategoryModal = () => {
+        setCategoryModalVisible(!isCategoryModalVisible);
+      };
+    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
+            <View style = {styles.reContainerDate}>
+            <View style = {styles.redateContainer}>
+                            <Text style = {styles.datecontainer}>결제일 변경</Text>
+                            <RNPickerSelect
+                            onValueChange={(value) => setSelectedDate(value)}
+                            items={days}
+                            style={pickerSelectStyles}
+                            placeholder={{ label: "결제일을 선택해주세요", value: null }}
+                            value={selectedDate}
+                             /> 
+            </View>
+            </View>
+            
                 <KeyboardAvoidingView 
-                    // style={styles.container}
                     behavior={Platform.OS === "ios" ? "padding" : "height"}
                 >
                     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                        <View style = {styles.reContainer}>
+                       
+                       <View style = {styles.reContainer}>
                             <View style ={styles.renameContainer}>
                                 <Text style = {styles.textcontainer}>카드명 수정</Text> 
                                 <TextInput
@@ -80,7 +98,7 @@ export default function EditCard( { route, navigation }: any ) {
                                     placeholder="50,000,000"
                                 />
                             </View>
-                            <View style = {[styles.reLimitContainer]}>
+                            <View style = {styles.reLimitContainer}>
                                 <Text style = {styles.textcontainer}>한달 한도 변경</Text>
                                 <TextInput
                                     style={styles.inputLimit}
@@ -90,17 +108,39 @@ export default function EditCard( { route, navigation }: any ) {
                                     placeholder="10,000,000"
                                 />
                             </View>
-                            <View style = {styles.reLimitContainer}>
-                            <Text style = {styles.textcontainer}>결제일 변경</Text>
+                            
+                            {/* <View style = {styles.reLimitContainer}>
+                            <Text style = {styles.datecontainer}>결제일 변경</Text>
                             <RNPickerSelect
                             onValueChange={(value) => setSelectedDate(value)}
                             items={days}
                             style={pickerSelectStyles}
                             placeholder={{ label: "결제일을 선택해주세요", value: null }}
                             value={selectedDate}
-                             />
+                             /> 
+                             </View> */}
+                             {/* <TouchableOpacity onPress={toggleCategoryModal}> */}
+            {/* <Text style={styles.modalTriggerText}>결제일을 선택해주세요</Text>
+          </TouchableOpacity>
 
-                            </View>
+          {/* <ReactNativeModal isVisible={isCategoryModalVisible} onBackdropPress={toggleCategoryModal}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>결제일 선택</Text>
+          <Picker
+            selectedValue={selectedDate}
+            onValueChange={(itemValue) => {
+              setSelectedDate(itemValue);
+              toggleCategoryModal();
+            }}
+          >
+            {days.map((day) => (
+              <Picker.Item key={day.value} label={day.label} value={day.value} />
+            ))}
+          </Picker>
+        </View>
+      </ReactNativeModal> */}
+                      
+                            
                         </View>
                     </TouchableWithoutFeedback>
                     <View style = {styles.buttonContainer}>
@@ -118,34 +158,17 @@ export default function EditCard( { route, navigation }: any ) {
                             <Text style={styles.buttonText}>카드 재발급</Text>
                         </TouchableOpacity>
                     </View>
-                    {/* <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={closeModal}
-                    >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>
-                                <View style={styles.modalButtonContainer}>
-                                    <TouchableOpacity
-                                        style={[styles.buttonAccount, styles.buttonClose]}
-                                        onPress={closeModal}
-                                    >
-                                        <Text style={styles.buttonText}>취소</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.buttonAccount, styles.buttonDelete]}
-                                        onPress={() => {
-                                            closeModal();
-                                        }}
-                                    >
-                                        <Text style={styles.buttonText} onPress={handleDeleteAccount}>삭제</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </Modal> */}
+                    {/* <View style = {styles.reLimitContainer}>
+                            <Text style = {styles.datecontainer}>결제일 변경</Text>
+                            <RNPickerSelect
+                            onValueChange={(value) => setSelectedDate(value)}
+                            items={days}
+                            style={pickerSelectStyles}
+                            placeholder={{ label: "결제일을 선택해주세요", value: null }}
+                            value={selectedDate}
+                             /> 
+                             </View> */}
+                 
                 </KeyboardAvoidingView>
             </View>
         </SafeAreaView>
@@ -167,11 +190,47 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
     },
+    modalContent:{
+        backgroundColor: 'white',
+        padding: 23,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignSelf: 'stretch'
+
+    }
+    ,
+    modalTitle:{
+        fontSize: 18,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+        marginBottom: 10,
+
+    },
     reContainer:{
         justifyContent:'flex-start',
         alignItems:'center',
         marginBottom:100
         
+
+    },
+    reContainerDate:{
+        justifyContent:'flex-start',
+        alignItems:'center',
+      
+        
+
+    },
+    dateContainer:{
+        
+    },
+
+    redateContainer:{
+        flexDirection: 'row',
+        width:'85%',
+        justifyContent:'space-between',
+        alignItems:'center',
+        // marginBottom:30,
+        marginTop:30
 
     },
     renameContainer:{
@@ -189,8 +248,17 @@ const styles = StyleSheet.create({
         flex:1
 
     },
+    datecontainer:{
+        flexDirection:'row',
+        flex:1,
+        fontSize:18
+
+    },
     nameText:{
 
+    },
+    modalTriggerText:{
+        fontSize:18,
     },
     rePasswordContianer:{
         flexDirection:'row',
@@ -330,12 +398,14 @@ const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
       textAlign: 'center',
       fontSize: 16,
-      paddingVertical: 12,
-      borderWidth: 1,
+    //   paddingVertical: 12,
+      borderWidth: 2,
       borderColor: '#B7E1CE',
       borderRadius: 4,
       color: 'black',
-      marginTop: 30
+    //   marginTop: 30,
+      height:40,
+      width:180
     },
     inputAndroid: {
       fontSize: 16,

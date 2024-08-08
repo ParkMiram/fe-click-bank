@@ -99,7 +99,7 @@ export default function App() {
                 <Stack.Screen name='AccountInviteFriends' component={AccountInviteFriends} />
                 <Stack.Screen name="AccountHome" component={AccountHome}/>
 
-                <Stack.Screen name="CardList" component={CardList}/>
+                <Stack.Screen name="CardList" options={{title:"카드 상품 목록"}} component={CardList}/>
                 <Stack.Screen name="CardInformation" component={CardInformation}/>
                 <Stack.Screen name="AddCardList" component={AddCardList}/>
                 <Stack.Screen name="CreateCard" component={CreateCard}/>

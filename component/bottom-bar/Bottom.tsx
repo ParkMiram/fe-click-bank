@@ -84,6 +84,9 @@ export default function Bottom({ route, navigation }: any) {
         <Tab.Screen name="Friend" component={FriendsComponent}initialParams={{ token }}  />
         <Tab.Screen name="Card" component={CardList} initialParams={{ token }} />
         <Tab.Screen name="Alarm" component={AccountHistory} initialParams={{ token }} />
+        
+
+        
         {/* <Tab.Screen name="More" component={MoreScreen} /> */}
       </Tab.Navigator>
   );
