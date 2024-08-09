@@ -39,9 +39,15 @@ export default function AccountComplete( {  navigation, route }: any ) {
             if (response && response.status == 201) {
                 console.log(response.status);
                 if (accountStatus === 'group') {
-                    navigation.navigate('AccountHome', {token})
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+                    });
                 } else {
-                    navigation.navigate('AccountHome', {token});
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+                    });
                 }
             } else {
                 alert('서버에 이상이 있습니다.');
@@ -57,12 +63,12 @@ export default function AccountComplete( {  navigation, route }: any ) {
             <View style={styles.innerContainer}>
                 {/* 여기에 페이지 내용 작성 */}
                 <Image
-            source={require('../../assets/image/Click_logo.png')}
-            style={styles.imageStyle} resizeMode="contain"/>
-            <Text style = {styles.textcontainer}>축! 개설완료!</Text>  
-            <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
-                <Text style={styles.buttonText}>메인으로</Text>
-            </TouchableOpacity>
+                source={require('../../assets/image/Click_logo.png')}
+                style={styles.imageStyle} resizeMode="contain"/>
+                <Text style = {styles.textcontainer}>축! 개설완료!</Text>  
+                <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
+                    <Text style={styles.buttonText}>메인으로</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );

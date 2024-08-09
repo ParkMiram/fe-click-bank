@@ -53,6 +53,7 @@ import LoginCheck from './page/payment/LoginCheck';
 import Cancel from './page/payment/Cancel';
 import Loading from './page/payment/Loading';
 import { SavingAccountList } from './page/newAccount/SavingAccountList';
+import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 
 import EditCard from './page/card/EditCard';
 import Bottom from './component/bottom-bar/Bottom';
@@ -108,6 +109,7 @@ export default function App() {
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
                 <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
+                <Stack.Screen name='CreateSavingAccount' component={CreateSavingAccount} />
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
