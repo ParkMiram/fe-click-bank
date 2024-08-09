@@ -84,6 +84,7 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     flatListContainer: {
         width: '100%',
