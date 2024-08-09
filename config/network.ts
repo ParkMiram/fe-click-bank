@@ -65,7 +65,7 @@ export const apiPayment = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "https://just-click.shop/api/v1/businesses";
+    axios.defaults.baseURL = "https://just-click.shop";
 
     const res = await axios({
         url,

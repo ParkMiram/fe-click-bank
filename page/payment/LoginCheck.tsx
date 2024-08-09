@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PaymentData } from '../../types/PayTypes';
 
 const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
-export default function LoginCheck({ navigation, route }: any) {
+export default function LoginCheck({ navigation, route }: {navigation:any, route:{params:{payData:PaymentData}}}) {
     const { payData } = route.params;
     const [token, setToken] = useState<string>();
     const [password, setPassword] = useState("");
@@ -21,14 +22,17 @@ export default function LoginCheck({ navigation, route }: any) {
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
+                console.log(response.data);
                 return {status: response.status, data: response.data};
             }
+            console.log(error);
             return error;
         }
     }
 
     const addPassword = async (str: string) => {
         if (password.length >= 6) return;
+        Vibration.vibrate(30);
         setPassword(password + str);
         setStar("●".repeat(password.length+1));
         if (password.length == 5) {
@@ -62,6 +66,7 @@ export default function LoginCheck({ navigation, route }: any) {
         const getToken = await AsyncStorage.getItem("login")
         if (getToken == null) {
             alert("로그인 후 이용해 주세요.");
+            // 결제 취소??
             BackHandler.exitApp();
         } else {
             setToken(getToken);

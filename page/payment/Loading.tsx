@@ -9,18 +9,17 @@ import { PaymentData } from '../../types/PayTypes';
 
 export default function Loading({ navigation, route }: any) {
     const { payToken } = route.params;
-    const [ payData, setPayData] = useState<PaymentData>();
 
     // test data
-    const testPayData:PaymentData = {
-        store: "T82",
-        payAmount: 58500,
-        payState: "state",
-        successRedirect: '',
-        failRedirect: '',
-    }
+    // const testPayData:PaymentData = {
+    //     payId: 101,
+    //     businessName: "T82",
+    //     failRedirUrl: '',
+    //     successRedirUrl: '',
+    //     payAmount: 58500,
+    // }
 
-    const goLoginPage = () => {
+    const goLoginPage = (payData:PaymentData) => {
         navigation.reset({
             index: 0,
             routes: [{name: 'PaymentLogin', params: {payData: payData}}]
@@ -29,15 +28,15 @@ export default function Loading({ navigation, route }: any) {
 
     const getData = async () => {
         try {
-            // const responsePay: AxiosResponse<PaymentData> = await paymentApi.getPaymentInfo(payToken);
-            // setPayData(responsePay.data);
-            setPayData(testPayData);
-            goLoginPage();
+            const responsePay: AxiosResponse<PaymentData> = await paymentApi.parsePayToken(payToken);
+            goLoginPage(responsePay.data);
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
+                console.log(response.data);
                 return {status: response.status, data: response.data};
             }
+            console.log(error);
             return error;
         }
     }

@@ -1,12 +1,12 @@
 import { AxiosResponse } from "axios";
 import { apiCardList, apiPayment } from "../../config/network";
 
-export const getPaymentInfo = async (payToken:string):Promise<AxiosResponse<any>> => {
-    return await apiPayment(`/api/v1/paymentHistories`, "get", {}, {'Authorization': `Bearer ${payToken}`});
+export const parsePayToken = async (payToken:string):Promise<AxiosResponse<any>> => {
+    return await apiPayment(`/api/v1/payment-histories/pay-token`, "get", {}, {'Authorization': payToken});
 }
 
-export const getCardInfo = async (userToken:string):Promise<AxiosResponse<any>> => {
-    return await apiPayment(`/api/v1/???`, "get", {}, {'Authorization': `Bearer ${userToken}`});
+export const getLastCard = async (userToken:string):Promise<AxiosResponse<any>> => {
+    return await apiPayment(`/api/v1/payment-histories/last-card`, "get", {}, {'Authorization': userToken});
 }
 
 export const updatePayment = async (userToken:string, ):Promise<AxiosResponse<any>> => {
