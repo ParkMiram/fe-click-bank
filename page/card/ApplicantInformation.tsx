@@ -67,7 +67,10 @@ export default function ApplicantInformation({ route, navigation }: any) {
   const handleNextPress = () => {
     if (applyFeature && applyFeature1 && applyFeature2) {
       navigation.navigate('CardPassword',{cardPaymentDate: selectedDate,cardPassword, account, cardCheck, cardTransportation, cardProductId,token});
-    } else {
+    } 
+    // if(     
+    // )
+      else {
       Alert.alert("모든 동의사항에 체크해 주세요.");
     }
   }

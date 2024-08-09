@@ -56,9 +56,9 @@ export default function CardList({ route, navigation }: any) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <View style={styles.nameContainer}>
+                {/* <View style={styles.nameContainer}>
                     <Text style={styles.cardText}>카드</Text>
-                </View>
+                </View> */}
                 <FlatList
                     data={combinedData}
                     renderItem={({ item }) => item.cardId === -1 ? renderAddCardButton() : renderItem({ item })}
