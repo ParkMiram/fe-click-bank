@@ -49,6 +49,7 @@ import { AccountDetail } from './page/newAccount/AccountDetail';
 import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
 import { SavingAccountList } from './page/newAccount/SavingAccountList';
+import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 
 
 // export type RootStackParamList = {
@@ -101,6 +102,7 @@ export default function App() {
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
                 <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
+                <Stack.Screen name='CreateSavingAccount' component={CreateSavingAccount} />
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
