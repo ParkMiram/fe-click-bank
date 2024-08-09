@@ -11,7 +11,10 @@ interface CardResponse {
     account: string
     cardCVC: string
     cardMonthLimit: number
+    cardOneTimeLimit:number
     cardAnnualFee: number
+    cardPassword: number;
+    cardPaymentDate: string;
     cardProduct: {
         cardImg: string
         cardBenefits: string

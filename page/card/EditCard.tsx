@@ -1,27 +1,45 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
 import { updateCard } from '../../component/api/CardApi';
+import { getMyCard } from "../../component/api/CardListApi";
+
 import { Picker } from "@react-native-picker/picker";
 import ReactNativeModal from 'react-native-modal';
 type props = {
     token: string;
     cardId: number;
 }
+// interface CardResponse {
+//     cardId: number
+//     cardName: string
+//     cardNumber: string
+//     cardOneTimeLimit:string
+//     cardMonthLimit: string
+//     cardPassword: string;
+//     cardPaymentDate: string;
+//     // cardProduct: {
+//     //     cardImg: string
+//     //     cardBenefits: string
+//     // }
+// }
 interface CardResponse {
     cardId: number
     cardName: string
     cardNumber: string
-    cardOneTimeLimit:string
-    cardMonthLimit: string
-    cardPassword: string;
-    cardPaymentDate: string;
-    // cardProduct: {
-    //     cardImg: string
-    //     cardBenefits: string
-    // }
+    account: string
+    cardCVC: string
+    cardMonthLimit: number
+    cardOneTimeLimit:number
+    cardAnnualFee: number
+    cardPassword: number;
+    cardPaymentDate: number;
+    cardProduct: {
+        cardImg: string
+        cardBenefits: string
+    }
 }
 
 export default function EditCard( { route, navigation }: any ) {
@@ -31,6 +49,7 @@ export default function EditCard( { route, navigation }: any ) {
     const [password, setPassword] = useState('');
     const [dailyLimit, setDailyLimit] = useState('');
     const [onetimeLimit, setOnetimeLimit] = useState('');
+    const [cardPaymentDate,setCardPaymentDate] = useState('');
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
     const days = Array.from({ length: 31 }, (_, i) => i + 1).map(day => ({
@@ -38,14 +57,43 @@ export default function EditCard( { route, navigation }: any ) {
         value: day.toString(),
       }));
       const token = route.params?.token;
+      useEffect(() => {
+        getMyCardInfo();
+    }, []);
+
+    // const getMyCardInfo = async () => {
+    //     try {
+    //         const res = await getMyCard(id);
+    //         setMyCard(res.data.data.getMyCard);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
+
+    const getMyCardInfo = async () => {
+        try {
+            const res = await getMyCard(id);
+            const cardData = res.data.data.getMyCard;
+            console.log(cardData); 
+            setMyCard(cardData);
+            setName(cardData.cardName);
+            // setPassword(cardData.cardPassword);
+            setDailyLimit(cardData.cardMonthLimit);
+            setOnetimeLimit(cardData.cardOneTimeLimit);
+            setCardPaymentDate(cardData.cardPaymentDate);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleSubmit = async () => {
         try {
             const data = {
-                password: password,
+                // password: password ? parseInt(password) : undefined,
                 cardOneTimeLimit: onetimeLimit ? parseInt(onetimeLimit) : undefined,
                 cardMonthLimit: dailyLimit ? parseInt(dailyLimit) : undefined,
                 cardName: name,
-                cardPaymentDate: selectedDate
+                cardPaymentDate: cardPaymentDate
             };
             await updateCard(token, id, data);
             navigation.navigate('MyCard', { token });
@@ -97,12 +145,11 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={password}
                                     onChangeText={setPassword}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardPassword}
+                                    placeholder={myCard?.cardPassword?myCard.cardPassword.toString() : ''}
                                     maxLength={4}
                                     secureTextEntry={true} 
                             />
-                                               
-                            </View>
+                             </View>
                             
                             <View style = {styles.reLimitContainer}>
                                 <Text style = {styles.textcontainer}>일일 한도 변경</Text>
@@ -111,7 +158,7 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={dailyLimit}
                                     onChangeText={setDailyLimit}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardOneTimeLimit}
+                                    placeholder={myCard?.cardOneTimeLimit? myCard.cardOneTimeLimit.toString() : ''}
                                 />
                             </View>
                             <View style = {styles.reLimitContainer}>
@@ -121,40 +168,10 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={onetimeLimit}
                                     onChangeText={setOnetimeLimit}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardMonthLimit}
+                                    placeholder={myCard?.cardMonthLimit? myCard.cardMonthLimit.toString() : ''}
                                 />
                             </View>
-                            
-                            {/* <View style = {styles.reLimitContainer}>
-                            <Text style = {styles.datecontainer}>결제일 변경</Text>
-                            <RNPickerSelect
-                            onValueChange={(value) => setSelectedDate(value)}
-                            items={days}
-                            style={pickerSelectStyles}
-                            placeholder={{ label: "결제일을 선택해주세요", value: null }}
-                            value={selectedDate}
-                             /> 
-                             </View> */}
-                             {/* <TouchableOpacity onPress={toggleCategoryModal}> */}
-            {/* <Text style={styles.modalTriggerText}>결제일을 선택해주세요</Text>
-          </TouchableOpacity>
-
-          {/* <ReactNativeModal isVisible={isCategoryModalVisible} onBackdropPress={toggleCategoryModal}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>결제일 선택</Text>
-          <Picker
-            selectedValue={selectedDate}
-            onValueChange={(itemValue) => {
-              setSelectedDate(itemValue);
-              toggleCategoryModal();
-            }}
-          >
-            {days.map((day) => (
-              <Picker.Item key={day.value} label={day.label} value={day.value} />
-            ))}
-          </Picker>
-        </View>
-      </ReactNativeModal> */}
+                          
                       
                             
                         </View>
@@ -185,7 +202,9 @@ export default function EditCard( { route, navigation }: any ) {
                             value={selectedDate}
                              /> 
                              </View> */}
-                 
+                   <Text style={styles.cardName}>{myCard?.cardPaymentDate}</Text>
+                   <Text style={styles.cardName}>카드</Text>
+
                 </KeyboardAvoidingView>
             </View>
         </SafeAreaView>
@@ -200,6 +219,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       
+    },
+    cardName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
     },
     container: {
         flex: 1,
@@ -226,7 +250,7 @@ const styles = StyleSheet.create({
     reContainer:{
         justifyContent:'flex-start',
         alignItems:'center',
-        marginBottom:100
+        marginBottom:180
         
 
     },

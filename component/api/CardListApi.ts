@@ -64,7 +64,10 @@ export const getMyCard = async (id: number):Promise<AxiosResponse<any>> => {
                 account
                 cardCVC
                 cardMonthLimit
+                cardOneTimeLimit
+                cardPassword
                 cardAnnualFee
+              
                 cardProduct{
                   cardImg
                   cardBenefits
@@ -76,3 +79,4 @@ export const getMyCard = async (id: number):Promise<AxiosResponse<any>> => {
     const body = { query };
     return await apiCardList(`/graphql`, "post", body);
 }
+
