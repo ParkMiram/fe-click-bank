@@ -1,20 +1,25 @@
 export interface PaymentData {
-    store: string;
+    payId: number;
+    businessName: string;
+    failRedirUrl: string;
+    successRedirUrl: string;
     payAmount: number;
-    payState: String;
-    successRedirect: string;
-    failRedirect: string;
 }
 
 export interface CardProduct {
     cardImg: string;
 }
 
+export interface LastCard {
+    code: number;
+    cardId: null | number;
+}
+
 export interface CardData {
-    account: string;
-    cardName: string;
-    cardNumber: string;
-    cardProduct: CardProduct;
+    account: null | string;
+    cardName: null | string;
+    cardNumber: null | string;
+    cardProduct: null | CardProduct;
 }
 
 export interface PayUpdateRequest {
