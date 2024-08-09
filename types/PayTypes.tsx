@@ -13,6 +13,7 @@ export interface CardProduct {
 export interface LastCard {
     code: number;
     cardId: null | number;
+    userId: String;
 }
 
 export interface CardData {
