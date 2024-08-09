@@ -52,6 +52,10 @@ import SelectCard from './page/payment/SelectCard';
 import LoginCheck from './page/payment/LoginCheck';
 import Cancel from './page/payment/Cancel';
 import Loading from './page/payment/Loading';
+import { SavingAccountList } from './page/newAccount/SavingAccountList';
+
+import EditCard from './page/card/EditCard';
+import Bottom from './component/bottom-bar/Bottom';
 
 
 // export type RootStackParamList = {
@@ -103,6 +107,7 @@ export default function App() {
                 <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+                <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
@@ -119,13 +124,22 @@ export default function App() {
                 <Stack.Screen name="CreateCard" component={CreateCard}/>
                 <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
                 <Stack.Screen name="MyCard" component={MyCard}/>
-                 <Stack.Screen name="CardPassword" component={CardPassword}/>
+                <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
+
+                <Stack.Screen name="EditCard" component={EditCard}/>
+
                 <Stack.Screen name='AccountInvitedUser' component={AccountInvitedUser} />
                 <Stack.Screen name="Transfer" component={Transfer} />
                 <Stack.Screen name="SendingTransfer" component={SendingTransfer} />
                 <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} />
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
+
+
+                <Stack.Screen name='Bottom' component={Bottom}/>
+             
+
+
                 <Stack.Screen name="Payment" component={Payment}/>
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
                 <Stack.Screen name="PaymentCancel" component={Cancel}/>

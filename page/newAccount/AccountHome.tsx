@@ -38,7 +38,7 @@ export default function AccountHome({ route, navigation }: any) {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
             const { accounts, userName, userImg } = data;
-    
+            
             console.log('API 응답 데이터:', data);
     
             if (data) {
@@ -119,14 +119,12 @@ export default function AccountHome({ route, navigation }: any) {
                 </TouchableOpacity>
             </View>
             <View style={styles.buttonContainer}>
-                <View style={styles.transferButton}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Transfer',{ token: token,
-                            account: item.account,
-                            // accountName: item.accountName,
-                            moneyAmount: item.moneyAmount})}>
-                        <Text style={styles.buttonText}>이체</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
+                        account: item.account,
+                        // accountName: item.accountName,
+                        moneyAmount: item.moneyAmount})}>
+                    <Text style={styles.buttonText}>이체</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -140,11 +138,6 @@ export default function AccountHome({ route, navigation }: any) {
         }, [token])
     );
     
- // useEffect(() => {
-    //     if (token) {
-    //         fetchAccountsByUserId(token);
-    //     }
-    // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
             <View style={Container.innerContainer}>
