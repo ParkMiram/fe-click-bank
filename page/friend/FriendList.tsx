@@ -11,11 +11,7 @@ export default function FriendList({...props}: any) {
 
     // state
     // 친구 목록
-    const [friendListData, setFriendListData] = useState([{
-        id: '',
-        img: '',
-        name: ''
-    }]);
+    const [friendListData, setFriendListData] = useState([{ id: '', img: '', name: '' }]);
 
     // event
     // 친구 목록 조회
@@ -30,33 +26,19 @@ export default function FriendList({...props}: any) {
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                Alert.alert(
-                    "내 친구",
-                    error.response.data
-                );
+                Alert.alert("내 친구", error.response.data);
             } else {
                 console.log('Error:', error.message);
-                Alert.alert(
-                    "내 친구",
-                    error.message
-                );
+                Alert.alert("내 친구", error.message);
             }
         }
     };
 
     // 친구 삭제
     const deleteFriend = (code: string): void => {
-        Alert.alert(
-            "친구 삭제",
-            "친구를 정말 삭제하시겠습니까?",
-            [
-                {
-                    text: "취소",
-                    style: "default"
-                },
-                {
-                    text: "삭제",
-                    style: "destructive",
+        Alert.alert("친구 삭제", "친구를 정말 삭제하시겠습니까?", [
+                { text: "취소", style: "default" },
+                { text: "삭제", style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
                             const response: AxiosResponse<any, any> = await axios.delete(`http://34.135.133.145:30000/api/v1/friends/${code}`, {
@@ -64,24 +46,15 @@ export default function FriendList({...props}: any) {
                                     Authorization: bearerToken
                                 }
                             });
-                            Alert.alert(
-                                "친구 요청",
-                                response.data
-                            );
+                            Alert.alert("친구 요청", response.data);
                             getFriendList();
                         } catch (error: any) {
                             if (error.response) {
                                 console.log('Error:', error.response.data);
-                                Alert.alert(
-                                    "친구 요청",
-                                    error.response.data
-                                );
+                                Alert.alert("친구 요청", error.response.data);
                             } else {
                                 console.log('Error:', error.message);
-                                Alert.alert(
-                                    "친구 요청",
-                                    error.message
-                                );
+                                Alert.alert("친구 요청", error.message);
                             }
                         }
                     }

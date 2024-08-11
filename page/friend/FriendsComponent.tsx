@@ -5,7 +5,6 @@ import {
     StyleSheet,
     Text,
     View,
-    TextInput,
     TouchableOpacity, Image, FlatList, Alert
 } from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
@@ -14,125 +13,18 @@ import {Circle, Path, Rect, Svg} from "react-native-svg";
 import axios, {AxiosResponse} from "axios";
 import FriendInvite from "./FriendInvite";
 import FriendList from "./FriendList";
+import FriendRequestList from "./FriendRequestList";
 
 export default function FriendsComponent({ route }: any) {
     const { token } = route.params;
     const bearerToken: string = `Bearer ${token}`;
 
     // state
-    // 친구 요청 목록
-    const [friendRequestListData, setFriendRequestListData] = useState([{
-        id: '',
-        code: '',
-        img: '',
-        name: ''
-    }]);
+    const [tabBarBadge, setTabBarBadge] = useState(0);
     // 친구 추가
     const [isModalVisible, setIsModalVisible] = useState(false);
     // 모임 통장 초대 모달
     const [isInviteModalVisible, setisInviteModalVisible] = useState(false);
-
-    // event
-    // 친구 요청 목록 조회
-    const getFriendRequestList = async ():Promise<void> => {
-        setFriendRequestListData([]);
-        try {
-            const response: AxiosResponse<any, any> = await axios.get('http://34.135.133.145:30000/api/v1/friends/request', {
-                headers: {
-                    Authorization: bearerToken
-                }
-            });
-            setFriendRequestListData(response.data);
-        } catch (error: any) {
-            if (error.response) {
-                console.log('Error:', error.response.data);
-                Alert.alert(
-                    "Error",
-                    error.response.data
-                );
-            } else {
-                console.log('Error:', error.message);
-                Alert.alert(
-                    "Error",
-                    error.response
-                );
-            }
-        }
-    }
-    // 친구 요청 수락
-    const confirmRequest = async (code: string):Promise<void> => {
-        try {
-            const response: AxiosResponse<any, any> = await axios.put(`http://34.135.133.145:30000/api/v1/friends/request/confirm/${code}`, {}, {
-                headers: {
-                    Authorization: bearerToken
-                }
-            });
-            Alert.alert(
-                "친구 요청",
-                `${response.data}🤝`
-            );
-            getFriendRequestList();
-        } catch (error: any) {
-            if (error.response) {
-                console.log('Error:', error.response.data);
-                Alert.alert(
-                    "친구 요청",
-                    error.response.data
-                );
-            } else {
-                console.log('Error:', error.message);
-                Alert.alert(
-                    "친구 요청",
-                    error.message
-                );
-            }
-        }
-    }
-    // 친구 요청 거절
-    const rejectRequest = (code: string): void => {
-        Alert.alert(
-            "친구 요청",
-            "거절하시겠습니까?",
-            [
-                {
-                    text: "취소",
-                    style: "default"
-                },
-                {
-                    text: "거절",
-                    style: "destructive",
-                    onPress: async (): Promise<void> => {
-                        try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.135.133.145:30000/api/v1/friends/request/reject/${code}`, {
-                                headers: {
-                                    Authorization: bearerToken
-                                }
-                            });
-                            Alert.alert(
-                                "친구 요청",
-                                response.data
-                            );
-                            getFriendRequestList();
-                        } catch (error: any) {
-                            if (error.response) {
-                                console.log('Error:', error.response.data);
-                                Alert.alert(
-                                    "친구 요청",
-                                    error.response.data
-                                );
-                            } else {
-                                console.log('Error:', error.message);
-                                Alert.alert(
-                                    "친구 요청",
-                                    error.message
-                                );
-                            }
-                        }
-                    }
-                }
-            ]
-        );
-    }
 
     // modal
     const toggleModal = (): void => {
@@ -144,101 +36,13 @@ export default function FriendsComponent({ route }: any) {
 
     // useEffect
     useEffect(() => {
-        getFriendRequestList();
+        FriendListComponent();
+        FriendRequestListComponent();
     }, []);
 
-    const FriendRequestList = () => {
-        return (
-            <>
-                {
-                    friendRequestListData.length > 0 ?
-                        <FlatList
-                            data={friendRequestListData}
-                            keyExtractor={item => item.id}
-                            style={styles.listWrap}
-                            renderItem={({item}) => {
-                                return (
-                                    <View style={styles.list}>
-                                        <View style={styles.friend}>
-                                            {
-                                                item.img === '' ?
-                                                    <Svg
-                                                        width={40}
-                                                        height={40}
-                                                        fill="none"
-                                                        viewBox="0 0 30 30"
-                                                        style={{marginRight: 10}}
-                                                    >
-                                                        <Path
-                                                            fill="#7E869E"
-                                                            fillOpacity={0.25}
-                                                            d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
-                                                        />
-                                                        <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
-                                                        <Path
-                                                            fill="#7E869E"
-                                                            fillOpacity={0.5}
-                                                            fillRule="evenodd"
-                                                            d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
-                                                            clipRule="evenodd"
-                                                        />
-                                                    </Svg>
-                                                    :
-                                                    <Image source={{ uri: item.img }} style={ styles.profile } />
-                                            }
-                                            <Text style={styles.friendName}>{item.name}</Text>
-                                        </View>
-                                        <View style={styles.requestBtnWrap}>
-                                            <TouchableOpacity
-                                                style={styles.confirmBtn}
-                                                onPress={() => confirmRequest(item.code)}
-                                            >
-                                                <Svg
-                                                    width={12}
-                                                    height={9}
-                                                    fill="none"
-                                                >
-                                                    <Path
-                                                        stroke="#007378"
-                                                        strokeLinecap="round"
-                                                        d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
-                                                    />
-                                                </Svg>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={styles.rejectBtn}
-                                                onPress={() => rejectRequest(item.code)}
-                                            >
-                                                <Svg
-                                                    width={10}
-                                                    height={10}
-                                                    fill="none"
-                                                >
-                                                    <Path
-                                                        stroke="#5F5F5F"
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M9 1 1 9M1 1l8 8"
-                                                    />
-                                                </Svg>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                )}
-                            }
-                        />
-                        :
-                        <View style={styles.listWrap}>
-                            <View style={styles.noList}>
-                                <Text style={styles.noListTxt}>요청이 없습니다.</Text>
-                            </View>
-                        </View>
-                }
-            </>
-        )
-    };
-
     const Tab = createBottomTabNavigator();
+
+    // 내 친구
     const FriendListComponent = () => {
         return (
             <FriendList
@@ -248,8 +52,17 @@ export default function FriendsComponent({ route }: any) {
         )
     }
 
+    // 친구 요청
+    const FriendRequestListComponent = () => {
+        return (
+            <FriendRequestList
+                setTabBarBadge={setTabBarBadge}
+                bearerToken={bearerToken}
+            />
+        )
+    }
+
     return (
-        // <SafeAreaView style={styles.container}>
         <View style={styles.innerContainer}>
             <Tab.Navigator
                 initialRouteName="내 친구"
@@ -259,7 +72,7 @@ export default function FriendsComponent({ route }: any) {
                     },
                     tabBarActiveTintColor: '#007378',
                     tabBarInactiveTintColor: 'gray',
-                    tabBarIcon: () => null,
+                    tabBarIcon: (): null => null,
                 }}
             >
                 <Tab.Screen
@@ -292,15 +105,10 @@ export default function FriendsComponent({ route }: any) {
                             />
                         ),
                     }}
-                    // listeners={{
-                    //     tabPress: e => {
-                    //         getFriendList();
-                    //     }
-                    // }}
                 />
                 <Tab.Screen
                     name="친구 요청"
-                    component={FriendRequestList}
+                    component={FriendRequestListComponent}
                     options={{
                         tabBarLabel: '친구 요청',
                         tabBarIcon: () => (
@@ -317,7 +125,7 @@ export default function FriendsComponent({ route }: any) {
                                 />
                             </Svg>
                         ),
-                        tabBarBadge: friendRequestListData.length,
+                        tabBarBadge: tabBarBadge,
                         tabBarButton: (props: any) => (
                             <TouchableOpacity
                                 {...props}
@@ -328,17 +136,12 @@ export default function FriendsComponent({ route }: any) {
                             />
                         ),
                     }}
-                    listeners={{
-                        tabPress: e => {
-                            getFriendRequestList();
-                        }
-                    }}
                 />
                 <Tab.Screen
                     name="검색"
-                    component={FriendRequestList}
+                    component={FriendRequestListComponent}
                     options={{
-                        tabBarIcon: () => null,
+                        tabBarIcon: (): null => null,
                         tabBarButton: (props: any) => (
                             <TouchableOpacity
                                 {...props}
@@ -381,7 +184,6 @@ export default function FriendsComponent({ route }: any) {
                 />
             }
         </View>
-        // </SafeAreaView>
     )
 }
 
@@ -396,67 +198,8 @@ const styles = StyleSheet.create({
         width: '100%',
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
     },
-    listWrap: {
-        height: '100%',
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    friendList: {
-        position: 'relative',
-        backgroundColor: '#ffffff',
-        paddingBottom: 120,
-        width: '100%'
-    },
-    noList: {
-        width: '100%',
-        alignItems: "center",
-        justifyContent: 'center',
-    },
-    noListTxt: {
-        color: '#aaa',
-    },
-    list: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 20,
-        backgroundColor: '#ffffff',
-    },
-    friend: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    profile: {
-        marginRight: 10,
-        width: 40,
-        height: 40,
-        borderRadius: 20
-    },
-    friendName: {
-        fontWeight: '500',
-        fontSize: 16,
-    },
     requestBtnWrap: {
         flexDirection: 'row'
-    },
-    confirmBtn: {
-        width: 60,
-        height: 30,
-        borderRadius: 5,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(0, 115, 120, 0.2)',
-        marginRight: 5,
-    },
-    rejectBtn: {
-        width: 30,
-        height: 30,
-        borderRadius: 5,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'rgba(95, 95, 95, 0.2)',
     },
     tabWrap: {
         position: 'absolute',
