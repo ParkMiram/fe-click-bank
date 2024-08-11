@@ -3,11 +3,12 @@ import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBa
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
-import { updateCard } from '../../component/api/CardApi';
+import { updateCard ,updateCardPasssword,updateCardName,updateCardOneTimeLimit,updateCardMonthLimit,updateCardPaymentDate} from '../../component/api/CardApi';
 import { getMyCard } from "../../component/api/CardListApi";
 
 import { Picker } from "@react-native-picker/picker";
 import ReactNativeModal from 'react-native-modal';
+import CardPassword from './CardPassword';
 type props = {
     token: string;
     cardId: number;
@@ -44,10 +45,12 @@ interface CardResponse {
 
 export default function EditCard( { route, navigation }: any ) {
     const id = route.params?.id;
+    console.log("Card ID:", id);
+
     const [myCard, setMyCard] = useState<CardResponse>();
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
-    const [dailyLimit, setDailyLimit] = useState('');
+    const [monthLimit, setMonthLimit] = useState('');
     const [onetimeLimit, setOnetimeLimit] = useState('');
     const [cardPaymentDate,setCardPaymentDate] = useState('');
     const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -57,51 +60,41 @@ export default function EditCard( { route, navigation }: any ) {
         value: day.toString(),
       }));
       const token = route.params?.token;
-      useEffect(() => {
-        getMyCardInfo();
-    }, []);
-
-    // const getMyCardInfo = async () => {
-    //     try {
-    //         const res = await getMyCard(id);
-    //         setMyCard(res.data.data.getMyCard);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
-    const getMyCardInfo = async () => {
+      const handleSubmit = async () => {
         try {
-            const res = await getMyCard(id);
-            const cardData = res.data.data.getMyCard;
-            console.log(cardData); 
-            setMyCard(cardData);
-            setName(cardData.cardName);
-            // setPassword(cardData.cardPassword);
-            setDailyLimit(cardData.cardMonthLimit);
-            setOnetimeLimit(cardData.cardOneTimeLimit);
-            setCardPaymentDate(cardData.cardPaymentDate);
+            const data: any = {};
+    
+            if (password) {
+                data.password = password;
+            }
+            if (onetimeLimit) {
+                data.cardOneTimeLimit = parseInt(onetimeLimit);
+            }
+            if (monthLimit) {
+                data.cardMonthLimit = parseInt(monthLimit);
+            }
+            if (name) {
+                data.cardName = name;
+            }
+            if (selectedDate) {
+                data.cardPaymentDate = selectedDate;
+            }
+    
+            if (Object.keys(data).length > 0) {
+                console.log("Updating with data:", data);
+                await updateCard(token, id, data);
+                navigation.navigate('CardList', { token });
+            } else {
+                Alert.alert("Error", "No changes to save.");
+            }
         } catch (error) {
-            console.log(error);
+            console.error("Error updating card:", error);
+            Alert.alert("Error", "Failed to update card. Please try again.");
         }
-    }
-
-    const handleSubmit = async () => {
-        try {
-            const data = {
-                // password: password ? parseInt(password) : undefined,
-                cardOneTimeLimit: onetimeLimit ? parseInt(onetimeLimit) : undefined,
-                cardMonthLimit: dailyLimit ? parseInt(dailyLimit) : undefined,
-                cardName: name,
-                cardPaymentDate: cardPaymentDate
-            };
-            await updateCard(token, id, data);
-            navigation.navigate('MyCard', { token });
-        } catch (error) {
-            console.error(error);
-        }
- 
     };
+  
+ 
+    
     const toggleCategoryModal = () => {
         setCategoryModalVisible(!isCategoryModalVisible);
       };
@@ -135,40 +128,46 @@ export default function EditCard( { route, navigation }: any ) {
                                     value={name}
                                     onChangeText={setName}
                                     keyboardType="default"
-                                    placeholder={myCard?.cardName}
+                                    // placeholder={myCard?.cardName}
+                                    placeholder="카드명"
+
                                 />
                             </View>
-                            <View style = {styles.rePasswordContianer}>
+                            {/* <View style = {styles.rePasswordContianer}>
                                 <Text style = {styles.textcontainer}>비밀번호 변경</Text>
                                 <TextInput
                                     style={styles.inputPassword}
                                     value={password}
                                     onChangeText={setPassword}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardPassword?myCard.cardPassword.toString() : ''}
+                                    // placeholder={myCard?.cardPassword?myCard.cardPassword.toString() : ''}
+                                    placeholder={'입력'}
+
                                     maxLength={4}
                                     secureTextEntry={true} 
                             />
-                             </View>
+                             </View> */}
                             
                             <View style = {styles.reLimitContainer}>
-                                <Text style = {styles.textcontainer}>일일 한도 변경</Text>
+                                <Text style = {styles.textcontainer}>한달 한도 변경</Text>
                                 <TextInput
                                     style={styles.inputLimit}
-                                    value={dailyLimit}
-                                    onChangeText={setDailyLimit}
+                                    value={monthLimit}
+                                    onChangeText={setMonthLimit}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardOneTimeLimit? myCard.cardOneTimeLimit.toString() : ''}
+                                    // placeholder={myCard?.cardOneTimeLimit? myCard.cardOneTimeLimit.toString() : ''}
+                                    placeholder={'입력'}
+
                                 />
                             </View>
                             <View style = {styles.reLimitContainer}>
-                                <Text style = {styles.textcontainer}>한달 한도 변경</Text>
+                                <Text style = {styles.textcontainer}>일일 한도 변경</Text>
                                 <TextInput
                                     style={styles.inputLimit}
                                     value={onetimeLimit}
                                     onChangeText={setOnetimeLimit}
                                     keyboardType="number-pad"
-                                    placeholder={myCard?.cardMonthLimit? myCard.cardMonthLimit.toString() : ''}
+                                    placeholder={'입력'}
                                 />
                             </View>
                           
@@ -202,8 +201,8 @@ export default function EditCard( { route, navigation }: any ) {
                             value={selectedDate}
                              /> 
                              </View> */}
-                   <Text style={styles.cardName}>{myCard?.cardPaymentDate}</Text>
-                   <Text style={styles.cardName}>카드</Text>
+                   {/* <Text style={styles.cardName}>{myCard?.cardPaymentDate}</Text>
+                   <Text style={styles.cardName}>카드</Text> */}
 
                 </KeyboardAvoidingView>
             </View>
@@ -250,7 +249,7 @@ const styles = StyleSheet.create({
     reContainer:{
         justifyContent:'flex-start',
         alignItems:'center',
-        marginBottom:180
+        marginBottom:130
         
 
     },

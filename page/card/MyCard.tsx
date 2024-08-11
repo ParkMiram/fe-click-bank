@@ -1,40 +1,46 @@
 
 import { Modal, Platform, View, StatusBar, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useEffect, useState } from "react";
+import { useCallback,useEffect, useState } from "react";
 import { getMyCard } from "../../component/api/CardListApi";
 import { deleteCard } from '../../component/api/CardApi';
+import { useFocusEffect } from '@react-navigation/native';
+
 
 interface CardResponse {
-    cardId: number
-    cardName: string
-    cardNumber: string
-    account: string
-    cardCVC: string
+    cardId : number
+    cardName : string
+    cardNumber : string
+    account : string
+    cardCVC : string
     cardMonthLimit: number
-    cardOneTimeLimit:number
-    cardAnnualFee: number
-    cardPassword: number;
-    cardPaymentDate: string;
+    cardAnnualFee : number
     cardProduct: {
-        cardImg: string
+        cardImg : string
         cardBenefits: string
     }
 }
 
 export default function MyCard({ route, navigation }: any) {
     const id = route.params?.id;
+    console.log("Card ID:", id);
     const [myCard, setMyCard] = useState<CardResponse>();
     const [modalVisible, setModalVisible] = useState(false);
     const token = route.params?.token;
 
-    useEffect(() => {
-        getMyCardInfo();
-    }, []);
-
+    // useEffect(() => {
+    //     getMyCardInfo();
+    // }, []);
+    useFocusEffect(
+        useCallback(() => {
+                 getMyCardInfo();
+    }, [])
+          
+    );
     const getMyCardInfo = async () => {
         try {
             const res = await getMyCard(id);
             setMyCard(res.data.data.getMyCard);
+            console.log(res.data.data.getMyCard);
         } catch (error) {
             console.log(error);
         }

@@ -41,7 +41,7 @@ function AccountStack({ navigation,route }:any) {
   const token = route?.params?.token || '';
   React.useLayoutEffect(() => {
     const routeName = getFocusedRouteNameFromRoute(route);
-    if (routeName === 'CreateAccount'|| routeName === 'SavingAccountList'|| routeName === 'AccountPassword'|| routeName === 'AccountInformation'|| routeName === 'AccountTerms'||routeName === 'AccountComplete') {
+    if (routeName === 'CreateAccount'|| routeName === 'SavingAccountList'|| routeName === 'AccountPassword'|| routeName === 'AccountInformation'|| routeName === 'AccountTerms') {
       navigation.setOptions({ tabBarStyle: { display: 'none' } });
     }  
 

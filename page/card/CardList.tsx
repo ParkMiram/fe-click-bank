@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback,useEffect, useState } from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { getAllMyCard } from "../../component/api/CardListApi";
+import { useFocusEffect } from '@react-navigation/native';
+
 
 
 interface CardResponse {
@@ -15,13 +17,14 @@ export default function CardList({ route, navigation }: any) {
     const token = route.params?.token;
     const [cardList, setCardList] = useState<CardResponse[]>([]);
 
-    useEffect(() => {
-        if (token) {
-            getMyCardList();
-        } else {
-            console.error("Token is undefined");
-        }
-    }, [token]);
+  
+    useFocusEffect(
+        useCallback(() => {
+            if (token) {
+                getMyCardList();
+            }
+        }, [token])
+    );
 
     const getMyCardList = async () => {
         try {
@@ -53,6 +56,9 @@ export default function CardList({ route, navigation }: any) {
 
     const combinedData: Array<CardResponse | { cardId: number; cardName: string; cardProduct: { cardImg: string } }> = [...cardList, { cardId: -1, cardName: '', cardProduct: { cardImg: '' } }];
 
+
+
+    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
