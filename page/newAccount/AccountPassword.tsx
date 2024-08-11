@@ -6,6 +6,8 @@ type data = {
   accountStatus: string;
   token: string;
   userName: string;
+  product: string | null;
+  interestRate: number | null;
 }
 
 export default function AccountPassword( {  navigation, route }: any ) {
@@ -15,7 +17,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
     const [secondQuestion, setSecondQuestion] = useState(false);
     const [pickerVisible, setPickerVisible] = useState(false);
 
-    const { accountStatus, token, userName }: data = route.params;
+    const { accountStatus, token, userName, product, interestRate }: data = route.params;
 
     const dismissKeyboard = () => {
       Keyboard.dismiss();
