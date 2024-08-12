@@ -1,14 +1,15 @@
-import { Text, View } from 'react-native';
+import { BackHandler, Text, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CurserLogo from '../../component/pay/CurserLogo';
+import * as Linking from 'expo-linking';
 
 export default function Cancel({ navigation, route }: any) {
     const { redirect } = route.params;
 
     setTimeout(() => {
-        alert(`이도오오옹: ${redirect}`);
-        // ...
+        Linking.openURL(redirect);
+        BackHandler.exitApp();
     }, 3000);
 
     return (
