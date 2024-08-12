@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import ScrollView = Animated.ScrollView;
 import React, {useCallback, useEffect, useState} from "react";
-import {getAccountHistory} from "../../component/api/AccountHistoryApi";
+import {getAccountHistory, getPastAllHistories} from "../../component/api/AccountHistoryApi";
 import {AxiosResponse} from "axios";
 import RNPickerSelect from "react-native-picker-select";
 import {Path, Rect, Svg} from "react-native-svg";
@@ -35,7 +35,8 @@ interface History {
 }
 
 export default function AccountHistory({ navigation }: any) {
-    const [histories, setHistories] = useState<History[]>([]);
+    const [record, setRecord] = useState<History[]>([]);
+    // const [histories, setHistories] = useState<History[]>([]);
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
     const purposes = [
@@ -43,6 +44,7 @@ export default function AccountHistory({ navigation }: any) {
         { label: '출금', value: '출금' },
     ];
     const account: string = "110-486-119643";
+    let count = 0;
 
     const goBack = () => {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
@@ -51,27 +53,48 @@ export default function AccountHistory({ navigation }: any) {
 
     useFocusEffect(
         useCallback(() => {
-            getAccountHistories();
+            fetchHistories();
+            // getAccountHistories();
         }, [])
     );
-    // useEffect(()=> {
-    //
-    // },[]);
 
     useEffect(() => {
         filterHistories();
-    }, [histories, purpose]);
+    }, [record, purpose]);
 
-    const getAccountHistories = async (): Promise<any> => {
+    const fetchHistories = async (): Promise<any> => {
         try {
-            // const account: string = "110-486-119643";
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
             console.log(response.data); //TODO 나중에 지우기
-            setHistories(response.data);
+
+            let histories: History[] = [];
+            if (response.data && response.data.length > 0) {
+                histories = response.data.reverse();
+            }
+
+            const data = {account, count};
+            const res = await getPastAllHistories(data);
+            console.log(res.data);
+
+            const combinedHistories = histories.concat(res.data);
+
+            setRecord(combinedHistories);
+
         } catch (error) {
             console.log(error);
         }
     };
+
+    // const getPastHistories = async (): Promise<any> => {
+    //     try {
+    //         const data = {account, count}
+    //         const res = await getPastAllHistories(data);
+    //         console.log(res.data);
+    //         setHistories(res.data);
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     const copyAccountToClipboard = async () => {
         await Clipboard.setStringAsync(account);
@@ -80,9 +103,9 @@ export default function AccountHistory({ navigation }: any) {
 
     const filterHistories = () => {
         if (purpose === '전체' || purpose === null) {
-            setFilteredHistories(histories);
+            setFilteredHistories(record);
         } else {
-            const filtered = histories.filter(history => history.bhStatus === purpose);
+            const filtered = record.filter(history => history.bhStatus === purpose);
             setFilteredHistories(filtered);
         }
     };
@@ -134,10 +157,10 @@ export default function AccountHistory({ navigation }: any) {
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.balanceArea}>
-                                <Text style={styles.balanceFont}>{histories[histories.length-1]?.bhBalance.toLocaleString()} 원</Text>
+                                <Text style={styles.balanceFont}>{(record.length > 0 ? record[0].bhBalance : 0).toLocaleString()} 원</Text>
                             </View>
                         </View>
-
+                        {/*record.length-1*/}
                         <View style={styles.accountBtnArea}>
                             <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics(account)}>
                                 <Text style={styles.accountBtnFont}>분석 / 예산</Text>
@@ -170,7 +193,7 @@ export default function AccountHistory({ navigation }: any) {
                                 />
                                 {/*<Image source={require('../../assets/image/select.png')} />*/}
                             </View>
-                            {filteredHistories.slice().reverse().map((item: History) => (
+                            {filteredHistories.slice().map((item: History) => (
                                 <TouchableOpacity key={item.historyId} style={styles.history} onPress={() => navigateToDetail(item)}>
                                     <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
                                     <Text style={styles.historyNameFont}>{item.bhName}</Text>
