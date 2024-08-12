@@ -59,6 +59,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
+      navigation.navigate('Transfer', {token, account, moneyAmount})
     }
   };
 

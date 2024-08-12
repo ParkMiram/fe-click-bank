@@ -21,7 +21,7 @@ export default function AccountHome({ route, navigation }: any) {
     // const [numberHidden, setNumberHidden] = useState(false);
     const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
 
-    const [account, setAccount] = useState<AccountResponse[]>([]);
+    const [accounts, setAccounts] = useState<AccountResponse[]>([]);
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
@@ -38,11 +38,9 @@ export default function AccountHome({ route, navigation }: any) {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
             const { accounts, userName, userImg } = data;
-            
-            console.log('API 응답 데이터:', data);
     
             if (data) {
-                setAccount(accounts);
+                setAccounts(accounts);
                 setUserName(userName);
                 setUserImg(userImg);
             } else {
@@ -56,7 +54,7 @@ export default function AccountHome({ route, navigation }: any) {
                     console.log('User Info API 응답 데이터:', userInfoData);
 
                     // 상태 업데이트
-                    setAccount([]);
+                    setAccounts([]);
                     setUserName(userName || '');
                     setUserImg(userImg || '');
                 } else {
@@ -75,7 +73,7 @@ export default function AccountHome({ route, navigation }: any) {
                     console.log('User Info API 응답 데이터:', userInfoData);
     
                     // 상태 업데이트
-                    setAccount([]);
+                    setAccounts([]);
                     setUserName(userName || '');
                     setUserImg(userImg || '');
                 } else {
@@ -95,7 +93,7 @@ export default function AccountHome({ route, navigation }: any) {
         <View style={styles.accountCard}>
             <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg, amount: item.moneyAmount})}>
                     <View style={styles.imageWrapper}>
                         <Image
                             source={require('../../assets/image/more.png')}
@@ -161,10 +159,10 @@ export default function AccountHome({ route, navigation }: any) {
                 </View>
                 
                 <FlatList
-                    data={account}
+                    data={accounts}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
-                    extraData={numberHidden} 
+                    extraData={numberHidden}
                     contentContainerStyle={styles.flatListContainer}
                 />
             </View>

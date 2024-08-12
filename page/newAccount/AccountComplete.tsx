@@ -1,35 +1,37 @@
 import { Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
 import { saveAccount } from '../../component/api/NewAccountApi';
-import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 type data = {
     accountStatus: string;
     token: string;
     accountPassword: string;
-    transferRequest: TransferReqeust;
-    savingRequest: SavingRequest;
 }
 
-interface TransferReqeust {
+interface SavingAccount {
+    interestRate: number | null;
+    term: number | null;
+    product: string | null;
+}
+
+interface Transfer {
     type: string | null;
     amount: number | null;
     transferDate: number | null;
 }
 
-interface SavingRequest {
-    interestRate: Float | null;
-    term: number | null;
-    product: string | null;
-}
-
 export default function AccountComplete( {  navigation, route }: any ) {
-    const { accountStatus, token, accountPassword, transferRequest, savingRequest }: data = route.params;
+    const { accountStatus, token, accountPassword }: data = route.params;
+    const savingAccountRequest: SavingAccount = route.params.savingAccountRequest;
+    const transferRequest: Transfer = route.params.transferRequest;
+
+    console.log(transferRequest);
+    console.log(savingAccountRequest)
 
     const body = {
         accountStatus: accountStatus,
         accountPassword: accountPassword,
         transferRequest: transferRequest,
-        savingRequest: savingRequest
+        savingRequest: savingAccountRequest
     }
 
     const handleSaveAccount = async () => {
@@ -39,9 +41,15 @@ export default function AccountComplete( {  navigation, route }: any ) {
             if (response && response.status == 201) {
                 console.log(response.status);
                 if (accountStatus === 'group') {
-                    navigation.navigate('AccountHome', {token})
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+                    });
                 } else {
-                    navigation.navigate('AccountHome', {token});
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+                    });
                 }
             } else {
                 alert('서버에 이상이 있습니다.');
@@ -57,12 +65,12 @@ export default function AccountComplete( {  navigation, route }: any ) {
             <View style={styles.innerContainer}>
                 {/* 여기에 페이지 내용 작성 */}
                 <Image
-            source={require('../../assets/image/Click_logo.png')}
-            style={styles.imageStyle} resizeMode="contain"/>
-            <Text style = {styles.textcontainer}>축! 개설완료!</Text>  
-            <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
-                <Text style={styles.buttonText}>메인으로</Text>
-            </TouchableOpacity>
+                source={require('../../assets/image/Click_logo.png')}
+                style={styles.imageStyle} resizeMode="contain"/>
+                <Text style = {styles.textcontainer}>축! 개설완료!</Text>  
+                <TouchableOpacity style={styles.button} onPress={handleSaveAccount}>
+                    <Text style={styles.buttonText}>메인으로</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );
@@ -92,8 +100,6 @@ const styles = StyleSheet.create({
         width: 300, // 로고 이미지의 너비
         height: 300, // 로 이미지의 높이
         // marginBottom:100 ,
-
-        
     },
 
     textcontainer:{
