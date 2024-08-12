@@ -19,18 +19,6 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
     console.log(route.params);
     const { payData, userToken } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
-    
-    const testCardData:CardData = {
-        // account: "012012012345",
-        // cardName: "미람알뜰충동구매카드",
-        // cardNumber: "1234123412341234",
-        // cardProduct: {cardImg: "test.png"}
-        account: null,
-        cardName: null,
-        cardNumber: null,
-        cardProduct: null
-    }
-
 
     const cancelPayment = useCallback(() => {
         BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
@@ -88,21 +76,23 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
 
     const getCardData = async () => {
         try {
-            // const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
-            // console.log("responseLastCard: ");
-            // console.log(responseLastCard.data);
-            // if (responseLastCard.data.code === 0) {
-            //     const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(responseLastCard.data.cardId as number);
-            //     setCardData(responseCardInfo.data);
-            // } else {
-            //     setCardData({
-            //         account: null,
-            //         cardName: null,
-            //         cardNumber: null,
-            //         cardProduct: null
-            //     });
-            // }
-            setCardData(testCardData);
+            if (reqCard == null) {
+                const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
+                console.log("responseLastCard: ");
+                console.log(responseLastCard.data);
+                if (responseLastCard.data.code === 1) {
+                    setCardData({
+                        account: null,
+                        cardName: null,
+                        cardNumber: null,
+                        cardProduct: null
+                    });
+                    return true;
+                }
+                reqCard = responseLastCard.data.cardId;
+            }
+            const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(reqCard as number);
+            setCardData(responseCardInfo.data);
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
