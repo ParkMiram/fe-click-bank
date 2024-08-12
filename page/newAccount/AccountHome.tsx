@@ -104,9 +104,11 @@ export default function AccountHome({ route, navigation }: any) {
                     </View>
                 </TouchableOpacity>
             </View>
+            <View style = {styles.historyContainer}>
             <Text style={styles.accountNumber}>
                 {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
+            </View>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
                     {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
@@ -117,8 +119,6 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonSendText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
                     
                 </TouchableOpacity>
-            </View>
-            <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
                         account: item.account,
                         // accountName: item.accountName,
@@ -126,6 +126,9 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
+                <Text style ={styles.historyText}>거래내역</Text>
+            </TouchableOpacity>
         </View>
     );
 
@@ -187,6 +190,7 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     accountDetailContainer: {
         flexDirection: 'row',
@@ -272,14 +276,16 @@ const styles = StyleSheet.create({
     },
     transferButton: {
         alignItems: 'flex-end',
-        width: '100%',
+        // width: '90%',
+        width:90,
+        borderRadius:5
     },
     buttonText: {
         width: 60,
         backgroundColor: '#6BC29A',
         color: 'black',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         textAlign: 'center',
         fontSize: 16,
     },
@@ -291,4 +297,20 @@ const styles = StyleSheet.create({
         width: 90,
         height: 95,
     },
+    history:{
+        backgroundColor: '#6BC29A',
+        padding: 10,
+        borderRadius: 5,
+        marginTop:10
+
+    },
+    historyText:{
+
+    },
+    historyContainer:{
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+
+    }
+
 });

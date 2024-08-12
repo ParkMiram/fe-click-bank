@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     reContainer:{
         justifyContent:'flex-start',
