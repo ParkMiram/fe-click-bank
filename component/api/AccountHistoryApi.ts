@@ -28,3 +28,11 @@ export const updateNewBudget = async (data: any) : Promise<void> => {
 export const updateAccountHistoryCategory = async (data: any): Promise<void> => {
     await api(`/api/v1/histories/detail/${data.id}/category/${data.categoryId}`, "put");
 }
+
+export const getPastAllHistories = async (data:any): Promise<AxiosResponse<any>> => {
+    return await api(`api/v1/histories/past?account=${data.account}&page=${data.count}&size=10`, "get");
+}
+
+export const getPastHistoryDetail = async (data: any): Promise<AxiosResponse<any>> => {
+    return await api(`api/v1/histories/past/${data.id}`, "get");
+}

@@ -82,7 +82,7 @@ export default function App() {
     return (
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
             <Stack.Navigator 
-                initialRouteName="Splash" 
+                initialRouteName="Splash"
                 screenOptions={{headerShown: false}}
             >
                 <Stack.Screen name="Splash" component={SplashLogo} />
