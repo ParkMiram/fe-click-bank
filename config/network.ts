@@ -72,8 +72,8 @@ export const apiAccount = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = process.env.ACCOUNT;
-//     axios.defaults.baseURL = "http://192.168.0.29:8080";
+    // axios.defaults.baseURL = process.env.ACCOUNT;
+    axios.defaults.baseURL = "https://just-click.shop";
 
     const res = await axios({
         url,

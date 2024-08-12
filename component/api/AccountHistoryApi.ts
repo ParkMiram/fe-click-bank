@@ -33,6 +33,6 @@ export const getPastAllHistories = async (data:any): Promise<AxiosResponse<any>>
     return await api(`api/v1/histories/past?account=${data.account}&page=${data.count}&size=10`, "get");
 }
 
-export const getPastHistoryDetail = async (data: any): Promise<AxiosResponse<any>> => {
-    return await api(`api/v1/histories/past/${data.id}`, "get");
+export const getPastHistoryDetail = async (id: number): Promise<AxiosResponse<any>> => {
+    return await api(`api/v1/histories/past/${id}`, "get");
 }

@@ -83,11 +83,11 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             today.setHours(0, 0, 0, 0);
 
             // 날짜 차이 계산 (밀리초 단위 차이 -> 일 단위로 변환)
-            const differenceInDays = (today.getTime() - bhAtDate.getTime()) / (1000 * 3600 * 24);
+            // const differenceInDays = (today.getTime() - bhAtDate.getTime()) / (1000 * 3600 * 24);
 
             let response: AxiosResponse<Detail>;
 
-            if (differenceInDays === 1) {
+            if (bhAtDate.getTime() !== today.getTime()) {
                 // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
                 response = await getPastHistoryDetail(id);
             } else {

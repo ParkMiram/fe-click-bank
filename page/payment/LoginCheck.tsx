@@ -8,7 +8,7 @@ import { PaymentData } from '../../types/PayTypes';
 
 const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
-export default function LoginCheck({ navigation, route }: {navigation:any, route:{params:{payData:PaymentData}}}) {
+export default function LoginCheck({ navigation, route }: any) {
     const { payData } = route.params;
     const [token, setToken] = useState<string>();
     const [password, setPassword] = useState("");

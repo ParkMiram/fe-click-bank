@@ -15,7 +15,7 @@ interface Params {
     userToken: string;
 }
 
-export default function Payment({ navigation, route }: {navigation:any, route:{params:Params}}) {
+export default function Payment({ navigation, route }: any) {
     console.log(route.params);
     const { payData, userToken } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
