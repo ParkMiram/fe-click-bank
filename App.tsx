@@ -48,10 +48,16 @@ import MyCard from './page/card/MyCard';
 import { AccountDetail } from './page/newAccount/AccountDetail';
 import AccountInviteFriends from './page/newAccount/AccountInviteFriends';
 import { AccountInvitedUser } from './page/newAccount/AccountInvitedUser';
+import SelectCard from './page/payment/SelectCard';
+import LoginCheck from './page/payment/LoginCheck';
+import Cancel from './page/payment/Cancel';
+import Loading from './page/payment/Loading';
+import { SavingAccountList } from './page/newAccount/SavingAccountList';
+import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 
 import EditCard from './page/card/EditCard';
 import Bottom from './component/bottom-bar/Bottom';
-
+import MainTabs from './component/bottom-bar/Bottom';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -74,18 +80,19 @@ export default function App() {
         prefixes: [prefix],
         config: {
             screens: {
-                Payment: 'pay/:payment_id',
+                PaymentLoading: 'pay/:payToken',
             }
         },
     };
 
     return (
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+              
             <Stack.Navigator 
                 initialRouteName="Splash"
                 screenOptions={{headerShown: false}}
             >
-                <Stack.Screen name="Splash" component={SplashLogo} />
+                {/* <Stack.Screen name="Splash" component={SplashLogo} />
                 <Stack.Screen name="Login" component={LoginPage} />
                 <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
                 <Stack.Screen name="KakaoLogout" component={KakaoLogout} />
@@ -96,12 +103,14 @@ export default function App() {
                 <Stack.Screen name="UserSetNickName" component={SetNickName} />
                 <Stack.Screen name="UserCreate" component={CreateUser} />
                 <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
-                <Stack.Screen name="ClickHome" component={ClickHome} />
+                <Stack.Screen name="ClickHome" component={ClickHome} /> */}
 
                 {/* Account */}
-                <Stack.Screen name="AccountType" component={AccountType}/>
+                {/* <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
+                <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
+                <Stack.Screen name='CreateSavingAccount' component={CreateSavingAccount} />
                 <Stack.Screen name="AccountPassword" component={AccountPassword}/>
                 <Stack.Screen name="AccountComplete" component={AccountComplete}/>
                 <Stack.Screen name="AccountTerms" component={AccountTerms}/>
@@ -118,7 +127,7 @@ export default function App() {
                 <Stack.Screen name="CreateCard" component={CreateCard}/>
                 <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
                 <Stack.Screen name="MyCard" component={MyCard}/>
-                 <Stack.Screen name="CardPassword" component={CardPassword}/>
+                <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
 
                 <Stack.Screen name="EditCard" component={EditCard}/>
@@ -135,12 +144,30 @@ export default function App() {
 
 
                 <Stack.Screen name="Payment" component={Payment}/>
+
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
+                <Stack.Screen name="PaymentCancel" component={Cancel}/>
+                <Stack.Screen name="PaymentSelectCard" component={SelectCard}/>
+                <Stack.Screen name="PaymentLogin" component={LoginCheck}/>
+                <Stack.Screen name="PaymentLoading" component={Loading}/>
 
                 {/* Friend */}
                 <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
+                <Stack.Screen name="Splash" component={SplashLogo} />
+                <Stack.Screen name="Login" component={LoginPage} />
+                <Stack.Screen name="KakaoLogin" component={KakaoLogin} />
+                <Stack.Screen name="SimpleLogin" component={SimpleLogin} />
+                <Stack.Screen name="UserTermOfUse" component={TermOfUse} />
+                <Stack.Screen name="UserSetPassword" component={SetPassword} />
+                <Stack.Screen name="UserCheckPassword" component={CheckPassword} />
+                <Stack.Screen name="UserSetNickName" component={SetNickName} />
+                <Stack.Screen name="UserCreate" component={CreateUser} />
+                <Stack.Screen name="UserGetLoginToken" component={GetLoginToken} />
+                <Stack.Screen name="Bottom" component={Bottom} />
+                <Stack.Screen name="ClickHome" component={ClickHome} />
 
             </Stack.Navigator>
+           
         </NavigationContainer>
     );
 }

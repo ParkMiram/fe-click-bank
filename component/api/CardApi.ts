@@ -18,5 +18,33 @@ export const updateCard = async (token: string, cardId: number, data: any): Prom
     });
 };
 
+export const updateCardPasssword = async (token: string, cardId: number, data: any): Promise<AxiosResponse<any>> => {
+    return apiCard(`api/v1/cards/password/${cardId}`, "PUT", data, {
+        'Authorization': `Bearer ${token}`
+    });
+};
+export const updateCardName = async (token: string, cardId: number,  data: any): Promise<AxiosResponse<any>> => {
+    return apiCard(`api/v1/cards/card-name/${cardId}`, "PUT", data, {
+        'Authorization': `Bearer ${token}`
+    });
+};
+
+export const updateCardOneTimeLimit = async (token: string, cardId: number, data: any): Promise<AxiosResponse<any>> => {
+    return apiCard(`api/v1/cards/day-limit/${cardId}`, "PUT", data, {
+        'Authorization': `Bearer ${token}`
+    });
+};
+
+export const updateCardMonthLimit = async (token: string, cardId: number, data: any): Promise<AxiosResponse<any>> => {
+    return apiCard(`api/v1/cards/month-limit/${cardId}`, "PUT", data, {
+        'Authorization': `Bearer ${token}`
+    });
+};
+export const updateCardPaymentDate = async (token: string, cardId: number, data: any): Promise<AxiosResponse<any>> => {
+    return apiCard(`api/v1/cards/payment-date/${cardId}`, "PUT", data, {
+        'Authorization': `Bearer ${token}`
+    });
+};
+
 
 

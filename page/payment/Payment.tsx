@@ -1,52 +1,64 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { BackHandler, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useEffect, useState } from 'react';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import { useCallback, useEffect, useState } from 'react';
+import { AxiosError, AxiosResponse } from 'axios';
 import * as paymentApi from '../../component/api/PaymentApi';
 import NextButton from '../../component/auth/NextButton';
 import * as LocalAuthentication from 'expo-local-authentication';
 import {Path, Svg} from "react-native-svg";
+import { CardData, LastCard, PaymentData } from '../../types/PayTypes';
+import PayCard from '../../component/pay/PayCard';
 
-interface PaymentData {
-    name: string;
-    store: string;
-    amount: number;
-    successRedirect: string;
-    failRedirect: string;
-}
-interface CardData {
-    account: string;
-    card_name: string;
-    card_number: string;
-    card_disable: boolean;
+interface Params {
+    payData: PaymentData;
+    userToken: string;
 }
 
-export default function Payment({ navigation, route }: any) {
-    const { payment_id } = route.params;
-    const [ payData, setPayData] = useState<PaymentData>();
+export default function Payment({ navigation, route }: {navigation:any, route:{params:Params}}) {
+    console.log(route.params);
+    const { payData, userToken } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
     
-    // test data
-    const testPayData:PaymentData = {
-        name: "분도의 갬성가득한 밤",
-        store: "T82",
-        amount: 58500,
-        successRedirect: '',
-        failRedirect: '',
-    }
     const testCardData:CardData = {
-        account: "012012012345",
-        card_name: "미람알뜰충동구매카드",
-        card_number: "1234123412341234",
-        card_disable: false
+        // account: "012012012345",
+        // cardName: "미람알뜰충동구매카드",
+        // cardNumber: "1234123412341234",
+        // cardProduct: {cardImg: "test.png"}
+        account: null,
+        cardName: null,
+        cardNumber: null,
+        cardProduct: null
     }
 
-    const goBack = () => {
-    }
+
+    const cancelPayment = useCallback(() => {
+        BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+        });
+        return true;
+    },[]);
+    BackHandler.addEventListener('hardwareBackPress', cancelPayment);
 
     const selectCard = () => {
-        // navigation.navigate('FriendsComponent');
+        // Todo: need return and param
+        navigation.navigate('PaymentSelectCard');
+    }
+
+    const sendPayRequest = () => {
+        try {
+            return true;
+        } catch (error) {
+            const {response} = error as unknown as AxiosError;
+            if(response){
+                console.log(response.data);
+                return {status: response.status, data: response.data};
+            }
+            console.log(error);
+            return error;
+        }
     }
 
     const nextAndAuth = async () => {
@@ -57,50 +69,59 @@ export default function Payment({ navigation, route }: any) {
         } else {
             const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
             if (result.success) {
-                navigation.reset({
-                    index: 0,
-                    routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirect}}]
-                });
+                if (sendPayRequest()) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirUrl}}]
+                    });
+                } else {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+                    });
+                }
             } else {
                 alert("인증에 실패했습니다.");
             }
         }
     }
 
-    const getData = async () => {
+    const getCardData = async () => {
         try {
-            // const response: AxiosResponse<PaymentData> = await paymentApi.getPaymentInfo(payment_id);
-            // setPayData(response.data);
-            setPayData(testPayData);
-        } catch (error) {
-            const {response} = error as unknown as AxiosError;
-            if(response){
-                return {status: response.status, data: response.data};
-            }
-            return error;
-        }
-        try {
-            // const response: AxiosResponse<CardData> = await paymentApi.getCardInfo(payment_id);
-            // setCardData(response.data);
+            // const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
+            // console.log("responseLastCard: ");
+            // console.log(responseLastCard.data);
+            // if (responseLastCard.data.code === 0) {
+            //     const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(responseLastCard.data.cardId as number);
+            //     setCardData(responseCardInfo.data);
+            // } else {
+            //     setCardData({
+            //         account: null,
+            //         cardName: null,
+            //         cardNumber: null,
+            //         cardProduct: null
+            //     });
+            // }
             setCardData(testCardData);
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
+                console.log(response.data);
                 return {status: response.status, data: response.data};
             }
+            console.log(error);
             return error;
         }
-
     }
 
     useEffect(() => {
-        getData();
+        getCardData();
     }, []);
 
     return (
         <SafeAreaView style={Container.container}>
             <View style={Container.innerContainer}>
-                <TouchableOpacity style={{width:"25%", marginRight:"72%", marginLeft:"3%"}} onPress={goBack}>
+                <TouchableOpacity style={{width:"25%", marginRight:"72%", marginLeft:"3%"}} onPress={cancelPayment}>
                     <View style={styles.backContainer}>
                         <Svg style={{justifyContent:'center'}} width={9} height={14} fill="none">
                             <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
@@ -108,27 +129,13 @@ export default function Payment({ navigation, route }: any) {
                         <Text style={{paddingLeft: 6, fontSize: 18}}>취소하기</Text>
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.nameText} numberOfLines={1} ellipsizeMode='tail'>{payData?.name}</Text>
-                <Text style={styles.storeText}>{payData?.store}</Text>
-                <Text style={styles.amontText}>{payData?.amount.toLocaleString()+"원"}</Text>
+                {/* <Text style={styles.nameText} numberOfLines={1} ellipsizeMode='tail'>{payData?.name}</Text> */}
+                {/* <Text style={styles.storeText}>{payData?.businessName}</Text> */}
+                <Text style={styles.nameText}>{payData?.businessName}</Text>
+                <Text style={styles.amontText}>{payData?.payAmount.toLocaleString()+"원"}</Text>
+
                 <View style={{flex:1, width:'100%', alignItems:'center'}}>
-                    <View style={styles.cardBox}>
-                        <View style={styles.cardBoxHeader}>
-                            <Text style={{fontSize:18}}>결제수단</Text>
-                            <TouchableOpacity onPress={selectCard}>
-                                <View style={styles.changeCardButton}><Text style={{fontSize:14, color:'white'}}>변경</Text></View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                            <View style={styles.cardIcon}/>
-                            <View style={{marginLeft: 12, marginRight:"10%"}}>
-                                <Text style={{fontWeight:'bold', fontSize:17, marginBottom:4}} numberOfLines={1} ellipsizeMode='tail'>
-                                    {cardData?.card_name}</Text>
-                                <Text style={{color:'#aaa'}}>{"딸깍뱅크"}</Text>
-                                <Text style={{color:'#aaa'}}>{cardData?.card_number}</Text>
-                            </View>
-                        </View>
-                    </View>
+                    <PayCard selectCard={selectCard} cardName={cardData?.cardName} cardNumber={cardData?.cardNumber}/>
                 </View>
 
                 <TouchableOpacity onPress={() => {}}>
