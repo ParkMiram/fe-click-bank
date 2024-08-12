@@ -7,30 +7,19 @@ import * as paymentApi from '../../component/api/PaymentApi';
 import NextButton from '../../component/auth/NextButton';
 import * as LocalAuthentication from 'expo-local-authentication';
 import {Path, Svg} from "react-native-svg";
-import { CardData, LastCard, PaymentData } from '../../types/PayTypes';
+import { CardData, LastCard, PaymentData, PayUpdateRequest } from '../../types/PayTypes';
 import PayCard from '../../component/pay/PayCard';
 
 interface Params {
     payData: PaymentData;
     userToken: string;
+    card: null | number;
 }
 
 export default function Payment({ navigation, route }: any) {
     console.log(route.params);
-    const { payData, userToken } = route.params;
+    const { payData, userToken, card } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
-    
-    const testCardData:CardData = {
-        // account: "012012012345",
-        // cardName: "미람알뜰충동구매카드",
-        // cardNumber: "1234123412341234",
-        // cardProduct: {cardImg: "test.png"}
-        account: null,
-        cardName: null,
-        cardNumber: null,
-        cardProduct: null
-    }
-
 
     const cancelPayment = useCallback(() => {
         BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
@@ -43,12 +32,20 @@ export default function Payment({ navigation, route }: any) {
     BackHandler.addEventListener('hardwareBackPress', cancelPayment);
 
     const selectCard = () => {
-        // Todo: need return and param
-        navigation.navigate('PaymentSelectCard');
+        navigation.navigate('PaymentSelectCard', {payData: payData, token: userToken});
     }
 
-    const sendPayRequest = () => {
+    const sendPayRequest = async () => {
         try {
+            const request:PayUpdateRequest = {
+                account: cardData?.account as unknown as string,
+                cardId: cardData?.cardId as unknown as number,
+                payState: "PAY_COMPLETE"
+            }
+            const response: AxiosResponse<string> = await paymentApi.updatePayment(request, userToken);
+            if(response.data == "결제 실패") {
+                return false;
+            }
             return true;
         } catch (error) {
             const {response} = error as unknown as AxiosError;
@@ -57,7 +54,7 @@ export default function Payment({ navigation, route }: any) {
                 return {status: response.status, data: response.data};
             }
             console.log(error);
-            return error;
+            return false;
         }
     }
 
@@ -69,7 +66,7 @@ export default function Payment({ navigation, route }: any) {
         } else {
             const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
             if (result.success) {
-                if (sendPayRequest()) {
+                if (await sendPayRequest()) {
                     navigation.reset({
                         index: 0,
                         routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirUrl}}]
@@ -87,22 +84,26 @@ export default function Payment({ navigation, route }: any) {
     }
 
     const getCardData = async () => {
+        let reqCard:null|number = card;
         try {
-            // const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
-            // console.log("responseLastCard: ");
-            // console.log(responseLastCard.data);
-            // if (responseLastCard.data.code === 0) {
-            //     const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(responseLastCard.data.cardId as number);
-            //     setCardData(responseCardInfo.data);
-            // } else {
-            //     setCardData({
-            //         account: null,
-            //         cardName: null,
-            //         cardNumber: null,
-            //         cardProduct: null
-            //     });
-            // }
-            setCardData(testCardData);
+            if (reqCard == null) {
+                const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
+                console.log("responseLastCard: ");
+                console.log(responseLastCard.data);
+                if (responseLastCard.data.code === 1) {
+                    setCardData({
+                        cardId: null,
+                        account: null,
+                        cardName: null,
+                        cardNumber: null,
+                        cardProduct: null
+                    });
+                    return true;
+                }
+                reqCard = responseLastCard.data.cardId;
+            }
+            const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(reqCard as number);
+            setCardData(responseCardInfo.data);
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
