@@ -17,6 +17,7 @@ export interface LastCard {
 }
 
 export interface CardData {
+    cardId: null | number;
     account: null | string;
     cardName: null | string;
     cardNumber: null | string;
@@ -24,6 +25,7 @@ export interface CardData {
 }
 
 export interface PayUpdateRequest {
-    card_id: number;
-    
+    account: string;
+    cardId: number;
+    payState: string;
 }

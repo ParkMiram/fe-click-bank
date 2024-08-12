@@ -7,7 +7,7 @@ import * as paymentApi from '../../component/api/PaymentApi';
 import NextButton from '../../component/auth/NextButton';
 import * as LocalAuthentication from 'expo-local-authentication';
 import {Path, Svg} from "react-native-svg";
-import { CardData, LastCard, PaymentData } from '../../types/PayTypes';
+import { CardData, LastCard, PaymentData, PayUpdateRequest } from '../../types/PayTypes';
 import PayCard from '../../component/pay/PayCard';
 
 interface Params {
@@ -35,8 +35,14 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
         navigation.navigate('PaymentSelectCard', {payData: payData, token: userToken});
     }
 
-    const sendPayRequest = () => {
+    const sendPayRequest = async () => {
         try {
+            const request:PayUpdateRequest = {
+                account: cardData?.account as unknown as string,
+                cardId: cardData?.cardId as unknown as number,
+                payState: "PAY_COMPLETE"
+            }
+            const response: AxiosResponse<LastCard> = await paymentApi.updatePayment(request);
             return true;
         } catch (error) {
             const {response} = error as unknown as AxiosError;
@@ -45,7 +51,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
                 return {status: response.status, data: response.data};
             }
             console.log(error);
-            return error;
+            return false;
         }
     }
 
@@ -57,7 +63,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
         } else {
             const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
             if (result.success) {
-                if (sendPayRequest()) {
+                if (await sendPayRequest()) {
                     navigation.reset({
                         index: 0,
                         routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirUrl}}]
@@ -83,6 +89,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
                 console.log(responseLastCard.data);
                 if (responseLastCard.data.code === 1) {
                     setCardData({
+                        cardId: null,
                         account: null,
                         cardName: null,
                         cardNumber: null,
