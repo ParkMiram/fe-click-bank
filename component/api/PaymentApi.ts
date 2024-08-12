@@ -10,8 +10,8 @@ export const getLastCard = async (userToken:string):Promise<AxiosResponse<any>> 
     return await apiPayment(`/api/v1/payment-histories/last-card`, "get", {}, {'Authorization': userToken});
 }
 
-export const updatePayment = async (payUpdate:PayUpdateRequest):Promise<AxiosResponse<any>> => {
-    return await apiPayment(``, "put", payUpdate, {})
+export const updatePayment = async (payUpdate:PayUpdateRequest, userToken:string):Promise<AxiosResponse<any>> => {
+    return await apiPayment(``, "put", payUpdate, {'Authorization': userToken})
 }
 
 export const getMyCard = async (cardId: number):Promise<AxiosResponse<any>> => {
