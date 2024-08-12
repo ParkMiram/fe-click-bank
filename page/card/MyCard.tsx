@@ -88,14 +88,6 @@ export default function MyCard({ route, navigation }: any) {
                     <Text style={styles.infoValue}>{myCard?.account}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.infoButton}>
-                        <Text style={styles.buttonText}>이번 달 내역</Text>
-                        <Text style={styles.buttonText}>전체내역보기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.infoButton}>
-                        <Text style={styles.buttonText}>이번 달 혜택</Text>
-                        <Text style={styles.buttonText}>전체혜택보기</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.removeButton} onPress={() => setModalVisible(true)}>
                         <Text style={styles.removeButtonText}>해지하기</Text>
                     </TouchableOpacity>
@@ -157,7 +149,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     cardText: {
-        fontSize: 30,
+        fontSize: 25,
     },
     headerText: {
         fontSize: 24,
@@ -286,7 +278,7 @@ const styles = StyleSheet.create({
         height: 90,
         borderRadius: 45,
         overflow: 'hidden',
-        marginLeft: 90,
+        marginLeft: 150,
     },  
     imageMore: {
         width: 50,
