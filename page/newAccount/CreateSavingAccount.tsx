@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native";
+import { Key, useEffect, useState } from "react";
+import { Alert, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StatusBar, StyleSheet, View } from "react-native";
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler";
 import { Text, TextInput } from "react-native-paper";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -7,25 +7,82 @@ import ReactNativeModal from "react-native-modal";
 import { Path, Svg } from "react-native-svg";
 import RNPickerSelect from 'react-native-picker-select';
 import { Picker } from "@react-native-picker/picker";
+import { getAccountByType } from "../../component/api/NewAccountApi";
 
 type data = {
-    token: String
-    account: String;
-    moneyAmount: Number;
+    token: string
+    accountStatus: string;
+    userName: string;
+    product: string;
+    interestRate: number;
+    accountPassword: string;
+}
+
+interface SavingAccount {
+    interestRate: number;
+    term: number;
+    product: string;
+    sendAccount: string;
+}
+
+interface Transfer {
+    type: string;
+    amount: number;
+    transferDate: number;
+    account: string;
+}
+
+interface Account {
+    account: string;
 }
 
 export const CreateSavingAccount = ({ navigation, route }: any) => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
     const [isInputModalVisible, setInputModalVisible] = useState(false);
+    const [isPeriodVisible, setPeriodVisible] = useState(false);
+    const [isAccountVisible, setAccountVisible] = useState(false);
     const [selectedDay, setSelectedDay] = useState<number>(14);
-    const [selectedAmount, setSelectedAmount] = useState<number>(0);
+    const [selectedPeriod, setSelectedPeriod] = useState<number>(1);
+    const [maturityDate, setMaturityDate] = useState<string | null>(null);
+    const [selectedAmount, setSelectedAmount] = useState<number>(10000);
     const [inputAmount, setInputAmount] = useState('');
-    const { token, account, moneyAmount }: data = route.params;
+    const [accountList, setAccountList] = useState<Account[]>([])
+    const [selectedAccount, setSelectedAccount] = useState<string>('');
+    const [inputAccount, setInputAccount] = useState<string>('');
+    const { token, accountStatus, userName, product, interestRate, accountPassword }: data = route.params;
+
+    const savingAccountRequest: SavingAccount = {
+        interestRate: interestRate,
+        term: selectedPeriod,
+        product: product,
+        sendAccount: selectedAccount
+    }
+
+    const transferRequest: Transfer = {
+        type: accountStatus,
+        amount: selectedAmount,
+        transferDate: Number(selectedDay),
+        account: selectedAccount
+    }
+
+    const maturityPeriods = [
+        { label: '1 년', value: 1 },
+        { label: '2 년', value: 2 },
+    ];
 
     const days = Array.from({ length: 28 }, (_, i) => i + 1);
-
+    
     const amountOptions = [10000, 50000, 100000, 500000, 1000000, "직접 입력"];
+
+    const calculateMaturityDate = (months: number) => {
+        const startDate = new Date();
+        const maturityDate = new Date(startDate.setMonth(startDate.getMonth() + months));
+        
+        // Format the date to a readable format, e.g., "YYYY-MM-DD"
+        const formattedDate = maturityDate.toISOString().split('T')[0];
+        setMaturityDate(formattedDate);
+    };
 
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
@@ -37,6 +94,14 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
 
     const toggleInputModal = () => {
         setInputModalVisible(!isInputModalVisible);
+    };
+
+    const toggelPeriods = () => {
+        setPeriodVisible(!isPeriodVisible)
+    }
+
+    const toggleAccountModal = () => {
+        setAccountVisible(!isAccountVisible);
     };
 
     const handleAmountChange = (value: any) => {
@@ -55,13 +120,13 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
 
     const handleCustomAmountConfirm = () => {
         const amount = Number(inputAmount.replace(/,/g, ''));
-    if (!isNaN(amount)) {
-        setSelectedAmount(amount);
-        toggleInputModal();
-        toggleCategoryModal();
-    } else {
-        console.error('Invalid custom amount');
-    }
+        if (!isNaN(amount)) {
+            setSelectedAmount(amount);
+            toggleInputModal();
+            toggleCategoryModal();
+        } else {
+            console.error('Invalid custom amount');
+        }
     };
 
     const formatAmount = (amount: string) => {
@@ -72,9 +137,25 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
     const handleInputChange = (text: string) => {
         const cleanedText = text.replace(/[^0-9]/g, '');
         const formattedText = formatAmount(cleanedText);
-
         setInputAmount(formattedText);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getAccountByType(token);
+                console.log(response.data)
+                setAccountList(response.data); // API에서 받은 데이터 상태에 저장
+            } catch (err) {
+                console.error("API 호출 중 오류 발생:", err);
+                Alert.alert("데이터를 불러오는 중에 오류가 발생했습니다.");
+                navigation.goBack();
+            }
+        };
+
+        fetchData();
+        calculateMaturityDate(selectedPeriod);
+    }, [selectedPeriod, token]);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -87,10 +168,10 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
                     <View style={styles.inner}>
                     <TouchableOpacity onPress={() => {navigation.navigate("AccountHome")}}>
                         <Svg
-                        width={31}
-                        height={23}
-                        fill="none"
-                        style={styles.image}
+                            width={31}
+                            height={23}
+                            fill="none"
+                            style={styles.image}
                         >
                         <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
                         </Svg>
@@ -105,8 +186,8 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
                                 <Picker
                                     selectedValue={selectedDay}
                                     onValueChange={(itemValue) => {
-                                    setSelectedDay(itemValue);
-                                    toggleModal();
+                                        setSelectedDay(itemValue);
+                                        toggleModal();
                                     }}
                                 >
                                     {days.map((day) => (
@@ -149,10 +230,60 @@ export const CreateSavingAccount = ({ navigation, route }: any) => {
                             )}
                         </View>
                     </ReactNativeModal>
+                    <TouchableOpacity style={styles.button} onPress={toggelPeriods}>
+                        <Text style={styles.buttonText}>
+                            선택된 만기 기간 : {selectedPeriod} 년
+                        </Text>
+                    </TouchableOpacity>
+                    <ReactNativeModal isVisible={isPeriodVisible} onBackdropPress={toggelPeriods}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>적금 만기 기간</Text>
+                            <Picker
+                                selectedValue={selectedPeriod}
+                                onValueChange={(value) => {
+                                    setSelectedPeriod(value);
+                                    toggelPeriods();
+                                }}
+                            >
+                                {maturityPeriods.map((period) => (
+                                    <Picker.Item key={period.value} label={period.label} value={period.value} />
+                                ))}
+                            </Picker>
+                        </View>
+                    </ReactNativeModal>
+                    <TouchableOpacity style={styles.button} onPress={toggleAccountModal}>
+                        <Text style={{marginBottom: 5}}>선택된 이제 계좌</Text>
+                        <Text style={styles.buttonText}>
+                            {selectedAccount?.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
+                        </Text>
+                    </TouchableOpacity>
+                    <ReactNativeModal isVisible={isAccountVisible} onBackdropPress={toggleAccountModal}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>이체 계좌 선택</Text>
+                            <Picker
+                                selectedValue={selectedAccount}
+                                onValueChange={(value) => {
+                                    const account = accountList.find((item) => item.account === value)?.account;
+                                    setSelectedAccount(account !== undefined ? account : "계좌 선택");
+                                    toggleAccountModal();
+                                }}
+                            >
+                                {accountList.map((item, index) => (
+                                    <Picker.Item key={index} label={item.account} value={item.account} />
+                                ))}
+                            </Picker>
+                        </View>
+                    </ReactNativeModal>
                     <View style={{ flex: 1 }} />
                     <TouchableOpacity 
                         style={styles.sendButton} 
-                        onPress={() => navigation.navigate('AccountTerms', {  })}
+                        onPress={() => {
+                            if (!selectedAccount || selectedAccount.trim() === "") {
+                                Alert.alert("계좌 선택 오류", "계좌를 선택하세요.");
+                            } else {
+                                navigation.navigate('AccountTerms', { token, accountStatus, accountPassword, savingAccountRequest, transferRequest })
+                            }
+                        }}
                     >
                         <Text style={styles.sendButtonText}>보내기</Text>
                     </TouchableOpacity>

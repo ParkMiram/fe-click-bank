@@ -16,6 +16,8 @@ export default function EditAccount( { route, navigation }: any ) {
     const [onetimeLimit, setOnetimeLimit] = useState('')
     const { token, account }: props = route.params;
 
+    console.log(account);
+
     const handleDeleteAccount = async () => {
         setModalVisible(true);
         try {

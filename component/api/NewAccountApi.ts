@@ -64,6 +64,12 @@ export const getAccountByUserId = async (token: string): Promise<AxiosResponse<a
     }
 };
 
+export const getAccountByType = async (token: string):Promise<AxiosResponse<any>> => {
+    return await apiAccount(`/api/v1/accounts/saving`, "get", undefined, {
+        'Authorization': `Bearer ${token}`
+    });
+}
+
 export const setAccountName = async (body: object, token: string):Promise<AxiosResponse<any>> => {
     return await apiAccount(`/api/v1/accounts/name`, "put", body, {
         'Authorization': `Bearer ${token}`
@@ -83,7 +89,7 @@ export const setAccountLimit = async (body: object, token: string):Promise<Axios
 }
 
 export const deleteAccount = async (token: string, account: string):Promise<AxiosResponse<any>> => {
-    return await apiAccount(`/api/v1/accounts?account=${account}`, "delete", undefined, {
+    return apiAccount(`/api/v1/accounts?account=${account}`, "delete", undefined, {
         'Authorization': `Bearer ${token}`
     });
 }
