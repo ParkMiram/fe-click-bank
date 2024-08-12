@@ -10,7 +10,7 @@ export const api = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://192.168.0.10:8080";
+    axios.defaults.baseURL = "http://35.223.135.5:30560";
 
     const res = await axios({
         url,
@@ -21,6 +21,50 @@ export const api = async (
 
     return res;
 };
+
+export const apiCardList = async (
+    url: string,
+    method: Method,
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
+): Promise<AxiosResponse<any>> => {
+    // axios.defaults.baseURL = "http://192.168.0.23:8080";
+    axios.defaults.baseURL = "http://192.168.90.124:8080";
+        // axios.defaults.baseURL = "http://35.239.149.187:31982";
+
+
+
+    const res = await axios({
+        url,
+        method,
+        data: body,
+        headers: headers
+    });
+
+    return res;
+    
+}
+export const apiCard = async (
+    url: string,
+    method: Method,
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
+): Promise<AxiosResponse<any>> => {
+    // axios.defaults.baseURL = "http://192.168.0.23:8080";
+    axios.defaults.baseURL = "http://192.168.90.124:8080";
+    // axios.defaults.baseURL = "http://35.239.149.187:31982";
+
+   
+    const res = await axios({
+        url,
+        method,
+        data: body,
+        headers: headers
+    });
+
+    return res;
+    
+}
 
 export const apiAccount = async (
     url: string,
@@ -28,7 +72,8 @@ export const apiAccount = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = process.env.ACCOUNT;
+    // axios.defaults.baseURL = process.env.ACCOUNT;
+    axios.defaults.baseURL = "http://34.66.71.98:32001";
 
     const res = await axios({
         url,
@@ -39,3 +84,21 @@ export const apiAccount = async (
 
     return res;
 };
+
+export const apiPayment = async (
+    url: string,
+    method: Method,
+    body?: ApiRequestBody,
+    headers?: Record<string, string>
+): Promise<AxiosResponse<any>> => {
+    axios.defaults.baseURL = "https://just-click.shop";
+
+    const res = await axios({
+        url,
+        method,
+        data: body,
+        headers: headers
+    });
+
+    return res;
+}

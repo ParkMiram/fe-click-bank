@@ -24,8 +24,9 @@ export const AccountInvitedUser = ({ navigation, route}: any) => {
     useEffect(() => {
         const fetchGroupAccount = async () => {
             try {
+                console.log(`usertap/ token: ${token}, account: ${account}`);
                 const response = await getGroupAccount(token, account);
-                const groupMembers: GroupMemberInfo[] = response.data.groupAccountMemberResponses;
+                const groupMembers: GroupMemberInfo[] = response.data.userResponses;
                 setMembers(groupMembers);
             } catch (error) {
                 console.error("Failed to fetch group account data", error);

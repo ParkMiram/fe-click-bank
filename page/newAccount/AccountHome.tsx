@@ -3,6 +3,7 @@ import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View
 import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
+import { Container } from '../../css/sujin/Container';
 
 interface AccountResponse {
     account: string;
@@ -37,7 +38,7 @@ export default function AccountHome({ route, navigation }: any) {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
             const { accounts, userName, userImg } = data;
-    
+            
             console.log('API 응답 데이터:', data);
     
             if (data) {
@@ -92,17 +93,17 @@ export default function AccountHome({ route, navigation }: any) {
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+            <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <View style={styles.imageWrapper}>
-
-                <Image
-                    source={require('../../assets/image/more.png')}
-                    style={styles.imageMore} resizeMode="contain"
-                />
-                </View>
-
-            </TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+                    <View style={styles.imageWrapper}>
+                        <Image
+                            source={require('../../assets/image/more.png')}
+                            style={styles.imageMore} resizeMode="contain"
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
             <Text style={styles.accountNumber}>
                 {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
@@ -137,14 +138,9 @@ export default function AccountHome({ route, navigation }: any) {
         }, [token])
     );
     
- // useEffect(() => {
-    //     if (token) {
-    //         fetchAccountsByUserId(token);
-    //     }
-    // }, [token,account])
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+            <View style={Container.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Image
                         source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
@@ -167,8 +163,7 @@ export default function AccountHome({ route, navigation }: any) {
                     keyExtractor={(item, index) => index.toString()}
                     extraData={numberHidden} 
                     contentContainerStyle={styles.flatListContainer}
-/>
-
+                />
             </View>
             <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
                 <Image
@@ -192,6 +187,11 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    accountDetailContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 30
     },
     flatListContainer: {
         width: '100%',

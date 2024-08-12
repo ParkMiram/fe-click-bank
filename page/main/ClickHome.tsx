@@ -30,10 +30,12 @@ export default function ClickHome({ route, navigation }: any) {
                     })}
                     active={true}
                 />
-                <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
+                 <NextButton text="클릭" press={() => navigation.navigate('Bottom',{token:token})} active={true} />
+                {/* <NextButton text="내칭구보기" press={() => navigation.navigate('FriendsComponent', { token: token })} active={true} />
                 <NextButton text="내계좌보기" press={() => navigation.navigate('AccountHome',{token:token})} active={true} />
                 <NextButton text="내계좌내역보기" press={() => navigation.navigate('AccountHistory')} active={true} />
-                    <NextButton text="내카드보기" press={() => navigation.navigate('CardList',{token:token})} active={true} />
+                <NextButton text="내카드보기" press={() => navigation.navigate('CardList',{token:token})} active={true} />
+                <NextButton text="하단바" press={() => navigation.navigate('Bottom',{token:token})} active={true} /> */}
 
 
             </View>

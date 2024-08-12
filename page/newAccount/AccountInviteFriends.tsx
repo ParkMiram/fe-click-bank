@@ -30,10 +30,11 @@ interface GroupMemberInfo {
 }
 
 interface GroupMemberRequset {
-    id: string,
-    code: string,
-    img: string,
-    name: string
+    id: string;
+    code: string;
+    img: string;
+    name: string;
+    rank: number;
 }
 
 interface ToggleButtonProps {
@@ -46,6 +47,7 @@ export default function AccountInviteFriends({ navigation, route }: any) {
     const { token, account }: props = route.params;
     const [groupMember, setGroupMember] = useState<GroupMemberInfo[]>([]);
     const [members, setMembers] = useState<GroupMemberRequset[]>([]);
+    console.log("members : "+members.length)
 
     const ToggleButton = ({ item, isActive, onToggle }: ToggleButtonProps) => {
         const [color, setColor] = useState(isActive ? '#1D9287' : '#6BC29A');
@@ -82,7 +84,7 @@ export default function AccountInviteFriends({ navigation, route }: any) {
         try {
             const response = await waitGroupMember(token, account, members);
             console.log('API Response:', response.data);
-            navigation.navigate('AccountDetail', { token });
+            navigation.goBack();
         } catch (error) {
             // Handle error
             console.log(members);
@@ -98,6 +100,8 @@ export default function AccountInviteFriends({ navigation, route }: any) {
                 console.log(response.data);
             } catch (error) {
                 console.error(error);
+                Alert.alert("모임 통장 초대", "모임에 초대할 멤버가 없습니다.")
+                navigation.navigate("AccountDetail", { token })
             }
         };
         fetchData();

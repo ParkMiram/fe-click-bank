@@ -1,33 +1,41 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
 import MyCardInformation from './CardInformation';
-import { TextInput } from 'react-native-paper';
+import {getAllCardProduct} from "../../component/api/CardListApi";
+import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
-('../../assets/image/more.png')
-
-
-interface CardResponse {
+interface CardProductResponse {
+    cardProductId: number;
+    cardProductName: string;
     cardImg: string;
 }
 
 export default function AddCardList({ route, navigation }: any) {
-    const [cards, setCards] = useState<CardResponse[]>([
-        // { cardImg: 'https://via.placeholder.com/150' }, // 실제 카드 이미지 URL로 교체
-        { cardImg: 'https://via.placeholder.com/160' }, 
-        { cardImg: ('../../assets/image/more.png') }  
-    ]);
-
+    const [cardProductList, setCardProductList] = useState<CardProductResponse[]>([]);
     const token = route.params?.token;
+    
+    useEffect(() => {
+        getCardProductList();
+    }, []);
 
-    const renderItem = ({ item }: { item: CardResponse }) => (
-        // <View style={styles.cardContainer}>
-            <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate(MyCardInformation)}>
-                <Image source={{ uri: item.cardImg }} style={styles.cardImg} />
-            </TouchableOpacity>
-        // </View>
+    const getCardProductList = async () => {
+        try {
+            const res = await getAllCardProduct();
+            console.log(res.data.data.getAllCardProduct);
+            setCardProductList(res.data.data.getAllCardProduct);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const renderItem = ({ item }: { item: CardProductResponse }) => (
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('CardInformation',{ id: item.cardProductId,token })}>
+            <Image source={{ uri: item.cardImg  }} style={styles.cardImg} />
+            <Text>{item.cardProductName}</Text>
+        </TouchableOpacity>
     );
 
-   
+    const combinedData = [...cardProductList];
 
     return (
         <SafeAreaView style={styles.container}>
@@ -36,11 +44,11 @@ export default function AddCardList({ route, navigation }: any) {
                     <Text style={styles.cardText}>카드 목록</Text>
                 </View>
                 <FlatList
-                    data={cards}
-                    renderItem={renderItem}
-                    keyExtractor={(item, index) => index.toString()}
+                    data={combinedData}
+                    renderItem={({item}) => renderItem({item})}
+                    keyExtractor={(item) =>item.cardProductId.toString()}
                     contentContainerStyle={styles.flatListContainer}
-                    // numColumns={2} // 2개의 열로 카드 표시
+                    numColumns={2} // 2개의 열로 카드 표시
                 />
             </View>
         </SafeAreaView>
@@ -60,10 +68,11 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     flatListContainer: {
         width: '100%',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingBottom: 20,
     },
     nameContainer: {
@@ -83,18 +92,20 @@ const styles = StyleSheet.create({
     //     margin: 10,
     // },
     cardButton: {
-        width: 150,
+        width: Dimensions.get('window').width / 2 - 60,
         height: 200,
-        borderWidth: 1,
-        borderColor: 'lightgrey',
+        // borderWidth: 1,
+        // borderColor: 'lightgrey',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        margin: 20
     },
     cardImg: {
-        width: 140,
+        width: Dimensions.get('window').width / 2 - 60,
         height: 190,
         borderRadius: 10,
+        overflow:"hidden"
     },
     plusIcon: {
         width: 50,

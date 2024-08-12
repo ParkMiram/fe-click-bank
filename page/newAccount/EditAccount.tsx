@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-      
     },
     container: {
         flex: 1,

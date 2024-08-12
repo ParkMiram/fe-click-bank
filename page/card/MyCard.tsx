@@ -1,34 +1,91 @@
-import { Platform,View, StatusBar,Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 
-export default function MyCard( { route, navigation }: any ) {
+import { Modal, Platform, View, StatusBar, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
+import { useCallback,useEffect, useState } from "react";
+import { getMyCard } from "../../component/api/CardListApi";
+import { deleteCard } from '../../component/api/CardApi';
+import { useFocusEffect } from '@react-navigation/native';
+
+
+interface CardResponse {
+    cardId : number
+    cardName : string
+    cardNumber : string
+    account : string
+    cardCVC : string
+    cardMonthLimit: number
+    cardAnnualFee : number
+    cardProduct: {
+        cardImg : string
+        cardBenefits: string
+    }
+}
+
+export default function MyCard({ route, navigation }: any) {
+    const id = route.params?.id;
+    console.log("Card ID:", id);
+    const [myCard, setMyCard] = useState<CardResponse>();
+    const [modalVisible, setModalVisible] = useState(false);
+    const token = route.params?.token;
+
+    // useEffect(() => {
+    //     getMyCardInfo();
+    // }, []);
+    useFocusEffect(
+        useCallback(() => {
+                 getMyCardInfo();
+    }, [])
+          
+    );
+    const getMyCardInfo = async () => {
+        try {
+            const res = await getMyCard(id);
+            setMyCard(res.data.data.getMyCard);
+            console.log(res.data.data.getMyCard);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleDeleteCard = async () => {
+        try {
+            if (myCard && myCard.cardNumber) {
+                await deleteCard(token, myCard.cardNumber);
+                setModalVisible(false); // 모달을 닫음
+                // navigation.goBack(); // 카드 목록 화면으로 돌아감
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                {/* 여기에 페이지 내용 작성 */}
-                {/* <ScrollView contentContainerStyle={styles.scrollContainer}> */}
-                {/* <View style={styles.header}> */}
-                    {/* <Text style={styles.headerText}>카드 정보</Text> */}
-                    {/* 여기에 닫기 버튼 아이콘 추가 */}
-                    <View style={styles.nameContainer}>
+                <View style={styles.nameContainer}>
                     <Text style={styles.cardText}>카드 정보</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('EditCard', {id,token})}>
+                        <View style={styles.imageWrapper}>
+                            <Image
+                                source={require('../../assets/image/more.png')}
+                                style={styles.imageMore} resizeMode="contain"
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
-                    {/* <TouchableOpacity style={styles.closeButton}>
-                        <Text style={styles.closeButtonText}>X</Text>
-                    </TouchableOpacity> */}
-                {/* </View> */}
                 <View style={styles.cardContainer}>
                     <View style={styles.cardImageContainer}>
-                        <Text style={styles.cardImageText}>카드 이미지</Text>
+                    <Image source={{ uri: myCard?.cardProduct.cardImg }} style={styles.cardImage} />
+                        {/* <Text style={styles.cardImageText}>카드 이미지</Text> */}
                     </View>
-                    <Text style={styles.cardName}>카드명</Text>
-                    <TouchableOpacity style={styles.barcodeButton}>
-                        <Text style={styles.barcodeButtonText}>바코드</Text>
-                    </TouchableOpacity>
-                    <Text style={styles.cardDetailText}>카드번호 전체보기</Text>
+                    <Text style={styles.cardName}>{myCard?.cardName}</Text>
+                    {/* <TouchableOpacity style={styles.barcodeButton}> */}
+                        <Text style={styles.infoLabel}>카드 번호</Text>
+                    {/* </TouchableOpacity> */}
+                    <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
                     <Text style={styles.infoLabel}>포인트</Text>
                     <Text style={styles.infoValue}>100,000,000원</Text>
                     <Text style={styles.infoLabel}>연동 계좌</Text>
-                    <Text style={styles.infoValue}>110-483-037116</Text>
+                    <Text style={styles.infoValue}>{myCard?.account}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.infoButton}>
@@ -39,15 +96,35 @@ export default function MyCard( { route, navigation }: any ) {
                         <Text style={styles.buttonText}>이번 달 혜택</Text>
                         <Text style={styles.buttonText}>전체혜택보기</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.removeButton}>
+                    <TouchableOpacity style={styles.removeButton} onPress={() => setModalVisible(true)}>
                         <Text style={styles.removeButtonText}>해지하기</Text>
                     </TouchableOpacity>
                 </View>
-            {/* </ScrollView> */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => setModalVisible(false)}
+                >
+                    <View style={styles.modalContainer}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalText}>카드를 해지 하시겠습니까?</Text>
+                            <View style={styles.modalButtonContainer}>
+                                <TouchableOpacity style={styles.modalButton} onPress={handleDeleteCard}>
+                                    <Text style={styles.modalButtonText}>확인</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
+                                    <Text style={styles.modalButtonText}>취소</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
             </View>
         </SafeAreaView>
     );
 }
+
 
 const styles = StyleSheet.create({
     innerContainer: {
@@ -61,6 +138,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     scrollContainer: {
         alignItems: 'center',
@@ -106,9 +184,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 20,
     },
+    cardImage: {
+        width: 100,
+        height: 150,
+        // backgroundColor: '#B7E1CE',
+        borderRadius: 10,
+    },
     cardImageText: {
         fontSize: 16,
         color: '#cfcfcf',
+    }, 
+    button: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: '#B7E1CE',
+        marginLeft: 10
     },
     cardName: {
         fontSize: 20,
@@ -124,6 +217,29 @@ const styles = StyleSheet.create({
     barcodeButtonText: {
         color: '#ffffff',
         fontSize: 16,
+    },
+    
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    },
+    modalContent: {
+        width: 300,
+        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center'
+    },
+    modalButtonText:{
+        fontSize: 16
+    },
+    modalText: {
+        textAlign: 'center',
+        fontSize: 18,
+        marginTop: 20,
+        marginBottom: 20
     },
     cardDetailText: {
         fontSize: 14,
@@ -165,4 +281,31 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    imageWrapper: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        overflow: 'hidden',
+        marginLeft: 90,
+    },  
+    imageMore: {
+        width: 50,
+        height: 20,
+        position: 'absolute',
+        right: 1,
+        marginTop: 5,
+    },
+    modalButtonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '100%',
+    },
+    modalButton: {
+        flex: 1,
+        padding: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor:'#B7E1CE',
+}
 });
