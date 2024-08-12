@@ -17,7 +17,10 @@ export default function Cancel({ navigation, route }: any) {
             <View style={Container.innerContainer}>
                 <CurserLogo />
                 <Text style={{fontSize:48, fontWeight:500, marginTop:80, marginBottom:40}}>
-                    결제 중단!
+                    결제 취소
+                </Text>
+                <Text style={{fontSize:20}}>
+                    문제가 발생했거나, 진행을 취소했습니다.
                 </Text>
                 <Text style={{fontSize:20}}>
                     잠시 후 이전 페이지로 돌아갑니다.
