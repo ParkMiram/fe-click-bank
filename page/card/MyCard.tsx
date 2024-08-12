@@ -4,6 +4,7 @@ import { useCallback,useEffect, useState } from "react";
 import { getMyCard } from "../../component/api/CardListApi";
 import { deleteCard } from '../../component/api/CardApi';
 import { useFocusEffect } from '@react-navigation/native';
+import EditCard from './EditCard';
 
 
 interface CardResponse {
@@ -63,14 +64,6 @@ export default function MyCard({ route, navigation }: any) {
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.cardText}>카드 정보</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('EditCard', {id,token})}>
-                        <View style={styles.imageWrapper}>
-                            <Image
-                                source={require('../../assets/image/more.png')}
-                                style={styles.imageMore} resizeMode="contain"
-                            />
-                        </View>
-                    </TouchableOpacity>
                 </View>
                 <View style={styles.cardContainer}>
                     <View style={styles.cardImageContainer}>
@@ -90,6 +83,11 @@ export default function MyCard({ route, navigation }: any) {
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity style={styles.removeButton} onPress={() => setModalVisible(true)}>
                         <Text style={styles.removeButtonText}>해지하기</Text>
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity style={styles.removeButton} onPress={() => navigation.navigate(EditCard, {id,token})}>
+                        <Text style={styles.removeButtonText}>카드 정보 수정</Text>
                     </TouchableOpacity>
                 </View>
                 <Modal
@@ -146,7 +144,8 @@ const styles = StyleSheet.create({
         width: '85%',
         flexDirection: 'row',
         marginTop: 15,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        marginBottom:10
     },
     cardText: {
         fontSize: 25,
