@@ -49,6 +49,7 @@ export default function ApplicantInformation({ route, navigation }: any) {
             label: account.account,
             value: account.account
           }));
+          accountData.push({ label: '계좌 만들기', value: 'create_account' }); // 계좌 만들기 추가
           setItems(accountData);
           setAccount(data.accounts[0].account);
         } else {
@@ -67,7 +68,10 @@ export default function ApplicantInformation({ route, navigation }: any) {
   const handleNextPress = () => {
     if (applyFeature && applyFeature1 && applyFeature2) {
       navigation.navigate('CardPassword',{cardPaymentDate: selectedDate,cardPassword, account, cardCheck, cardTransportation, cardProductId,token});
-    } else {
+    } 
+    // if(     
+    // )
+      else {
       Alert.alert("모든 동의사항에 체크해 주세요.");
     }
   }
@@ -83,7 +87,13 @@ export default function ApplicantInformation({ route, navigation }: any) {
   const toggleFeature2 = () => {
     setApplyFeature2(!applyFeature2);
   };
-
+  const handleAccountChange = (value: string) => {
+    if (value === 'create_account') {
+      navigation.navigate('AccountType', { token });
+    } else {
+      setAccount(value);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -100,7 +110,8 @@ export default function ApplicantInformation({ route, navigation }: any) {
         </View>
         <View style={styles.account}>
           <RNPickerSelect
-            onValueChange={(value) => setAccount(value)}
+            // onValueChange={(value) => setAccount(value)}
+            onValueChange={handleAccountChange}
             items={items}
             style={pickerSelectStyles}
             placeholder={{ label: "계좌 선택", value: null }}

@@ -49,7 +49,7 @@ const getCardProductInfo = async ()  => {
 }
 
   const handleNextPress = () => {
-    if (cardBrand && cardTransportation) {
+    if (cardBrand ) {
       navigation.navigate('ApplicantInformation', {
         // cardPassword,
         // account,
@@ -59,7 +59,7 @@ const getCardProductInfo = async ()  => {
         token
       });
     } else {
-      Alert.alert("모든 필드를 입력해 주세요.");
+      Alert.alert("필드를 선택해 주세요.");
     }
   };
 
