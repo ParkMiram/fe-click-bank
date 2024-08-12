@@ -42,7 +42,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
                 cardId: cardData?.cardId as unknown as number,
                 payState: "PAY_COMPLETE"
             }
-            const response: AxiosResponse<string> = await paymentApi.updatePayment(request, userToken);
+            const response: AxiosResponse<string> = await paymentApi.updatePayment(payData.payId, request, userToken);
             if(response.data == "결제 실패") {
                 return false;
             }
