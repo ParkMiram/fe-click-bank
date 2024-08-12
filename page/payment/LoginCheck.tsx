@@ -58,7 +58,7 @@ export default function LoginCheck({ navigation, route }: {navigation:any, route
                 Vibration.vibrate(60);
                 navigation.reset({
                     index: 0,
-                    routes: [{name: 'Payment', params: {payData: payData, userToken: data}}]
+                    routes: [{name: 'Payment', params: {payData: payData, userToken: data, card: null}}]
                 });
             }
         }

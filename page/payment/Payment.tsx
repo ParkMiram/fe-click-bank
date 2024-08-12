@@ -13,11 +13,12 @@ import PayCard from '../../component/pay/PayCard';
 interface Params {
     payData: PaymentData;
     userToken: string;
+    card: null | number;
 }
 
 export default function Payment({ navigation, route }: {navigation:any, route:{params:Params}}) {
     console.log(route.params);
-    const { payData, userToken } = route.params;
+    const { payData, userToken, card } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
 
     const cancelPayment = useCallback(() => {
@@ -31,8 +32,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
     BackHandler.addEventListener('hardwareBackPress', cancelPayment);
 
     const selectCard = () => {
-        // Todo: need return and param
-        navigation.navigate('PaymentSelectCard');
+        navigation.navigate('PaymentSelectCard', {payData: payData, token: userToken});
     }
 
     const sendPayRequest = () => {
@@ -75,6 +75,7 @@ export default function Payment({ navigation, route }: {navigation:any, route:{p
     }
 
     const getCardData = async () => {
+        let reqCard:null|number = card;
         try {
             if (reqCard == null) {
                 const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);

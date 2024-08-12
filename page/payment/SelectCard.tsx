@@ -11,7 +11,7 @@ interface CardResponse {
 }
 
 export default function SelectCard({ route, navigation }: any) {
-    const token = route.params?.token;
+    const { payData, token } = route.params;
     const [cardList, setCardList] = useState<CardResponse[]>([]);
 
     useEffect(() => {
@@ -22,11 +22,19 @@ export default function SelectCard({ route, navigation }: any) {
         }
     }, [token]);
 
+    const selectCard = (cardId:number) => {
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'Payment', params: {payData: payData, userToken: token, card: cardId}}]
+        });
+    }
+
     const getMyCardList = async () => {
         try {
             const res = await getAllMyCard(token);
             if (res.data && res.data.data && res.data.data.getAllMyCard) {
                 setCardList(res.data.data.getAllMyCard);
+                console.log(res.data.data.getAllMyCard);
             } else {
                 console.error("Unexpected response structure", res);
             }
@@ -36,13 +44,13 @@ export default function SelectCard({ route, navigation }: any) {
     };
 
     const renderItem = ({ item }: { item: CardResponse }) => (
-        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('MyCard', { id: item.cardId })}>
+        <TouchableOpacity style={styles.cardButton} onPress={() => selectCard(item.cardId)}>
             <Image source={{ uri: item.cardProduct.cardImg }} style={styles.cardImg} />
             <Text>{item.cardName}</Text>
         </TouchableOpacity>
     );
 
-    const combinedData: Array<CardResponse> = [...cardList, { cardId: -1, cardName: '', cardProduct: { cardImg: '' } }];
+    const combinedData: Array<CardResponse> = [...cardList];
 
     return (
         <SafeAreaView style={styles.container}>
@@ -75,11 +83,13 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     flatListContainer: {
         width: '100%',
         alignItems: 'flex-start',
         paddingBottom: 20,
+        marginTop:15
     },
     nameContainer: {
         width: '100%',
@@ -98,6 +108,14 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     cardButton: {
+        width: Dimensions.get('window').width / 2 - 60,
+        height: 200,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        margin: 20
+    },
+    cardAddButton:{
         width: Dimensions.get('window').width / 2 - 60,
         height: 200,
         borderWidth: 1.5,
