@@ -64,19 +64,26 @@ export default function MyCard({ route, navigation }: any) {
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.cardText}>카드 정보</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('EditCard', {id,token})}>
+                        <View style={styles.imageWrapper}>
+                            <Image
+                                source={require('../../assets/image/more.png')}
+                                style={styles.imageMore} resizeMode="contain"
+                            />
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.cardContainer}>
                     <View style={styles.cardImageContainer}>
                     <Image source={{ uri: myCard?.cardProduct.cardImg }} style={styles.cardImage} />
-                        {/* <Text style={styles.cardImageText}>카드 이미지</Text> */}
+                      
                     </View>
                     <Text style={styles.cardName}>{myCard?.cardName}</Text>
-                    {/* <TouchableOpacity style={styles.barcodeButton}> */}
+                 
                         <Text style={styles.infoLabel}>카드 번호</Text>
-                    {/* </TouchableOpacity> */}
+                   
                     <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
-                    <Text style={styles.infoLabel}>포인트</Text>
-                    <Text style={styles.infoValue}>100,000,000원</Text>
+                  
                     <Text style={styles.infoLabel}>연동 계좌</Text>
                     <Text style={styles.infoValue}>{myCard?.account}</Text>
                 </View>
@@ -85,11 +92,8 @@ export default function MyCard({ route, navigation }: any) {
                         <Text style={styles.removeButtonText}>해지하기</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.removeButton} onPress={() => navigation.navigate(EditCard, {id,token})}>
-                        <Text style={styles.removeButtonText}>카드 정보 수정</Text>
-                    </TouchableOpacity>
-                </View>
+                
+        
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -198,6 +202,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+
     },
     barcodeButton: {
         backgroundColor: '#000000',
@@ -241,6 +246,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#888888',
         marginBottom: 5,
+        marginTop:10
     },
     infoValue: {
         fontSize: 16,
@@ -248,6 +254,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '85%',
+        marginTop:40
     },
     infoButton: {
         backgroundColor: '#B7E1CE',

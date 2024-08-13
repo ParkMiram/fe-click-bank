@@ -49,17 +49,18 @@ export default function ApplicantInformation({ route, navigation }: any) {
             label: account.account,
             value: account.account
           }));
-          accountData.push({ label: '계좌 만들기', value: 'create_account' }); // 계좌 만들기 추가
           setItems(accountData);
           setAccount(data.accounts[0].account);
         } else {
           console.error('No accounts found in the response');
-          Alert.alert("계좌 정보를 찾을 수 없습니다.");
+          // Alert.alert("계좌 정보를 찾을 수 없습니다.");
         }
         setName(data.userName); // 사용자 이름 설정
       } catch (error) {
         console.error('계좌 정보를 가져오는데 실패했습니다:', error);
-        Alert.alert("계좌 정보를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요.");
+        // Alert.alert("계좌 정보를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요.");
+        setItems([{ label: '계좌 만들기', value: 'create_account' }]);
+        setAccount('create_account');
       }
     };
     fetchAccount();
