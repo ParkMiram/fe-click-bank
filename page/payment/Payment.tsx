@@ -17,7 +17,6 @@ interface Params {
 }
 
 export default function Payment({ navigation, route }: any) {
-    console.log(route.params);
     const { payData, userToken, card } = route.params;
     const [ cardData, setCardData] = useState<CardData>();
 
@@ -42,18 +41,18 @@ export default function Payment({ navigation, route }: any) {
                 cardId: cardData?.cardId as unknown as number,
                 payState: "PAY_COMPLETE"
             }
-            const response: AxiosResponse<string> = await paymentApi.updatePayment(request, userToken);
+            const response: AxiosResponse<string> = await paymentApi.updatePayment(payData.payId ,request, userToken);
             if(response.data == "결제 실패") {
                 return false;
             }
             return true;
         } catch (error) {
             const {response} = error as unknown as AxiosError;
-            if(response){
-                console.log(response.data);
-                return {status: response.status, data: response.data};
-            }
-            console.log(error);
+            // if(response){
+            //     console.log(response.data);
+            //     // return {status: response.status, data: response.data};
+            // }
+            console.log(response ? response.data : error);
             return false;
         }
     }
@@ -66,7 +65,8 @@ export default function Payment({ navigation, route }: any) {
         } else {
             const result = await LocalAuthentication.authenticateAsync({promptMessage: "결제를 진행하려면 인증이 필요합니다."});
             if (result.success) {
-                if (await sendPayRequest()) {
+                const sendResponse:any = await sendPayRequest();
+                if (sendResponse) {
                     navigation.reset({
                         index: 0,
                         routes: [{name: 'PaymentSuccess', params: {redirect: payData?.successRedirUrl}}]
@@ -86,10 +86,8 @@ export default function Payment({ navigation, route }: any) {
     const getCardData = async () => {
         let reqCard:null|number = card;
         try {
-            if (reqCard == null) {
+            if (!reqCard) {
                 const responseLastCard: AxiosResponse<LastCard> = await paymentApi.getLastCard(userToken);
-                console.log("responseLastCard: ");
-                console.log(responseLastCard.data);
                 if (responseLastCard.data.code === 1) {
                     setCardData({
                         cardId: null,
@@ -102,8 +100,8 @@ export default function Payment({ navigation, route }: any) {
                 }
                 reqCard = responseLastCard.data.cardId;
             }
-            const responseCardInfo: AxiosResponse<CardData> = await paymentApi.getMyCard(reqCard as number);
-            setCardData(responseCardInfo.data);
+            const responseCardInfo: AxiosResponse<any> = await paymentApi.getMyCard(reqCard as number);
+            setCardData(responseCardInfo.data.data.getMyCard);
         } catch (error) {
             const {response} = error as unknown as AxiosError;
             if(response){
@@ -136,7 +134,7 @@ export default function Payment({ navigation, route }: any) {
                 <Text style={styles.amontText}>{payData?.payAmount.toLocaleString()+"원"}</Text>
 
                 <View style={{flex:1, width:'100%', alignItems:'center'}}>
-                    <PayCard selectCard={selectCard} cardName={cardData?.cardName} cardNumber={cardData?.cardNumber}/>
+                    <PayCard selectCard={selectCard} cardData={cardData?? null}/>
                 </View>
 
                 <TouchableOpacity onPress={() => {}}>

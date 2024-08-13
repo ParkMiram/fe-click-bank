@@ -34,7 +34,6 @@ export default function SelectCard({ route, navigation }: any) {
             const res = await getAllMyCard(token);
             if (res.data && res.data.data && res.data.data.getAllMyCard) {
                 setCardList(res.data.data.getAllMyCard);
-                console.log(res.data.data.getAllMyCard);
             } else {
                 console.error("Unexpected response structure", res);
             }
