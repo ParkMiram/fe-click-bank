@@ -1,4 +1,4 @@
-import { Image, ImageStyle, Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { Alert, Image, ImageStyle, Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Circle, Path, Svg } from "react-native-svg"
 import { Ionicons } from '@expo/vector-icons';
@@ -17,7 +17,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
     const [modalGroupVisible, setModalGroupVisible] = useState(false);
     const [friend, setFriend] = useState([]);
     const [accountName, setAccountName] = useState([]);
-    const [groupAccountCode, setGroupAccountCode] = useState<string>('');
+    const [type, setType] = useState<number | null>(null);
     const {token, account, userName, userImg }: data = route.params;
 
     useEffect(() => {
@@ -26,7 +26,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
                 const response = await getGroupAccount(token, account);
                 setAccountName(response.data.accountName)
                 setFriend(response.data.userResponses);
-                setGroupAccountCode(response.data.groupAccountCode);
+                setType(response.data.type);
                 console.log(response.data.userResponses);
             } catch (error) {
                 console.error(error);
@@ -36,12 +36,19 @@ export const AccountDetail = ({ navigation, route }: any) => {
     }, []);
 
     const handleDeleteAccount = async () => {
-        setModalVisible(true);
+        setModalVisible(false);
         try {
+            console.log(token);
+            console.log(account)
             await deleteAccount(token, account);
-            navigation.navigate('AccountHome', {token});
-        } catch(error) {
-            console.log(error);
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'AccountHome', params: {token}}]
+            });
+        } catch(error: any) {
+            console.log(error.message);
+            Alert.alert("삭제 오류", "아직 돈이 존재합니다.");
+            navigation.navigate("AccountHome", {token})
         }
     };
 
@@ -50,7 +57,10 @@ export const AccountDetail = ({ navigation, route }: any) => {
         try {
             const res = await deleteGroupMember(token, account);
             console.log(res.data);
-            navigation.navigate('AccountHome', {token});
+            navigation.reset({
+                index: 0,
+                routes: [{name: 'AccountHome', params: {token}}]
+            });
         } catch(error) {
             console.log(error);
         }
@@ -150,7 +160,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
 
     const AccountSettings = () => (
         <>
-            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate("EditAccount", {token})}}>
+            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate("EditAccount", {token, account})}}>
                 <Text style={styles.settingText}>계좌 정보 수정</Text>
                 <Svg
                     width={24}
@@ -191,6 +201,41 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     </View>
                 </View>
             </Modal>
+            <TouchableOpacity style={styles.settingOption} onPress={() => setModalVisible(true)}>
+                <Text style={styles.settingText}>게좌 삭제</Text>
+                <Svg
+                    width={24}
+                    height={23}
+                    fill="none"
+                >
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                </Svg>
+            </TouchableOpacity>
+            <View style={[styles.line, {width: '100%'}]} />
+            <Modal
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
+                                <Text style={styles.buttonText}>확인</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                                <Text style={styles.buttonText}>취소</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        </>
+    );
+
+    const SavingAccountSettings = () => (
+        <>
             <TouchableOpacity style={styles.settingOption} onPress={() => setModalVisible(true)}>
                 <Text style={styles.settingText}>게좌 삭제</Text>
                 <Svg
@@ -382,11 +427,14 @@ export const AccountDetail = ({ navigation, route }: any) => {
                             />
                         </Svg>
                     </View>
-                    {groupAccountCode ? <GroupAccountSettings /> : <AccountSettings />}
+                    {type === 1 ? <AccountSettings /> : type === 2 ? <GroupAccountSettings /> : <SavingAccountSettings />}
                 </View>
                 <TouchableOpacity 
                     style={styles.sendButton}
-                    onPress={() => navigation.navigate('AccountHome', { token })}
+                    onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+                    })}
                 >
                     <Text style={styles.sendButtonText}>나가기</Text>
                 </TouchableOpacity>
@@ -400,6 +448,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'space-between',
+        backgroundColor: 'white',
     },
     innerContainer: {
         flex: 1,

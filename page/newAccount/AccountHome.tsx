@@ -21,7 +21,7 @@ export default function AccountHome({ route, navigation }: any) {
     // const [numberHidden, setNumberHidden] = useState(false);
     const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
 
-    const [account, setAccount] = useState<AccountResponse[]>([]);
+    const [accounts, setAccounts] = useState<AccountResponse[]>([]);
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
@@ -38,11 +38,9 @@ export default function AccountHome({ route, navigation }: any) {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
             const { accounts, userName, userImg } = data;
-            
-            console.log('API 응답 데이터:', data);
     
             if (data) {
-                setAccount(accounts);
+                setAccounts(accounts);
                 setUserName(userName);
                 setUserImg(userImg);
             } else {
@@ -56,7 +54,7 @@ export default function AccountHome({ route, navigation }: any) {
                     console.log('User Info API 응답 데이터:', userInfoData);
 
                     // 상태 업데이트
-                    setAccount([]);
+                    setAccounts([]);
                     setUserName(userName || '');
                     setUserImg(userImg || '');
                 } else {
@@ -75,7 +73,7 @@ export default function AccountHome({ route, navigation }: any) {
                     console.log('User Info API 응답 데이터:', userInfoData);
     
                     // 상태 업데이트
-                    setAccount([]);
+                    setAccounts([]);
                     setUserName(userName || '');
                     setUserImg(userImg || '');
                 } else {
@@ -95,7 +93,7 @@ export default function AccountHome({ route, navigation }: any) {
         <View style={styles.accountCard}>
             <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg})}>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg, amount: item.moneyAmount})}>
                     <View style={styles.imageWrapper}>
                         <Image
                             source={require('../../assets/image/more.png')}
@@ -104,9 +102,11 @@ export default function AccountHome({ route, navigation }: any) {
                     </View>
                 </TouchableOpacity>
             </View>
+            <View style = {styles.historyContainer}>
             <Text style={styles.accountNumber}>
                 {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
             </Text>
+            </View>
             <View style={styles.buttonContainer}>
                 <Text style={styles.balance}>
                     {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
@@ -117,8 +117,6 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonSendText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
                     
                 </TouchableOpacity>
-            </View>
-            <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
                         account: item.account,
                         // accountName: item.accountName,
@@ -126,6 +124,9 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
+                <Text style ={styles.historyText}>거래내역</Text>
+            </TouchableOpacity>
         </View>
     );
 
@@ -158,10 +159,10 @@ export default function AccountHome({ route, navigation }: any) {
                 </View>
                 
                 <FlatList
-                    data={account}
+                    data={accounts}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
-                    extraData={numberHidden} 
+                    extraData={numberHidden}
                     contentContainerStyle={styles.flatListContainer}
                 />
             </View>
@@ -187,6 +188,7 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     accountDetailContainer: {
         flexDirection: 'row',
@@ -272,14 +274,16 @@ const styles = StyleSheet.create({
     },
     transferButton: {
         alignItems: 'flex-end',
-        width: '100%',
+        // width: '90%',
+        width:90,
+        borderRadius:5
     },
     buttonText: {
         width: 60,
         backgroundColor: '#6BC29A',
         color: 'black',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         textAlign: 'center',
         fontSize: 16,
     },
@@ -291,4 +295,20 @@ const styles = StyleSheet.create({
         width: 90,
         height: 95,
     },
+    history:{
+        backgroundColor: '#6BC29A',
+        padding: 10,
+        borderRadius: 5,
+        marginTop:10
+
+    },
+    historyText:{
+
+    },
+    historyContainer:{
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+
+    }
+
 });

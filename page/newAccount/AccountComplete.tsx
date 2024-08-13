@@ -1,35 +1,37 @@
 import { Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
 import { saveAccount } from '../../component/api/NewAccountApi';
-import { Float } from 'react-native/Libraries/Types/CodegenTypes';
 
 type data = {
     accountStatus: string;
     token: string;
     accountPassword: string;
-    transferRequest: TransferReqeust;
-    savingRequest: SavingRequest;
 }
 
-interface TransferReqeust {
+interface SavingAccount {
+    interestRate: number | null;
+    term: number | null;
+    product: string | null;
+}
+
+interface Transfer {
     type: string | null;
     amount: number | null;
     transferDate: number | null;
 }
 
-interface SavingRequest {
-    interestRate: Float | null;
-    term: number | null;
-    product: string | null;
-}
-
 export default function AccountComplete( {  navigation, route }: any ) {
-    const { accountStatus, token, accountPassword, transferRequest, savingRequest }: data = route.params;
+    const { accountStatus, token, accountPassword }: data = route.params;
+    const savingAccountRequest: SavingAccount = route.params.savingAccountRequest;
+    const transferRequest: Transfer = route.params.transferRequest;
+
+    console.log(transferRequest);
+    console.log(savingAccountRequest)
 
     const body = {
         accountStatus: accountStatus,
         accountPassword: accountPassword,
         transferRequest: transferRequest,
-        savingRequest: savingRequest
+        savingRequest: savingAccountRequest
     }
 
     const handleSaveAccount = async () => {
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     imageStyle:{
         // width:"100%",
@@ -97,8 +100,6 @@ const styles = StyleSheet.create({
         width: 300, // 로고 이미지의 너비
         height: 300, // 로 이미지의 높이
         // marginBottom:100 ,
-
-        
     },
 
     textcontainer:{

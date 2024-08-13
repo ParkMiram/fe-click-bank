@@ -16,9 +16,10 @@ export const SavingAccountList = ({ navigation, route }: any) => {
     const { accountType, token, userName } = route.params;
 
     useEffect(() => {
-        if (accountType === '입출금 통장')
-            accountStatus = 'saving'
+        if (accountType === '적금')
+            accountStatus = 'saving';
     }, [accountType]);
+    console.log(accountType)
 
     const savingsItems = [
         { id: 1, product: '작은 거인 박미람 적금', interest: 3.30 },
@@ -47,7 +48,7 @@ export const SavingAccountList = ({ navigation, route }: any) => {
                     onPress={() => {
                         setProduct(item.product);
                         setInterestRate(item.interest);
-                        navigation.navigate("CreateSavingAccount", {accountStatus, token, userName, product, interestRate})}
+                        navigation.navigate("AccountPassword", {accountStatus, token, userName, product: item.product, interestRate: item.interest})}
                     }>
                         <Text style={styles.itemName}>{item.product}</Text>
                         <Text style={styles.itemInterest}>기본 {item.interest}% (12)</Text>
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     innerContainer: {
         flex: 1,
