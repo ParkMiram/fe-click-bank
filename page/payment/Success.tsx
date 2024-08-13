@@ -5,7 +5,7 @@ import CurserLogo from '../../component/pay/CurserLogo';
 import * as Linking from 'expo-linking';
 
 export default function Success({ navigation, route }: any) {
-    const { redirect } = route.param;
+    const { redirect } = route.params;
 
     setTimeout(() => {
         Linking.openURL(redirect);

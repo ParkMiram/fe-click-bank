@@ -1,8 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function PayCard(props:any) {
-    console.log(props);
-    if(props.cardName) {
+    if(props.cardData?.cardName != null) {
         return (
             <View style={styles.cardBox}>
                 <View style={styles.cardBoxHeader}>
@@ -15,9 +14,9 @@ export default function PayCard(props:any) {
                     <View style={styles.cardIcon}/>
                     <View style={{marginLeft: 12, marginRight:"10%"}}>
                         <Text style={{fontWeight:'bold', fontSize:17, marginBottom:4}} numberOfLines={1} ellipsizeMode='tail'>
-                            {props.cardName}</Text>
+                            {props.cardData.cardName}</Text>
                         <Text style={{color:'#aaa'}}>{"딸깍뱅크"}</Text>
-                        <Text style={{color:'#aaa'}}>{props.cardNumber}</Text>
+                        <Text style={{color:'#aaa'}}>{props.cardData.cardNumber}</Text>
                     </View>
                 </View>
             </View>

@@ -73,19 +73,10 @@ function AccountStack({ navigation,route }:any) {
       <Stack.Screen name="SendingTransfer" component={SendingTransfer} initialParams={{ token }} />
       <Stack.Screen name="Transfer" component={Transfer} initialParams={{ token }} />
       <Stack.Screen name="CreateSavingAccount" component={CreateSavingAccount} initialParams={{ token }} />
-
-      
-
-
-
-
-
-      
-
-
-
-
-    </Stack.Navigator>
+      <Stack.Screen name="AccountHistory" component={AccountHistory} initialParams={{ token }} />
+     <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} initialParams={{ token }} />
+      <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} initialParams={{ token }} />
+      </Stack.Navigator>
   );
 }
 
@@ -113,12 +104,7 @@ function CardStack({ navigation,route }:any) {
      <Stack.Screen name="CardPassword" component={CardPassword} initialParams={{ token }} />
      <Stack.Screen name="MyCard" component={MyCard} initialParams={{ token }} />
      <Stack.Screen name="EditCard" component={EditCard} initialParams={{ token }} />
-
-     
-
-
-
-    </Stack.Navigator>
+      </Stack.Navigator>
   );
 }
 
