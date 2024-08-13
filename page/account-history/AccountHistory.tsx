@@ -180,7 +180,10 @@ export default function AccountHistory({ route, navigation }: any) {
                             <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics(account)}>
                                 <Text style={styles.accountBtnFont}>분석 / 예산</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.accountBtn}>
+                            <TouchableOpacity style={styles.accountBtn} onPress={() => navigation.navigate('Transfer',{ token: accountInfo.token,
+                                account: accountInfo.account,
+                                // accountName: item.accountName,
+                                moneyAmount: accountInfo.moneyAmount})}>
                                 <Text style={styles.accountBtnFont}>이체</Text>
                             </TouchableOpacity>
                         </View>
