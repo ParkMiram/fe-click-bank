@@ -32,6 +32,11 @@ import AccountTerms from '../../page/newAccount/AccountTerms';
 import AccountType from '../../page/newAccount/AccountType';
 import EditAccount from '../../page/newAccount/EditAccount';
 import { SavingAccountList } from '../../page/newAccount/SavingAccountList';
+import ReminingTranfer from '../../page/trasfer/ReminingTransfer';
+import ResultTransfer from '../../page/trasfer/ResultTransfer';
+import SendingTransfer from '../../page/trasfer/SendingTransfer';
+import Transfer from '../../page/trasfer/Transfer';
+import { CreateSavingAccount } from '../../page/newAccount/CreateSavingAccount';
 
 
 const Tab = createBottomTabNavigator();
@@ -63,11 +68,15 @@ function AccountStack({ navigation,route }:any) {
       <Stack.Screen name="CreateAccount" component={CreateAccount} initialParams={{ token }} />
       <Stack.Screen name="EditAccount" component={EditAccount} initialParams={{ token }} />
       <Stack.Screen name="SavingAccountList" component={SavingAccountList} initialParams={{ token }} />
-
-
-
-
-    </Stack.Navigator>
+      <Stack.Screen name="ReminingTranfer" component={ReminingTranfer} initialParams={{ token }} />
+      <Stack.Screen name="ResultTransfer" component={ResultTransfer} initialParams={{ token }} />
+      <Stack.Screen name="SendingTransfer" component={SendingTransfer} initialParams={{ token }} />
+      <Stack.Screen name="Transfer" component={Transfer} initialParams={{ token }} />
+      <Stack.Screen name="CreateSavingAccount" component={CreateSavingAccount} initialParams={{ token }} />
+      <Stack.Screen name="AccountHistory" component={AccountHistory} initialParams={{ token }} />
+     <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} initialParams={{ token }} />
+      <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} initialParams={{ token }} />
+      </Stack.Navigator>
   );
 }
 
@@ -95,12 +104,7 @@ function CardStack({ navigation,route }:any) {
      <Stack.Screen name="CardPassword" component={CardPassword} initialParams={{ token }} />
      <Stack.Screen name="MyCard" component={MyCard} initialParams={{ token }} />
      <Stack.Screen name="EditCard" component={EditCard} initialParams={{ token }} />
-
-     
-
-
-
-    </Stack.Navigator>
+      </Stack.Navigator>
   );
 }
 
@@ -117,18 +121,18 @@ function FriendStack({ route }:any) {
   );
 }
 
-function HistoryStack({ route }:any) {
-  const token = route?.params?.token || '';
-  return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="AccountHistory" component={AccountHistory} initialParams={{ token }} />
-      <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} initialParams={{ token }} />
-      <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} initialParams={{ token }} />
+// function HistoryStack({ route }:any) {
+//   const token = route?.params?.token || '';
+//   return (
+//     <Stack.Navigator screenOptions={{ headerShown: false }}>
+//       <Stack.Screen name="AccountHistory" component={AccountHistory} initialParams={{ token }} />
+//       <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} initialParams={{ token }} />
+//       <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} initialParams={{ token }} />
 
 
-    </Stack.Navigator>
-  );
-}
+//     </Stack.Navigator>
+//   );
+// }
 
 export default function Bottom({ route }:any) {
   const token = route?.params?.token || '';
@@ -144,9 +148,10 @@ export default function Bottom({ route }:any) {
             iconImage = require('../../assets/image/friend.png');
           } else if (route.name === '카드💳') {
             iconImage = require('../../assets/image/card.png');
-          } else if (route.name === '거래내역') {
-            iconImage = require('../../assets/image/history.png');
-          }
+          } 
+          // else if (route.name === '거래내역') {
+          //   iconImage = require('../../assets/image/history.png');
+          // }
           return <Image source={iconImage} style={{ width: size, height: size, tintColor: color }} />;
         },
         tabBarLabel: () => null,
@@ -160,7 +165,7 @@ export default function Bottom({ route }:any) {
       <Tab.Screen name="Account" component={AccountStack} initialParams={{ token }} />
       <Tab.Screen name="Friend" component={FriendStack} initialParams={{ token }} />
       <Tab.Screen name="카드💳" component={CardStack} initialParams={{ token }} />
-      <Tab.Screen name="거래내역" component={HistoryStack} initialParams={{ token }} />
+      {/* <Tab.Screen name="거래내역" component={HistoryStack} initialParams={{ token }} /> */}
     </Tab.Navigator>
   );
 }

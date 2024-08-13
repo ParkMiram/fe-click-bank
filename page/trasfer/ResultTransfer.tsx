@@ -64,8 +64,8 @@ const ResultTransfer = ({ navigation, route }: any) => {
           console.log(bodyToSender.moneyAmount);
 
           try {
-              await setAccountMoney(bodyToRecipient, token);
               await setAccountMoney(bodyToSender, token);
+              await setAccountMoney(bodyToRecipient, token);
               console.log("Transfer successful");
           } catch (error) {
               console.error("Failed to set account money:", error);

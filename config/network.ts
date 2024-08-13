@@ -10,7 +10,7 @@ export const api = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = "http://35.223.135.5:30560";
+    axios.defaults.baseURL = "https://just-click.shop";
 
     const res = await axios({
         url,
@@ -28,9 +28,7 @@ export const apiCardList = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    // axios.defaults.baseURL = "http://192.168.0.23:8080";
-    axios.defaults.baseURL = "http://192.168.90.124:8080";
-        // axios.defaults.baseURL = "http://35.239.149.187:31982";
+    axios.defaults.baseURL = "https://just-click.shop";
 
 
 
@@ -51,10 +49,10 @@ export const apiCard = async (
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
     // axios.defaults.baseURL = "http://192.168.0.23:8080";
-    axios.defaults.baseURL = "http://192.168.90.124:8080";
-    // axios.defaults.baseURL = "http://35.239.149.187:31982";
+    // axios.defaults.baseURL = "http://192.168.0.24:8080";
+    axios.defaults.baseURL = "http://35.239.149.187:31982";
 
-   
+
     const res = await axios({
         url,
         method,
@@ -101,4 +99,4 @@ export const apiPayment = async (
     });
 
     return res;
-}
+};

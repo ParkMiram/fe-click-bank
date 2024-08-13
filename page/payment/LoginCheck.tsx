@@ -1,6 +1,6 @@
 import { BackHandler, Image, StyleSheet, Text, Vibration, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,13 +8,23 @@ import { PaymentData } from '../../types/PayTypes';
 
 const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
 
-export default function LoginCheck({ navigation, route }: {navigation:any, route:{params:{payData:PaymentData}}}) {
+export default function LoginCheck({ navigation, route }: any) {
     const { payData } = route.params;
     const [token, setToken] = useState<string>();
     const [password, setPassword] = useState("");
     const [toStar, setStar] = useState("");
     const [infoText, setInfoText] = useState("");
-    
+
+    const cancelPayment = useCallback(() => {
+        BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
+        navigation.reset({
+            index: 0,
+            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+        });
+        return true;
+    },[]);
+    BackHandler.addEventListener('hardwareBackPress', cancelPayment);
+
     const getUserToken = async (str: string) => {
         try {
             const response = await axios.get(`${SERVER_URI}/token?token=${token}&password=${str}`);
@@ -48,7 +58,7 @@ export default function LoginCheck({ navigation, route }: {navigation:any, route
                 Vibration.vibrate(60);
                 navigation.reset({
                     index: 0,
-                    routes: [{name: 'Payment', params: {payData: payData, userToken: data}}]
+                    routes: [{name: 'Payment', params: {payData: payData, userToken: data, card: null}}]
                 });
             }
         }

@@ -183,13 +183,7 @@ export default function EditCard( { route, navigation }: any ) {
                             <Text style={styles.buttonText}>저장</Text>
                         </TouchableOpacity>
                     </View>
-                    <View style = {styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={styles.button}
-                        >
-                            <Text style={styles.buttonText}>카드 재발급</Text>
-                        </TouchableOpacity>
-                    </View>
+                    
                     {/* <Text style={styles.textcontainer}>{myCard?.cardName}</Text> */}
                     {/* <View style = {styles.reLimitContainer}>
                             <Text style = {styles.datecontainer}>결제일 변경</Text>
@@ -249,7 +243,7 @@ const styles = StyleSheet.create({
     reContainer:{
         justifyContent:'flex-start',
         alignItems:'center',
-        marginBottom:130
+        marginBottom:150
         
 
     },

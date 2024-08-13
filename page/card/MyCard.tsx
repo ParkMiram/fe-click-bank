@@ -4,6 +4,7 @@ import { useCallback,useEffect, useState } from "react";
 import { getMyCard } from "../../component/api/CardListApi";
 import { deleteCard } from '../../component/api/CardApi';
 import { useFocusEffect } from '@react-navigation/native';
+import EditCard from './EditCard';
 
 
 interface CardResponse {
@@ -75,31 +76,24 @@ export default function MyCard({ route, navigation }: any) {
                 <View style={styles.cardContainer}>
                     <View style={styles.cardImageContainer}>
                     <Image source={{ uri: myCard?.cardProduct.cardImg }} style={styles.cardImage} />
-                        {/* <Text style={styles.cardImageText}>카드 이미지</Text> */}
+                      
                     </View>
                     <Text style={styles.cardName}>{myCard?.cardName}</Text>
-                    {/* <TouchableOpacity style={styles.barcodeButton}> */}
+                 
                         <Text style={styles.infoLabel}>카드 번호</Text>
-                    {/* </TouchableOpacity> */}
+                   
                     <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
-                    <Text style={styles.infoLabel}>포인트</Text>
-                    <Text style={styles.infoValue}>100,000,000원</Text>
+                  
                     <Text style={styles.infoLabel}>연동 계좌</Text>
                     <Text style={styles.infoValue}>{myCard?.account}</Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.infoButton}>
-                        <Text style={styles.buttonText}>이번 달 내역</Text>
-                        <Text style={styles.buttonText}>전체내역보기</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.infoButton}>
-                        <Text style={styles.buttonText}>이번 달 혜택</Text>
-                        <Text style={styles.buttonText}>전체혜택보기</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.removeButton} onPress={() => setModalVisible(true)}>
                         <Text style={styles.removeButtonText}>해지하기</Text>
                     </TouchableOpacity>
                 </View>
+                
+        
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -154,10 +148,11 @@ const styles = StyleSheet.create({
         width: '85%',
         flexDirection: 'row',
         marginTop: 15,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
+        marginBottom:10
     },
     cardText: {
-        fontSize: 30,
+        fontSize: 25,
     },
     headerText: {
         fontSize: 24,
@@ -207,6 +202,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 10,
+
     },
     barcodeButton: {
         backgroundColor: '#000000',
@@ -250,6 +246,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#888888',
         marginBottom: 5,
+        marginTop:10
     },
     infoValue: {
         fontSize: 16,
@@ -257,6 +254,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '85%',
+        marginTop:40
     },
     infoButton: {
         backgroundColor: '#B7E1CE',
@@ -286,7 +284,7 @@ const styles = StyleSheet.create({
         height: 90,
         borderRadius: 45,
         overflow: 'hidden',
-        marginLeft: 90,
+        marginLeft: 150,
     },  
     imageMore: {
         width: 50,

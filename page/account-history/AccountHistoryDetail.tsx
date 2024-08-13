@@ -11,7 +11,7 @@ import React, {useEffect, useState} from "react";
 import {AxiosResponse} from "axios";
 import {
     getAccountHistory,
-    getAccountHistoryDetail, updateAccountHistoryCategory,
+    getAccountHistoryDetail, getPastHistoryDetail, updateAccountHistoryCategory,
     updateAccountHistoryMemo
 } from "../../component/api/AccountHistoryApi";
 import {Path, Svg} from "react-native-svg";
@@ -75,8 +75,27 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
 
     const getDetail = async (): Promise<any> => {
         try {
-            const response: AxiosResponse<Detail> = await getAccountHistoryDetail(id);
-            setDetail(response.data)
+            const bhAtDate = new Date(history.bhAt);
+            const today = new Date();
+
+            // 시간을 0시 0분 0초로 설정하여 날짜만 비교할 수 있게 함
+            bhAtDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            // 날짜 차이 계산 (밀리초 단위 차이 -> 일 단위로 변환)
+            // const differenceInDays = (today.getTime() - bhAtDate.getTime()) / (1000 * 3600 * 24);
+
+            let response: AxiosResponse<Detail>;
+
+            if (bhAtDate.getTime() !== today.getTime()) {
+                // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
+                response = await getPastHistoryDetail(id);
+            } else {
+                // 그렇지 않다면 getAccountHistoryDetail 호출
+                response = await getAccountHistoryDetail(id);
+            }
+
+            setDetail(response.data);
         } catch (error) {
             console.log(error);
         }

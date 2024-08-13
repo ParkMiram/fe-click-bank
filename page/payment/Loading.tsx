@@ -10,15 +10,6 @@ import { PaymentData } from '../../types/PayTypes';
 export default function Loading({ navigation, route }: any) {
     const { payToken } = route.params;
 
-    // test data
-    // const testPayData:PaymentData = {
-    //     payId: 101,
-    //     businessName: "T82",
-    //     failRedirUrl: '',
-    //     successRedirUrl: '',
-    //     payAmount: 58500,
-    // }
-
     const goLoginPage = (payData:PaymentData) => {
         navigation.reset({
             index: 0,
