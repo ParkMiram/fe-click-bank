@@ -87,7 +87,6 @@ export default function App() {
 
     return (
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-              
             <Stack.Navigator 
                 initialRouteName="Splash" 
                 screenOptions={{headerShown: false}}
@@ -106,7 +105,7 @@ export default function App() {
                 <Stack.Screen name="ClickHome" component={ClickHome} /> */}
 
                 {/* Account */}
-                {/* <Stack.Screen name="AccountType" component={AccountType}/>
+                <Stack.Screen name="AccountType" component={AccountType}/>
                 <Stack.Screen name='AccountInformation' component={AccountInformation}/>
                 <Stack.Screen name="CreateAccount" component={CreateAccount}/>
                 <Stack.Screen name='SavingAccountList' component={SavingAccountList} />
@@ -139,8 +138,7 @@ export default function App() {
                 <Stack.Screen name="ResultTransfer" component={ResultTransfer} />
 
 
-                <Stack.Screen name='Bottom' component={Bottom}/>
-             
+                {/* <Stack.Screen name='Bottom' component={Bottom}/>  */}
 
 
                 <Stack.Screen name="Payment" component={Payment}/>
@@ -167,7 +165,6 @@ export default function App() {
                 <Stack.Screen name="ClickHome" component={ClickHome} />
 
             </Stack.Navigator>
-           
         </NavigationContainer>
     );
 }

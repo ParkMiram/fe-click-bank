@@ -60,7 +60,6 @@ const ResultTransfer = ({ navigation, route }: any) => {
               category: data.category
           };
           
-
           console.log(bodyToRecipient.moneyAmount);
           console.log(bodyToSender.moneyAmount);
 
