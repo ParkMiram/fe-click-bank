@@ -2,18 +2,13 @@ import React, {useEffect, useState} from "react";
 import {
     Alert,
     FlatList,
-    Image,
-    KeyboardAvoidingView,
     Modal,
-    Platform,
     StyleSheet,
     Text,
-    TextInput,
     TouchableOpacity,
     View
 } from "react-native";
 import {Circle, Path, Svg} from "react-native-svg";
-import axios, {AxiosResponse} from "axios";
 import {acceptGroupAccount, saveGroup} from "../../component/api/NewAccountApi";
 
 export default function  FriendInvite (props: any) {
@@ -26,13 +21,6 @@ export default function  FriendInvite (props: any) {
         userCode: '',
         admin: ''
     }]);
-    const testData = [
-        {id: '1', name: "박분도"},
-        // {id: '2', name: "박박박"},
-        // {id: '3', name: "박번도"},
-        // {id: '4', name: "박분도박"},
-        // {id: '5', name: "박분도남도"},
-    ]
 
     // 모임 통장 초대 조회
     const getInviteListData = async () => {
