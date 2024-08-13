@@ -53,12 +53,14 @@ export default function ApplicantInformation({ route, navigation }: any) {
           setAccount(data.accounts[0].account);
         } else {
           console.error('No accounts found in the response');
-          Alert.alert("계좌 정보를 찾을 수 없습니다.");
+          // Alert.alert("계좌 정보를 찾을 수 없습니다.");
         }
         setName(data.userName); // 사용자 이름 설정
       } catch (error) {
         console.error('계좌 정보를 가져오는데 실패했습니다:', error);
-        Alert.alert("계좌 정보를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요.");
+        // Alert.alert("계좌 정보를 가져오는 데 실패했습니다. 나중에 다시 시도해주세요.");
+        setItems([{ label: '계좌 만들기', value: 'create_account' }]);
+        setAccount('create_account');
       }
     };
     fetchAccount();
@@ -67,7 +69,10 @@ export default function ApplicantInformation({ route, navigation }: any) {
   const handleNextPress = () => {
     if (applyFeature && applyFeature1 && applyFeature2) {
       navigation.navigate('CardPassword',{cardPaymentDate: selectedDate,cardPassword, account, cardCheck, cardTransportation, cardProductId,token});
-    } else {
+    } 
+    // if(     
+    // )
+      else {
       Alert.alert("모든 동의사항에 체크해 주세요.");
     }
   }
@@ -83,7 +88,13 @@ export default function ApplicantInformation({ route, navigation }: any) {
   const toggleFeature2 = () => {
     setApplyFeature2(!applyFeature2);
   };
-
+  const handleAccountChange = (value: string) => {
+    if (value === 'create_account') {
+      navigation.navigate('AccountType', { token });
+    } else {
+      setAccount(value);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
@@ -100,7 +111,8 @@ export default function ApplicantInformation({ route, navigation }: any) {
         </View>
         <View style={styles.account}>
           <RNPickerSelect
-            onValueChange={(value) => setAccount(value)}
+            // onValueChange={(value) => setAccount(value)}
+            onValueChange={handleAccountChange}
             items={items}
             style={pickerSelectStyles}
             placeholder={{ label: "계좌 선택", value: null }}

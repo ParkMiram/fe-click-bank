@@ -6,6 +6,8 @@ type data = {
   accountStatus: string;
   token: string;
   userName: string;
+  product: string | null;
+  interestRate: number | null;
 }
 
 export default function AccountPassword( {  navigation, route }: any ) {
@@ -13,9 +15,8 @@ export default function AccountPassword( {  navigation, route }: any ) {
     const [purpose, setPurpose] = useState('계좌사용용도');
     const [firstQuestion, setFirstQuestion] = useState(false);
     const [secondQuestion, setSecondQuestion] = useState(false);
-    const [pickerVisible, setPickerVisible] = useState(false);
 
-    const { accountStatus, token, userName }: data = route.params;
+    const { accountStatus, token, userName, product, interestRate }: data = route.params;
 
     const dismissKeyboard = () => {
       Keyboard.dismiss();
@@ -26,6 +27,28 @@ export default function AccountPassword( {  navigation, route }: any ) {
         { label: '적금 자동이체', value: '적금 자동이체' },
         { label: '예금가입', value: '예금가입' }
     ];
+
+    const handleNextPress = () => {
+      if (accountStatus === 'saving') {
+        navigation.navigate('CreateSavingAccount', { 
+          accountStatus, 
+          token, 
+          userName, 
+          accountPassword: password, 
+          purpose,
+          product,
+          interestRate
+        });
+      } else {
+        navigation.navigate('AccountInformation', { 
+          accountStatus, 
+          token, 
+          userName, 
+          accountPassword: password, 
+          purpose 
+        });
+      }
+    };
       
     return (
         <TouchableWithoutFeedback onPress={dismissKeyboard}>
@@ -89,7 +112,7 @@ export default function AccountPassword( {  navigation, route }: any ) {
           <Text>아니요 </Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.button}  onPress={() => navigation.navigate('AccountInformation', { accountStatus, token, userName, accountPassword: password, purpose })}>
+      <TouchableOpacity style={styles.button}  onPress={handleNextPress}>
         <Text style={styles.buttonText}>다음</Text>
       </TouchableOpacity>
             </View>
@@ -112,6 +135,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     purposeContainer: {
         flexDirection: 'row',

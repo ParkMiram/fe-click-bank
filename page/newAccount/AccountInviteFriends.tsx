@@ -100,6 +100,8 @@ export default function AccountInviteFriends({ navigation, route }: any) {
                 console.log(response.data);
             } catch (error) {
                 console.error(error);
+                Alert.alert("모임 통장 초대", "모임에 초대할 멤버가 없습니다.")
+                navigation.navigate("AccountDetail", { token })
             }
         };
         fetchData();
