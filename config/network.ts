@@ -11,14 +11,12 @@ export const api = async (
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
     axios.defaults.baseURL = "https://just-click.shop";
-
     const res = await axios({
         url,
         method,
         data: body,
         headers: headers
     });
-
     return res;
 };
 
@@ -29,39 +27,29 @@ export const apiCardList = async (
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
     axios.defaults.baseURL = "https://just-click.shop";
-
-
-
     const res = await axios({
         url,
         method,
         data: body,
         headers: headers
     });
-
     return res;
-    
 }
+
 export const apiCard = async (
     url: string,
     method: Method,
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    // axios.defaults.baseURL = "http://192.168.0.23:8080";
-    // axios.defaults.baseURL = "http://192.168.0.24:8080";
-    axios.defaults.baseURL = "http://35.239.149.187:31982";
-
-
+    axios.defaults.baseURL = "https://just-click.shop";
     const res = await axios({
         url,
         method,
         data: body,
         headers: headers
     });
-
     return res;
-    
 }
 
 export const apiAccount = async (
@@ -70,16 +58,13 @@ export const apiAccount = async (
     body?: ApiRequestBody,
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
-    axios.defaults.baseURL = process.env.ACCOUNT;
-    // axios.defaults.baseURL = "http://192.168.0.29:8080";
-
+    axios.defaults.baseURL = "https://just-click.shop";
     const res = await axios({
         url,
         method,
         data: body,
         headers: headers
     });
-
     return res;
 };
 
@@ -90,13 +75,11 @@ export const apiPayment = async (
     headers?: Record<string, string>
 ): Promise<AxiosResponse<any>> => {
     axios.defaults.baseURL = "https://just-click.shop";
-
     const res = await axios({
         url,
         method,
         data: body,
         headers: headers
     });
-
     return res;
 };
