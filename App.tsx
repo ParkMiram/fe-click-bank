@@ -20,7 +20,7 @@ import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
 import GetLoginToken from './page/login/GetLoginToken';
 import AccountHome from './page/newAccount/AccountHome';
-import FriendsComponent from "./page/friend/FriendsComponent";
+import MyFriend from "./page/friend/MyFriend";
 import AccountType from './page/newAccount/AccountType';
 import AccountInformation from './page/newAccount/AccountInformation';
 import CreateAccount from './page/newAccount/CreateAccount';
@@ -148,7 +148,7 @@ export default function App() {
                 <Stack.Screen name="PaymentLoading" component={Loading}/>
 
                 {/* Friend */}
-                <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
+                <Stack.Screen name="MyFriend" component={MyFriend} />
                 {/*<Stack.Screen name="Login" component={LoginPage} />*/}
                 {/*<Stack.Screen name="KakaoLogin" component={KakaoLogin} />*/}
                 {/*<Stack.Screen name="SimpleLogin" component={SimpleLogin} />*/}

@@ -3,41 +3,91 @@ import {
     Platform,
     StatusBar,
     StyleSheet,
-    Text,
     View,
-    TouchableOpacity, Image, FlatList, Alert
+    TouchableOpacity, Alert
 } from "react-native";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import FriendSearch from "./FriendSearch";
-import {Circle, Path, Rect, Svg} from "react-native-svg";
-import axios, {AxiosResponse} from "axios";
+import {Path, Rect, Svg} from "react-native-svg";
 import FriendInvite from "./FriendInvite";
 import FriendList from "./FriendList";
 import FriendRequestList from "./FriendRequestList";
+import axios, {AxiosResponse} from "axios";
 
-export default function FriendsComponent({ route }: any) {
+export default function MyFriend({ route }: any) {
     const { token } = route.params;
     const bearerToken: string = `Bearer ${token}`;
 
     // state
+    // 친구 목록
+    const [friendListData, setFriendListData] = useState([{ id: '', img: '', name: '' }]);
+    const [friendLoading, setFriendLoading] = useState(false);
+    // 친구 요청 목록
+    const [friendRequestListData, setFriendRequestListData] = useState([{ id: '', code: '', img: '', name: '' }]);
     const [tabBarBadge, setTabBarBadge] = useState(0);
+    const [friendRequestLoading, setFriendRequestLoading] = useState(false);
     // 친구 추가
     const [isModalVisible, setIsModalVisible] = useState(false);
     // 모임 통장 초대 모달
-    const [isInviteModalVisible, setisInviteModalVisible] = useState(false);
+    const [isInviteModalVisible, setIsInviteModalVisible] = useState(false);
+
+    // event
+    // 친구 목록 조회
+    const getFriendList = async (): Promise<void> => {
+        try {
+            const response: AxiosResponse<any, any> = await axios.get('https://just-click.shop/api/v1/friends', {
+                headers: {
+                    Authorization: bearerToken
+                }
+            });
+            setFriendListData(response.data);
+            setFriendLoading(true);
+        } catch (error: any) {
+            if (error.response) {
+                console.log('Error:', error.response.data);
+                Alert.alert("내 친구", error.response.data);
+            } else {
+                console.log('Error:', error.message);
+                Alert.alert("내 친구", error.message);
+            }
+        }
+    };
+
+    // 친구 요청 조회
+    const getFriendRequestList = async ():Promise<void> => {
+        setFriendRequestListData([]);
+        try {
+            const response: AxiosResponse<any, any> = await axios.get('https://just-click.shop/api/v1/friends/request', {
+                headers: {
+                    Authorization: bearerToken
+                }
+            });
+            setFriendRequestListData(response.data);
+            setTabBarBadge(response.data.length);
+            setFriendRequestLoading(true);
+        } catch (error: any) {
+            if (error.response) {
+                console.log('Error:', error.response.data);
+                Alert.alert("Error", error.response.data);
+            } else {
+                console.log('Error:', error.message);
+                Alert.alert("Error", error.response);
+            }
+        }
+    }
 
     // modal
     const toggleModal = (): void => {
         setIsModalVisible(!isModalVisible);
     };
     const toggleInviteModal = (): void => {
-        setisInviteModalVisible(!isInviteModalVisible);
+        setIsInviteModalVisible(!isInviteModalVisible);
     }
 
     // useEffect
     useEffect(() => {
-        FriendListComponent();
-        FriendRequestListComponent();
+        getFriendList();
+        getFriendRequestList();
     }, []);
 
     const Tab = createBottomTabNavigator();
@@ -46,8 +96,12 @@ export default function FriendsComponent({ route }: any) {
     const FriendListComponent = () => {
         return (
             <FriendList
+                friendListData={friendListData}
+                getFriendList={getFriendList}
                 toggleInviteModal={toggleInviteModal}
                 bearerToken={bearerToken}
+                friendLoading={friendLoading}
+                setFriendLoading={setFriendLoading}
             />
         )
     }
@@ -56,8 +110,11 @@ export default function FriendsComponent({ route }: any) {
     const FriendRequestListComponent = () => {
         return (
             <FriendRequestList
-                setTabBarBadge={setTabBarBadge}
+                friendRequestListData={friendRequestListData}
+                getFriendRequestList={getFriendRequestList}
                 bearerToken={bearerToken}
+                friendRequestLoading={friendRequestLoading}
+                setFriendRequestLoading={setFriendRequestLoading}
             />
         )
     }

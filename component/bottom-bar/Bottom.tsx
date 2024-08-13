@@ -2,7 +2,6 @@
 import React from 'react';
 import { Image } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-;
 import { createStackNavigator } from '@react-navigation/stack';
 import AccountHome from '../../page/newAccount/AccountHome';
 import { AccountDetail } from '../../page/newAccount/AccountDetail';
@@ -10,7 +9,7 @@ import CardList from '../../page/card/CardList';
 import CardComplete from '../../page/card/CardComplete';
 import AddCardList from '../../page/card/AddCardList';
 import CardInformation from '../../page/card/CardInformation';
-import FriendsComponent from '../../page/friend/FriendsComponent';
+import MyFriend from '../../page/friend/MyFriend';
 import AccountHistory from '../../page/account-history/AccountHistory';
 import CreateAccount from '../../page/newAccount/CreateAccount';
 import CreateCard from '../../page/card/CreateCard';
@@ -112,9 +111,21 @@ function FriendStack({ route }:any) {
   const token = route?.params?.token || '';
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="FriendsComponent" component={FriendsComponent} initialParams={{ token }} />
-      <Stack.Screen name="FriendInvite" component={FriendInvite} initialParams={{ token }} />
-      <Stack.Screen name="FriendSearch" component={FriendSearch} initialParams={{ token }} />
+      <Stack.Screen
+          name="FriendsComponent"
+          component={MyFriend}
+          initialParams={{ token }}
+      />
+      <Stack.Screen
+          name="FriendInvite"
+          component={FriendInvite}
+          initialParams={{ token }}
+      />
+      <Stack.Screen
+          name="FriendSearch"
+          component={FriendSearch}
+          initialParams={{ token }}
+      />
 
 
     </Stack.Navigator>
@@ -148,7 +159,7 @@ export default function Bottom({ route }:any) {
             iconImage = require('../../assets/image/friend.png');
           } else if (route.name === '카드💳') {
             iconImage = require('../../assets/image/card.png');
-          } 
+          }
           // else if (route.name === '거래내역') {
           //   iconImage = require('../../assets/image/history.png');
           // }
@@ -159,11 +170,11 @@ export default function Bottom({ route }:any) {
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
           borderWidth: 1
-        },
+        }
       })}
     >
       <Tab.Screen name="Account" component={AccountStack} initialParams={{ token }} />
-      <Tab.Screen name="Friend" component={FriendStack} initialParams={{ token }} />
+      <Tab.Screen name="Friend" component={FriendStack} initialParams={{ token }} options={{ headerShown: false }} />
       <Tab.Screen name="카드💳" component={CardStack} initialParams={{ token }} />
       {/* <Tab.Screen name="거래내역" component={HistoryStack} initialParams={{ token }} /> */}
     </Tab.Navigator>

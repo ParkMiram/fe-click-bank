@@ -1,39 +1,30 @@
-import {Alert, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {
+    Alert,
+    Image,
+    RefreshControl,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native";
 import {Circle, Path, Svg} from "react-native-svg";
 import {SwipeListView} from "react-native-swipe-list-view";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosResponse} from "axios";
 
+// 내 친구 목록
 export default function FriendList({...props}: any) {
 
     // props
-    const {toggleInviteModal, bearerToken} = props;
+    const {friendListData, getFriendList, toggleInviteModal, bearerToken, friendLoading, setFriendLoading} = props;
 
     // state
-    // 친구 목록
-    const [friendListData, setFriendListData] = useState([{ id: '', img: '', name: '' }]);
+    // 새로고침
+    const [isRefreshing, setIsRefreshing] = useState(false);
 
     // event
-    // 친구 목록 조회
-    const getFriendList = async (): Promise<void> => {
-        try {
-            const response: AxiosResponse<any, any> = await axios.get('http://34.135.133.145:30000/api/v1/friends', {
-                headers: {
-                    Authorization: bearerToken
-                }
-            });
-            setFriendListData(response.data);
-        } catch (error: any) {
-            if (error.response) {
-                console.log('Error:', error.response.data);
-                Alert.alert("내 친구", error.response.data);
-            } else {
-                console.log('Error:', error.message);
-                Alert.alert("내 친구", error.message);
-            }
-        }
-    };
-
     // 친구 삭제
     const deleteFriend = (code: string): void => {
         Alert.alert("친구 삭제", "친구를 정말 삭제하시겠습니까?", [
@@ -41,7 +32,7 @@ export default function FriendList({...props}: any) {
                 { text: "삭제", style: "destructive",
                     onPress: async (): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any, any> = await axios.delete(`http://34.135.133.145:30000/api/v1/friends/${code}`, {
+                            const response: AxiosResponse<any, any> = await axios.delete(`https://just-click.shop/api/v1/friends/${code}`, {
                                 headers: {
                                     Authorization: bearerToken
                                 }
@@ -108,7 +99,7 @@ export default function FriendList({...props}: any) {
             <View style={styles.hiddenItemWrap}>
                 <TouchableOpacity
                     style={styles.hiddenItem}
-                    onPress={() => deleteFriend(data.code)}
+                    onPress={() => deleteFriend(data.item.code)}
                 >
                     <Text style={styles.hiddenItemTxt}>삭제</Text>
                 </TouchableOpacity>
@@ -116,9 +107,18 @@ export default function FriendList({...props}: any) {
         )
     }
 
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        setFriendLoading(false);
+        getFriendList();
+        setTimeout(() => {
+            setIsRefreshing(false);
+        }, 2000);
+    };
+
     // useEffect
     useEffect(() => {
-        getFriendList();
+
     }, []);
 
     return (
@@ -160,18 +160,27 @@ export default function FriendList({...props}: any) {
                     <View>
                         {/* list */}
                         {
-                            friendListData.length > 0 ?
-                                <SwipeListView
-                                    style={styles.friendList}
-                                    data={friendListData}
-                                    renderItem={renderItem}
-                                    renderHiddenItem={renderHiddenItem}
-                                    rightOpenValue={-55}
-                                />
+                            friendLoading ?
+                                friendListData.length > 0 ?
+                                    <SwipeListView
+                                        style={styles.friendList}
+                                        data={friendListData}
+                                        renderItem={renderItem}
+                                        renderHiddenItem={renderHiddenItem}
+                                        rightOpenValue={-55}
+                                        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
+                                    />
+                                    :
+                                    <ScrollView
+                                        style={styles.listWrap}
+                                        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
+                                    >
+                                        <View style={styles.noList}>
+                                            <Text style={styles.noListTxt}>친구가 없습니다.</Text>
+                                        </View>
+                                    </ScrollView>
                                 :
-                                <View style={styles.noList}>
-                                    <Text style={styles.noListTxt}>친구가 없습니다.</Text>
-                                </View>
+                                <Text style={styles.loading}>불러오는 중...</Text>
                         }
                     </View>
                 </View>
@@ -285,4 +294,9 @@ const styles = StyleSheet.create({
         color: 'white',
         lineHeight: 18
     },
+    loading: {
+        textAlign: 'center',
+        color: '#aaaaaa',
+        marginTop: 20
+    }
 })
