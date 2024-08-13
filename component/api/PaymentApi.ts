@@ -18,6 +18,7 @@ export const getMyCard = async (cardId: number):Promise<AxiosResponse<any>> => {
     const query = `
         query {
             getMyCard(cardId: ${cardId}) {
+                cardId
                 cardName
                 cardNumber
                 account
