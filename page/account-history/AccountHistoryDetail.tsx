@@ -36,7 +36,6 @@ interface Detail {
     historyId: number;
     bhOutType: number;
     cardId: number;
-    bhReceive: string;
     bhMemo: string;
 }
 
@@ -46,7 +45,8 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
     const {history} = route.params;
     const id: number = history.historyId;
     const [purpose, setPurpose] = useState<number>(history.categoryId.categoryId);
-    const purposes = [
+    const [purposes, setPurposes] = useState<{ label: string; value: number; }[]>([]);
+    const purposesDeposit = [
         { label: '식비', value: 1 },
         { label: '생활', value: 2 },
         { label: '쇼핑', value: 3 },
@@ -56,6 +56,18 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
         { label: '교육', value: 7 },
         { label: '경조/선물', value: 8 },
         { label: '수입', value: 9 },
+        { label: '기타', value: 10 },
+    ];
+
+    const purposesWithDraw = [
+        { label: '식비', value: 1 },
+        { label: '생활', value: 2 },
+        { label: '쇼핑', value: 3 },
+        { label: '교통', value: 4 },
+        { label: '의료/건강', value: 5 },
+        { label: '문화/여가', value: 6 },
+        { label: '교육', value: 7 },
+        { label: '경조/선물', value: 8 },
         { label: '기타', value: 10 },
     ]
 
@@ -72,6 +84,14 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             setMemo(detail.bhMemo);
         }
     }, [detail]);
+
+    useEffect(() => {
+        if (history.bhStatus === "입금") {
+            setPurposes(purposesDeposit);
+        } else if (history.bhStatus === "출금") {
+            setPurposes(purposesWithDraw);
+        }
+    }, [history.bhStatus]);
 
     const getDetail = async (): Promise<any> => {
         try {
@@ -90,11 +110,11 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             if (bhAtDate.getTime() !== today.getTime()) {
                 // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
                 response = await getPastHistoryDetail(id);
+                console.log("데이터: " + response.data)
             } else {
                 // 그렇지 않다면 getAccountHistoryDetail 호출
                 response = await getAccountHistoryDetail(id);
             }
-
             setDetail(response.data);
         } catch (error) {
             console.log(error);

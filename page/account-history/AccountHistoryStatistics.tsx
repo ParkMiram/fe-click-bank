@@ -122,7 +122,7 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.monthExpenditure}>
                         <Text style={styles.expenditureFont1}>{month}월 지출</Text>
-                        <Text style={styles.expenditureFont2}>{budget?.mbExpenditure.toLocaleString()}원</Text>
+                        <Text style={styles.expenditureFont2}>{budget?.mbExpenditure?.toLocaleString() || '0'}원</Text>
                     </View>
 
                     <View style={styles.budgetArea}>
