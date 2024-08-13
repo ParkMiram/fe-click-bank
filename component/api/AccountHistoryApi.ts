@@ -34,5 +34,6 @@ export const getPastAllHistories = async (data:any): Promise<AxiosResponse<any>>
 }
 
 export const getPastHistoryDetail = async (id: number): Promise<AxiosResponse<any>> => {
+    console.log("MongoDB 조회")
     return await api(`api/v1/histories/past/${id}`, "get");
 }

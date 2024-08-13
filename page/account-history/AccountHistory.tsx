@@ -1,13 +1,10 @@
 import {
-    Button,
-    Image,
     Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     View,
     StatusBar,
-    Dimensions,
     TouchableOpacity, Animated, Alert
 } from "react-native";
 import ScrollView = Animated.ScrollView;
@@ -34,17 +31,19 @@ interface History {
     categoryId: Category;
 }
 
-export default function AccountHistory({ navigation }: any) {
+export default function AccountHistory({ route, navigation }: any) {
     const [record, setRecord] = useState<History[]>([]);
-    // const [histories, setHistories] = useState<History[]>([]);
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
+    const [count, setCount] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const purposes = [
         { label: '입금', value: '입금' },
         { label: '출금', value: '출금' },
     ];
-    const account: string = "110-486-119643";
-    let count = 0;
+    const accountInfo = route.params;
+    const account: string = accountInfo.account;
+    // const account: string = "416847747645";
 
     const goBack = () => {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
@@ -54,7 +53,6 @@ export default function AccountHistory({ navigation }: any) {
     useFocusEffect(
         useCallback(() => {
             fetchHistories();
-            // getAccountHistories();
         }, [])
     );
 
@@ -64,6 +62,8 @@ export default function AccountHistory({ navigation }: any) {
 
     const fetchHistories = async (): Promise<any> => {
         try {
+            setCount(1);
+            setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
             console.log(response.data); //TODO 나중에 지우기
 
@@ -80,21 +80,36 @@ export default function AccountHistory({ navigation }: any) {
 
             setRecord(combinedHistories);
 
+            if (res.data.length < 10) {
+                setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
+            }
+
         } catch (error) {
             console.log(error);
         }
     };
 
-    // const getPastHistories = async (): Promise<any> => {
-    //     try {
-    //         const data = {account, count}
-    //         const res = await getPastAllHistories(data);
-    //         console.log(res.data);
-    //         setHistories(res.data);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
+    const loadMoreHistories = async () => {
+        try {
+            const newCount = count + 1;
+            setCount(newCount); // count 값 증가
+
+            const data = {account, count: newCount};
+            const res = await getPastAllHistories(data);
+            console.log(res.data);
+
+            if (res.data && res.data.length > 0) {
+                setRecord(prev => prev.concat(res.data));
+            }
+
+            if (res.data.length < 10) {
+                setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const copyAccountToClipboard = async () => {
         await Clipboard.setStringAsync(account);
@@ -138,10 +153,10 @@ export default function AccountHistory({ navigation }: any) {
                     <View style={styles.historyArea}>
                         <View style={styles.account}>
                             <View style={styles.accountSub}>
-                                <Text style={styles.accountFont}>재민이의 텅...장</Text>
+                                <Text style={styles.accountFont}>{accountInfo.accountName}</Text>
                             </View>
                             <View style={styles.accountSub}>
-                                <Text style={styles.accountFont}>{account}</Text>
+                                <Text style={styles.accountFont}>{account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}</Text>
                                 <TouchableOpacity onPress={copyAccountToClipboard}>
                                     <Svg
                                         width={18}
@@ -207,6 +222,13 @@ export default function AccountHistory({ navigation }: any) {
                                     <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
                                 </TouchableOpacity>
                             ))}
+
+                            {hasMore && (
+                                <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
+                                    <Text style={styles.loadMoreButtonText}>+ 더 보기</Text>
+                                </TouchableOpacity>
+                            )}
+
                         </View>
                     </View>
                 </ScrollView>
@@ -242,8 +264,6 @@ const styles = StyleSheet.create({
     },
     topImage: {
         marginLeft: 5
-        // width: 15,
-        // height: 15,
     },
     accountContainer: {
         width: '100%',
@@ -354,6 +374,15 @@ const styles = StyleSheet.create({
         marginRight: 10,
         color: '#808080',
         textAlign: 'right'
+    },
+    loadMoreButton: {
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    loadMoreButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#007AFF',
     }
 });
 
