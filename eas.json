@@ -1,0 +1,24 @@
+{
+	"cli": {
+		"version": ">= 10.2.2",
+		"requireCommit": true
+	},
+	"build": {
+		"development": {
+			"developmentClient": true,
+			"distribution": "internal"
+		},
+		"preview": {
+			"distribution": "internal"
+		},
+		"preview2": {
+			"android": {
+				"gradleCommand": ":app:assembleRelease"
+			}
+		},
+		"production": {}
+	},
+	"submit": {
+		"production": {}
+	}
+}
