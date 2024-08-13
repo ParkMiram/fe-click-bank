@@ -3,7 +3,7 @@ import { Container } from '../../css/sujin/Container';
 import axios, { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
+const SERVER_URI = "https://just-click.shop/api/v1/auth";
 
 export default function GetLoginToken({ route, navigation }: any) {
     const { url } = route.params;
