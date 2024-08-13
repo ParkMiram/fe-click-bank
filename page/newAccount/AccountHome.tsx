@@ -124,7 +124,7 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
+            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
                 <Text style ={styles.historyText}>거래내역</Text>
             </TouchableOpacity>
         </View>
