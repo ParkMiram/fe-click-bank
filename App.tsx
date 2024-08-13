@@ -87,7 +87,6 @@ export default function App() {
 
     return (
         <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-              
             <Stack.Navigator 
                 initialRouteName="Splash"
                 screenOptions={{headerShown: false}}
@@ -163,7 +162,6 @@ export default function App() {
                 {/*<Stack.Screen name="ClickHome" component={ClickHome} />*/}
 
             </Stack.Navigator>
-           
         </NavigationContainer>
     );
 }
