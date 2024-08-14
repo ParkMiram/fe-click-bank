@@ -13,6 +13,7 @@ import {Circle, Path, Svg} from "react-native-svg";
 import {SwipeListView} from "react-native-swipe-list-view";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosResponse} from "axios";
+import MyFriendSearch from "./MyFriendSearch";
 
 // 내 친구 목록
 export default function FriendList({ navigation, ...props }: any) {
@@ -23,6 +24,8 @@ export default function FriendList({ navigation, ...props }: any) {
     // state
     // 새로고침
     const [isRefreshing, setIsRefreshing] = useState(false);
+    // 내 친구 검색
+    const [srchMyFriend, setSrchMyFriend] = useState('');
 
     // event
     // 친구 삭제
@@ -53,6 +56,11 @@ export default function FriendList({ navigation, ...props }: any) {
             ]
         );
     }
+
+    // 내 친구 내 검색
+    const searchFriends = friendListData.filter((friend: { name: string | string[]; }) =>
+        friend.name.includes(srchMyFriend)
+    );
 
     // 친구 목록
     const renderItem = (data: any) => {
@@ -124,6 +132,7 @@ export default function FriendList({ navigation, ...props }: any) {
         )
     }
 
+    // pull to refresh
     const handleRefresh = async () => {
         setIsRefreshing(true);
         setFriendLoading(false);
@@ -159,19 +168,10 @@ export default function FriendList({ navigation, ...props }: any) {
                         </Svg>
                         <Text style={styles.inviteTxt}>모임통장</Text>
                     </TouchableOpacity>
-                    <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기'/>
-                    <TouchableOpacity
-                        style={styles.searchIcon}
-                    >
-                        <Svg
-                            width={14}
-                            height={14}
-                            fill="none"
-                        >
-                            <Circle cx={6.25} cy={6.25} r={5.25} stroke="#404040"/>
-                            <Path stroke="#404040" strokeLinecap="round" d="m13 13-3-3"/>
-                        </Svg>
-                    </TouchableOpacity>
+                    <MyFriendSearch
+                        srchMyFriend={srchMyFriend}
+                        setSrchMyFriend={setSrchMyFriend}
+                    />
                 </View>
                 <View style={styles.listWrap}>
                     <View>
@@ -181,7 +181,7 @@ export default function FriendList({ navigation, ...props }: any) {
                                 friendListData.length > 0 ?
                                     <SwipeListView
                                         style={styles.friendList}
-                                        data={friendListData}
+                                        data={searchFriends}
                                         renderItem={renderItem}
                                         renderHiddenItem={renderHiddenItem}
                                         rightOpenValue={-55}
@@ -229,15 +229,6 @@ const styles = StyleSheet.create({
         fontSize: 10,
         marginTop: 5,
         color: '#888888'
-    },
-    searchInpt: {
-        flex: 1,
-    },
-    searchIcon: {
-        flex: 0,
-        marginLeft: 10,
-        paddingHorizontal: 15,
-        paddingVertical: 20
     },
     listWrap: {
         height: '100%',
