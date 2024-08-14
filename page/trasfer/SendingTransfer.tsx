@@ -60,7 +60,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
-      navigation.navigate('Transfer', {token, account, moneyAmount: sendUserInfo?.amount})
+      navigation.goBack();
     }
   };
 
@@ -72,14 +72,14 @@ const SendingTransfer = ({ navigation, route }: any) => {
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
-      navigation.navigate('Transfer', {token, account, moneyAmount: sendUserInfo?.amount})
+      navigation.goBack();
     }
   }
 
   useEffect(() => {
     fetchReceiveUserInfo(accountNumber, token);
     fetchSendUserInfo(account, token);
-  }, [accountNumber])
+  }, [accountNumber, account])
 
   const handleNumberPress = (num: string) => {
     setAmount(amount + num);
