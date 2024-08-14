@@ -14,11 +14,13 @@ import FriendList from "./FriendList";
 import FriendRequestList from "./FriendRequestList";
 import axios, {AxiosResponse} from "axios";
 
-export default function MyFriend({ route }: any) {
+export default function MyFriend({ navigation, route }: any) {
     const { token } = route.params;
     const bearerToken: string = `Bearer ${token}`;
 
     // state
+    // 내 계좌
+    const [myAccount, setMyAccount] = useState('');
     // 친구 목록
     const [friendListData, setFriendListData] = useState([{ id: '', img: '', name: '' }]);
     const [friendLoading, setFriendLoading] = useState(false);
@@ -40,8 +42,9 @@ export default function MyFriend({ route }: any) {
                     Authorization: bearerToken
                 }
             });
-            setFriendListData(response.data);
+            setFriendListData(response.data.friendInfo);
             setFriendLoading(true);
+            setMyAccount(response.data.myAccount);
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
@@ -96,6 +99,8 @@ export default function MyFriend({ route }: any) {
     const FriendListComponent = () => {
         return (
             <FriendList
+                navigation={navigation}
+                myAccount={myAccount}
                 friendListData={friendListData}
                 getFriendList={getFriendList}
                 toggleInviteModal={toggleInviteModal}

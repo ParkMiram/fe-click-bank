@@ -15,10 +15,10 @@ import React, {useEffect, useState} from "react";
 import axios, {AxiosResponse} from "axios";
 
 // 내 친구 목록
-export default function FriendList({...props}: any) {
+export default function FriendList({ navigation, ...props }: any) {
 
     // props
-    const {friendListData, getFriendList, toggleInviteModal, bearerToken, friendLoading, setFriendLoading} = props;
+    const {myAccount, friendListData, getFriendList, toggleInviteModal, bearerToken, friendLoading, setFriendLoading} = props;
 
     // state
     // 새로고침
@@ -87,12 +87,29 @@ export default function FriendList({...props}: any) {
                     }
                     <Text style={styles.friendName}>{data.item.name}</Text>
                 </View>
-                <TouchableOpacity style={styles.transfer}>
+                <TouchableOpacity
+                    style={styles.transfer}
+                    onPress={() => transferFriend(data.item.account)}
+                >
                     <Text style={styles.transferTxt}>송금</Text>
                 </TouchableOpacity>
             </View>
         )
     }
+
+    // 송금
+    const transferFriend = async (data: string): Promise<void> => {
+        const token = bearerToken.split(' ')[1];
+
+        navigation.navigate('SendingTransfer', {
+            bank: "click",
+            accountNumber: data,
+            account: myAccount,
+            category: 10,
+            token: token
+        });
+    }
+
     // 친구 삭제
     const renderHiddenItem = (data: any) => {
         return (
