@@ -106,18 +106,18 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
-                <View style={styles.top}>
-                    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>
-                        <Svg
-                            width={9}
-                            height={14}
-                            fill="none"
-                        >
-                            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
-                        </Svg>
-                    </TouchableOpacity>
-                    <Text style={styles.topFont}>분석 / 예산</Text>
-                </View>
+                {/*<View style={styles.top}>*/}
+                {/*    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>*/}
+                {/*        <Svg*/}
+                {/*            width={9}*/}
+                {/*            height={14}*/}
+                {/*            fill="none"*/}
+                {/*        >*/}
+                {/*            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />*/}
+                {/*        </Svg>*/}
+                {/*    </TouchableOpacity>*/}
+                {/*    <Text style={styles.topFont}>분석 / 예산</Text>*/}
+                {/*</View>*/}
 
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.monthExpenditure}>
@@ -209,24 +209,7 @@ const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
         width: '100%',
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-    },
-    top: {
-        width: '100%',
-        height: '8%',
-        paddingLeft: 15,
-        paddingRight: 15,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    topFont: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 5
-    },
-    topImage: {
-        marginLeft: 5
+        marginTop: Platform.OS === 'ios' ? 10 : StatusBar.currentHeight,
     },
     scrollView: {
         flex: 1,
@@ -237,7 +220,7 @@ const styles = StyleSheet.create({
         padding: 10
     },
     expenditureFont1: {
-        fontSize: 24,
+        fontSize: 18,
         paddingLeft: 15,
     },
     expenditureFont2: {
