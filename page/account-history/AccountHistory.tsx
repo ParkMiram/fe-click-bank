@@ -5,7 +5,7 @@ import {
     Text,
     View,
     StatusBar,
-    TouchableOpacity, Animated, Alert
+    TouchableOpacity, Animated, Alert, RefreshControl
 } from "react-native";
 import ScrollView = Animated.ScrollView;
 import React, {useCallback, useEffect, useState} from "react";
@@ -35,8 +35,9 @@ export default function AccountHistory({ route, navigation }: any) {
     const [record, setRecord] = useState<History[]>([]);
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(0);
     const [hasMore, setHasMore] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const purposes = [
         { label: '입금', value: '입금' },
         { label: '출금', value: '출금' },
@@ -49,7 +50,6 @@ export default function AccountHistory({ route, navigation }: any) {
         navigation.goBack(); // 이전 화면으로 돌아가는 함수
     };
 
-
     useFocusEffect(
         useCallback(() => {
             fetchHistories();
@@ -60,9 +60,17 @@ export default function AccountHistory({ route, navigation }: any) {
         filterHistories();
     }, [record, purpose]);
 
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        fetchHistories();
+        setTimeout(() => {
+            setIsRefreshing(false);
+        }, 2000);
+    };
+
     const fetchHistories = async (): Promise<any> => {
         try {
-            setCount(1);
+            setCount(0);
             setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
             console.log(response.data); //TODO 나중에 지우기
@@ -78,7 +86,12 @@ export default function AccountHistory({ route, navigation }: any) {
 
             const combinedHistories = histories.concat(res.data);
 
-            setRecord(combinedHistories);
+            // 버그 수정
+            const sortedHistories = combinedHistories.sort((a, b) => {
+                return Number(b.historyId) - Number(a.historyId);
+            });
+
+            setRecord(sortedHistories);
 
             if (res.data.length < 10) {
                 setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
@@ -136,20 +149,7 @@ export default function AccountHistory({ route, navigation }: any) {
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
-                <View style={styles.top}>
-                    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>
-                        <Svg
-                            width={9}
-                            height={14}
-                            fill="none"
-                        >
-                            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
-                        </Svg>
-                    </TouchableOpacity>
-                    <Text style={styles.topFont}>거래 내역 조회</Text>
-                </View>
-
-                <ScrollView style={styles.scrollView}>
+                <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}>
                     <View style={styles.historyArea}>
                         <View style={styles.account}>
                             <View style={styles.accountSub}>
@@ -249,24 +249,7 @@ const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
         width: '100%',
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-    },
-    top: {
-        width: '100%',
-        height: '8%',
-        paddingLeft: 15,
-        paddingRight: 15,
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    topFont: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginLeft: 10
-    },
-    topImage: {
-        marginLeft: 5
+        marginTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
     },
     accountContainer: {
         width: '100%',

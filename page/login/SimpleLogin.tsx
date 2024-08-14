@@ -1,11 +1,11 @@
-import { Image, StyleSheet, Text, Vibration, View } from 'react-native';
+import { Image, SafeAreaView, StyleSheet, Text, Vibration, View } from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
 import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
+const SERVER_URI = "https://just-click.shop/api/v1/auth";
 
 export default function SimpleLogin({ navigation, route }: any) {
     const { token } = route.params;
@@ -16,6 +16,19 @@ export default function SimpleLogin({ navigation, route }: any) {
     const getUserToken = async (str: string) => {
         try {
             const response = await axios.get(`${SERVER_URI}/token?token=${token}&password=${str}`);
+            return response.data;
+        } catch (error) {
+            const {response} = error as unknown as AxiosError;
+            if(response){
+                return {status: response.status, data: response.data};
+            }
+            return error;
+        }
+    }
+
+    const checkMainAccount = async (userToken: string) => {
+        try {
+            const response = await axios.get(`${SERVER_URI}/token/${userToken}`);
             return response.data;
         } catch (error) {
             const {response} = error as unknown as AxiosError;
@@ -44,6 +57,14 @@ export default function SimpleLogin({ navigation, route }: any) {
                 });
             } else {
                 Vibration.vibrate(60);
+                const parseData = await checkMainAccount(data);
+                if (parseData.account == null) {
+                    setPassword("");
+                    setStar("");
+                    alert("딸깍은 처음이시군요!\n먼저, 계좌 개설로 이동합니다.")
+                    navigation.navigate('CreateAccount', { accountType: '입출금 통장', token: data, userName: parseData.name });
+                    return true;
+                }
                 navigation.reset({
                     index: 0,
                     routes: [{name: 'ClickHome', params: {token: data}}]
@@ -61,20 +82,20 @@ export default function SimpleLogin({ navigation, route }: any) {
     }
 
     return (
-        <View style={Container.container}>
-        <View style={Container.innerContainer}>
-            <Image
-                style={styles.logo}
-                source={require('../../assets/image/Click_logo.png')}
-            />
-            <Text>간편 로그인</Text>
-            <View style={styles.passwordBox}>
-                <Text style={styles.passwordStar}>{toStar}</Text>
-                <Text>{infoText}</Text>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
+                <Image
+                    style={styles.logo}
+                    source={require('../../assets/image/Click_logo.png')}
+                />
+                <Text>간편 로그인</Text>
+                <View style={styles.passwordBox}>
+                    <Text style={styles.passwordStar}>{toStar}</Text>
+                    <Text>{infoText}</Text>
+                </View>
+                <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
             </View>
-            <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
-        </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

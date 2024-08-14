@@ -20,7 +20,7 @@ import ReminingTranfer from './page/trasfer/ReminingTransfer';
 import ResultTransfer from './page/trasfer/ResultTransfer';
 import GetLoginToken from './page/login/GetLoginToken';
 import AccountHome from './page/newAccount/AccountHome';
-import FriendsComponent from "./page/friend/FriendsComponent";
+import MyFriend from "./page/friend/MyFriend";
 import AccountType from './page/newAccount/AccountType';
 import AccountInformation from './page/newAccount/AccountInformation';
 import CreateAccount from './page/newAccount/CreateAccount';
@@ -58,6 +58,7 @@ import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 import EditCard from './page/card/EditCard';
 import Bottom from './component/bottom-bar/Bottom';
 import MainTabs from './component/bottom-bar/Bottom';
+import ApplicantInformationCheck from './page/card/ApplicantInformationCheck';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -125,6 +126,9 @@ export default function App() {
                 <Stack.Screen name="AddCardList" component={AddCardList}/>
                 <Stack.Screen name="CreateCard" component={CreateCard}/>
                 <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
+                <Stack.Screen name="ApplicantInformationCheck" component={ApplicantInformationCheck}/>
+
+
                 <Stack.Screen name="MyCard" component={MyCard}/>
                 <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
@@ -148,7 +152,7 @@ export default function App() {
                 <Stack.Screen name="PaymentLoading" component={Loading}/>
 
                 {/* Friend */}
-                <Stack.Screen name="FriendsComponent" component={FriendsComponent} />
+                <Stack.Screen name="MyFriend" component={MyFriend} />
                 {/*<Stack.Screen name="Login" component={LoginPage} />*/}
                 {/*<Stack.Screen name="KakaoLogin" component={KakaoLogin} />*/}
                 {/*<Stack.Screen name="SimpleLogin" component={SimpleLogin} />*/}

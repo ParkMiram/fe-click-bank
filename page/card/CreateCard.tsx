@@ -49,15 +49,22 @@ const getCardProductInfo = async ()  => {
 }
 
   const handleNextPress = () => {
-    if (cardBrand ) {
-      navigation.navigate('ApplicantInformation', {
-        // cardPassword,
-        // account,
-        cardCheck: cardBrand,
-        cardTransportation,
-        cardProductId, 
-        token
-      });
+    if (cardBrand) {
+      if (cardBrand === 'CREDIT') {
+        navigation.navigate('ApplicantInformation', {
+          cardCheck: cardBrand,
+          cardTransportation,
+          cardProductId,
+          token
+        });
+      } else if (cardBrand === 'CHECK') {
+        navigation.navigate('ApplicantInformationCheck', {
+          cardCheck: cardBrand,
+          cardTransportation,
+          cardProductId,
+          token
+        });
+      }
     } else {
       Alert.alert("필드를 선택해 주세요.");
     }
