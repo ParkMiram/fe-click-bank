@@ -1,4 +1,5 @@
 import {
+    Alert,
     Image, KeyboardAvoidingView,
     Modal, Platform, StyleSheet,
     Text, TextInput, TouchableOpacity, View,
@@ -38,34 +39,52 @@ export default function FriendSearch(props: any) {
                 setFriend(response.data);
                 setSearchFlag(true);
             } else {
-                return alert("친구 코드는 5자 입니다.");
+                return Alert.alert(
+                    "친구 코드",
+                    "친구 코드는 5자 입니다."
+                );
             }
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                alert(error.response.data);
+                Alert.alert(
+                    "Error",
+                    error.response.data
+                );
             } else {
                 console.log('Error:', error.message);
-                alert(error.message);
+                Alert.alert(
+                    "Error",
+                    error.response
+                );
             }
         }
     }
     // 친구 요청
-    const requestFriend = async () => {
+    const requestFriend = async (code: string):Promise<void> => {
         try {
-            const response: AxiosResponse<any, any> = await axios.post(`http://192.168.0.22:8080/api/v1/friends/request/${friendCode}`,{}, {
+            const response: AxiosResponse<any, any> = await axios.post(`https://just-click.shop/api/v1/friends/request/${code}`,{}, {
                 headers: {
                     Authorization: bearerToken
                 }
             });
-            alert(response.data);
+            Alert.alert(
+                "친구 요청",
+                response.data
+            );
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
-                alert(error.response.data);
+                Alert.alert(
+                    "친구 요청",
+                    error.response.data
+                );
             } else {
                 console.log('Error:', error.message);
-                alert(error.message);
+                Alert.alert(
+                    "친구 요청",
+                    error.response
+                );
             }
         }
     }
@@ -93,6 +112,7 @@ export default function FriendSearch(props: any) {
                             />
                             <TouchableOpacity
                                 onPress={getFriend}
+                                style={styles.searchIcon}
                             >
                                 <Svg
                                     width={14}
@@ -139,7 +159,7 @@ export default function FriendSearch(props: any) {
                                         </View>
                                         <TouchableOpacity
                                             style={styles.request}
-                                            onPress={requestFriend}
+                                            onPress={() => requestFriend(friend.code)}
                                         >
                                             <Svg
                                                 width={16}
@@ -201,7 +221,6 @@ const styles = StyleSheet.create({
     },
     wrap: {
         padding: 20,
-        // paddingBottom: 30,
     },
     searchWrap: {
         width: '100%',
@@ -210,16 +229,16 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
+        paddingLeft: 20,
         marginBottom: 20
     },
     searchInpt: {
         flex: 1,
+        paddingVertical: 15,
     },
     searchIcon: {
         flex: 0,
-        marginLeft: 10
+        padding: 15
     },
     list: {
         flexDirection: 'row',
@@ -245,7 +264,8 @@ const styles = StyleSheet.create({
     profile: {
         marginRight: 10,
         width: 40,
-        height: 40
+        height: 40,
+        borderRadius: 20
     },
     friendName: {
         fontWeight: '500',

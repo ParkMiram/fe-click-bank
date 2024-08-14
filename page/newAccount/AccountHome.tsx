@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View } from 'react-native';
-import { getAccountByUserId } from "../../component/api/NewAccountApi";
+import { useFocusEffect } from '@react-navigation/native';
+import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
+import { Container } from '../../css/sujin/Container';
 
 interface AccountResponse {
     account: string;
     accountName: string;
-    moneyAmount: number;
+    moneyAmount: number | null;
 }
 
 interface UserAccountResponse {
@@ -16,88 +18,155 @@ interface UserAccountResponse {
 }
 
 export default function AccountHome({ route, navigation }: any) {
-    const [numberHidden, setNumberHidden] = useState(false);
-    const [account, setAccount] = useState<AccountResponse[]>([]);
+    // const [numberHidden, setNumberHidden] = useState(false);
+    const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
+
+    const [accounts, setAccounts] = useState<AccountResponse[]>([]);
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
     const token = route.params?.token;
 
-    // useEffect(() => {
-    //     if (token) {
-    //         fetchAccountsByUserId(token);
-    //     }
-    // }, [token]);
-
-    // const fetchAccountsByUserId = async (token: string): Promise<any> => {
-    //     try {
-    //         const response: AxiosResponse<UserAccountResponse> = await getAccountByUserId(token);
-    //         const { accounts, userName, userImg } = response.data;
-    //         setAccount(accounts);
-    //         setUserName(userName);
-    //         setUserImg(userImg);
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // };
-
-    const numberShow = () => {
-        setNumberHidden(!numberHidden);
+    const toggleNumberHidden = (accountId: string) => {
+        setNumberHidden(prevState => ({
+            ...prevState,
+            [accountId]: !prevState[accountId]
+        }));
     };
+
+    const fetchAccountsByUserId = async (token: string): Promise<void> => {
+        try {
+            const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
+            const data = response.data[0]; 
+            const { accounts, userName, userImg } = data;
+    
+            if (data) {
+                setAccounts(accounts);
+                setUserName(userName);
+                setUserImg(userImg);
+            } else {
+                console.error('응답 데이터가 올바르지 않습니다:', data);
+                const userInfoResponse: AxiosResponse<any> = await getUserInfo(token);
+                const userInfoData = userInfoResponse.data;
+
+            // 유저 정보 데이터 확인
+                if (userInfoData) {
+                    const { userName, userImg } = userInfoData;
+                    console.log('User Info API 응답 데이터:', userInfoData);
+
+                    // 상태 업데이트
+                    setAccounts([]);
+                    setUserName(userName || '');
+                    setUserImg(userImg || '');
+                } else {
+                    console.error('User Info API 응답 데이터가 올바르지 않습니다:', userInfoData);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+            try {
+                const userInfoResponse: AxiosResponse<any> = await getUserInfo(token);
+                const userInfoData = userInfoResponse.data;
+    
+                // 유저 정보 데이터 확인
+                if (userInfoData) {
+                    const { userName, userImg } = userInfoData;
+                    console.log('User Info API 응답 데이터:', userInfoData);
+    
+                    // 상태 업데이트
+                    setAccounts([]);
+                    setUserName(userName || '');
+                    setUserImg(userImg || '');
+                } else {
+                    console.error('User Info API 응답 데이터가 올바르지 않습니다:', userInfoData);
+                }
+            } catch (userInfoError) {
+                console.error('getUserInfo 호출 중 에러 발생:', userInfoError);
+            }
+        }
+    };
+    
+    // const numberShow = () => {
+    //     setNumberHidden(!numberHidden);
+    // };
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
-            <TouchableOpacity onPress={() => navigation.navigate('EditAccount')}>
+            <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <Image
-                    source={require('../../assets/image/more.png')}
-                    style={styles.imageMore} resizeMode="contain"
-                />
-            </TouchableOpacity>
-            <Text style={styles.accountNumber}>
-                {item.account.replace(/\B(?=(\d{4})+(?!\d))/g, "-")}
-            </Text>
-            <View style={styles.buttonContainer}>
-                <Text style={styles.balance}>
-                    {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`}
-                </Text>
-                <TouchableOpacity style={styles.sendButton} onPress={numberShow}>
-                    <Text style={styles.buttonSendText}>{numberHidden ? '보기' : '숨김'}</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg, amount: item.moneyAmount})}>
+                    <View style={styles.imageWrapper}>
+                        <Image
+                            source={require('../../assets/image/more.png')}
+                            style={styles.imageMore} resizeMode="contain"
+                        />
+                    </View>
                 </TouchableOpacity>
             </View>
+            <View style = {styles.historyContainer}>
+            <Text style={styles.accountNumber}>
+                {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
+            </Text>
+            </View>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.transferButton}>
+                <Text style={styles.balance}>
+                    {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
+                    {/* {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'} */}
+                    {numberHidden[item.account] ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'}
+                </Text>
+                <TouchableOpacity style={styles.sendButton} onPress={() => toggleNumberHidden(item.account)}>
+                    <Text style={styles.buttonSendText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
+                    
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
+                        account: item.account,
+                        // accountName: item.accountName,
+                        moneyAmount: item.moneyAmount})}>
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>
+            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
+                <Text style ={styles.historyText}>거래내역</Text>
+            </TouchableOpacity>
         </View>
     );
 
+    //useFocusEffect를 사용하여 화면이 포커스될 때 API를 호출
+    useFocusEffect(
+        useCallback(() => {
+            if (token) {
+                fetchAccountsByUserId(token);
+            }
+        }, [token])
+    );
+    
     return (
         <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
+            <View style={Container.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Image
                         source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
-                        style={styles.imagePerson} resizeMode="contain"
+                        style={styles.imagePerson}resizeMode="cover"
                     />
                     <Text style={styles.text}>{userName}</Text>
                     <View style={styles.bellContainer}>
-                        <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
+                        {/* <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}> */}
                             <Image
                                 source={require('../../assets/image/bell.png')}
                                 style={styles.imageBell} resizeMode="contain"
                             />
-                        </TouchableOpacity>
+                        {/* </TouchableOpacity> */}
                     </View>
                 </View>
+                
                 <FlatList
-                    data={account}
+                    data={accounts}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => index.toString()}
+                    extraData={numberHidden}
                     contentContainerStyle={styles.flatListContainer}
                 />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType')}>
+            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
                 <Image
                     source={require('../../assets/image/plus.png')}
                     style={styles.imagePlus} resizeMode="contain"
@@ -119,6 +188,12 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
+    },
+    accountDetailContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        height: 30
     },
     flatListContainer: {
         width: '100%',
@@ -137,10 +212,11 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 20,
     },
-    imagePerson: {
-        width: 45,
-        height: 45,
-        marginLeft: 20,
+    imagePerson:{
+        width:45,
+        height:45,
+        borderRadius:50,
+        marginLeft:20
     },
     imageMore: {
         width: 50,
@@ -152,6 +228,13 @@ const styles = StyleSheet.create({
     imageBell: {
         width: 80,
         height: 80,
+    },
+    imageWrapper: {
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        overflow: 'hidden',
+        marginLeft: 20,
     },
     text: {
         textAlign: 'left',
@@ -191,14 +274,16 @@ const styles = StyleSheet.create({
     },
     transferButton: {
         alignItems: 'flex-end',
-        width: '100%',
+        // width: '90%',
+        width:90,
+        borderRadius:5
     },
     buttonText: {
         width: 60,
         backgroundColor: '#6BC29A',
         color: 'black',
         padding: 10,
-        borderRadius: 5,
+        borderRadius: 10,
         textAlign: 'center',
         fontSize: 16,
     },
@@ -210,4 +295,20 @@ const styles = StyleSheet.create({
         width: 90,
         height: 95,
     },
+    history:{
+        backgroundColor: '#6BC29A',
+        padding: 10,
+        borderRadius: 5,
+        marginTop:10
+
+    },
+    historyText:{
+
+    },
+    historyContainer:{
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+
+    }
+
 });

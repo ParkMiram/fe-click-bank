@@ -1,15 +1,18 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
 import AccountType from './AccountType';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 
 
 export default function CreateAccount( { route, navigation }: any ) {
     let accountStatus = "";
-    const { accountType, token, nickName } = route.params;
+    const { accountType, token, userName } = route.params;
 
     useEffect(() => {
         if (accountType === '입출금 통장') {
+            accountStatus = 'account'
+        } else if (accountType === '모임 통장') {
+            accountStatus = 'group'
         }
     }, [accountType]);
 
@@ -26,7 +29,7 @@ export default function CreateAccount( { route, navigation }: any ) {
             </View>
             <TouchableOpacity 
                 style={styles.button} 
-                onPress={() => navigation.navigate('AccountPassword', { accountStatus, token, nickName })}
+                onPress={() => navigation.navigate('AccountPassword', { accountStatus, token, userName })}
             >
                 <Text style={styles.buttonText}>신청하기</Text>
             </TouchableOpacity>
@@ -38,17 +41,16 @@ export default function CreateAccount( { route, navigation }: any ) {
 const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
-       
         width: "100%",
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
         justifyContent: 'center',
-       
     },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     box: {
         width: 330,

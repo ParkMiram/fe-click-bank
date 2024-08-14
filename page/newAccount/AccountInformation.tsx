@@ -4,13 +4,14 @@ import { View, StyleSheet, Text, TouchableOpacity, Dimensions, Platform, SafeAre
 type data = {
     accountStatus: string;
     token: string;
-    nickName: string,
-    accountPassword: string,
-    purpose: string
+    userName: string;
+    accountPassword: string;
+    purpose: string;
 }
 
 export default function AccountInformation( { navigation, route }: any ) {
-    const { accountStatus, token, nickName, accountPassword, purpose }: data = route.params;
+    const { accountStatus, token, userName, accountPassword, purpose }: data = route.params;
+    console.log(accountPassword);
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -28,14 +29,14 @@ export default function AccountInformation( { navigation, route }: any ) {
             </View>
             <View style={styles.textContainer}>
                 <Text style={styles.userText}>고객 정보:</Text>
-                <Text style={styles.userText}>이름: {nickName}</Text>
+                <Text style={styles.userText}>이름: {userName}</Text>
                 {/* <View style={styles.textContainer}> */}
                 <Text style={styles.userText}>거래 목적: {purpose}</Text>
                 {/* </View> */}
             </View>
             <TouchableOpacity 
                 style={styles.buttonApplication} 
-                onPress={() => navigation.navigate('AccountTerms', {accountStatus, token, accountPassword})}
+                onPress={() => navigation.navigate('AccountTerms', {accountStatus, token, accountPassword })}
             >
                 <Text style={styles.buttonTextApplication}>신청하기</Text>
             </TouchableOpacity>
@@ -58,6 +59,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'white',
     },
     text: {
         textAlign:'center',

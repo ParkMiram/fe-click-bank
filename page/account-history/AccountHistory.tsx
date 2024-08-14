@@ -1,20 +1,20 @@
 import {
-    Button,
-    Image,
     Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     View,
     StatusBar,
-    Dimensions,
     TouchableOpacity, Animated, Alert
 } from "react-native";
 import ScrollView = Animated.ScrollView;
-import React, {useEffect, useState} from "react";
-import {getAccountHistory} from "../../component/api/AccountHistoryApi";
+import React, {useCallback, useEffect, useState} from "react";
+import {getAccountHistory, getPastAllHistories} from "../../component/api/AccountHistoryApi";
 import {AxiosResponse} from "axios";
 import RNPickerSelect from "react-native-picker-select";
+import {Path, Rect, Svg} from "react-native-svg";
+import * as Clipboard from 'expo-clipboard';
+import {useFocusEffect} from "@react-navigation/native";
 
 interface Category {
     id: number;
@@ -31,39 +31,96 @@ interface History {
     categoryId: Category;
 }
 
-export default function AccountHistory({ navigation }: any) {
-    const [histories, setHistories] = useState<History[]>([]);
+export default function AccountHistory({ route, navigation }: any) {
+    const [record, setRecord] = useState<History[]>([]);
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
+    const [count, setCount] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
     const purposes = [
         { label: '입금', value: '입금' },
         { label: '출금', value: '출금' },
     ];
+    const accountInfo = route.params;
+    const account: string = accountInfo.account;
+    // const account: string = "416847747645";
 
-    useEffect(()=> {
-        getAccountHistories();
-    },[]);
+    const goBack = () => {
+        navigation.goBack(); // 이전 화면으로 돌아가는 함수
+    };
+
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchHistories();
+        }, [])
+    );
 
     useEffect(() => {
         filterHistories();
-    }, [histories, purpose]);
+    }, [record, purpose]);
 
-    const getAccountHistories = async (): Promise<any> => {
+    const fetchHistories = async (): Promise<any> => {
         try {
-            const account: string = "110-486-119643";
+            setCount(1);
+            setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
-            console.log(response.data);
-            setHistories(response.data);
+            console.log(response.data); //TODO 나중에 지우기
+
+            let histories: History[] = [];
+            if (response.data && response.data.length > 0) {
+                histories = response.data.reverse();
+            }
+
+            const data = {account, count};
+            const res = await getPastAllHistories(data);
+            console.log(res.data);
+
+            const combinedHistories = histories.concat(res.data);
+
+            setRecord(combinedHistories);
+
+            if (res.data.length < 10) {
+                setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
+            }
+
         } catch (error) {
             console.log(error);
         }
     };
 
+    const loadMoreHistories = async () => {
+        try {
+            const newCount = count + 1;
+            setCount(newCount); // count 값 증가
+
+            const data = {account, count: newCount};
+            const res = await getPastAllHistories(data);
+            console.log(res.data);
+
+            if (res.data && res.data.length > 0) {
+                setRecord(prev => prev.concat(res.data));
+            }
+
+            if (res.data.length < 10) {
+                setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const copyAccountToClipboard = async () => {
+        await Clipboard.setStringAsync(account);
+        Alert.alert("복사되었습니다.");
+    };
+
     const filterHistories = () => {
         if (purpose === '전체' || purpose === null) {
-            setFilteredHistories(histories);
+            setFilteredHistories(record);
         } else {
-            const filtered = histories.filter(history => history.bhStatus === purpose);
+            const filtered = record.filter(history => history.bhStatus === purpose);
             setFilteredHistories(filtered);
         }
     };
@@ -80,7 +137,15 @@ export default function AccountHistory({ navigation }: any) {
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
                 <View style={styles.top}>
-                    <Image source={require('../../assets/image/back_btn.png')} style={styles.topImage}/>
+                    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>
+                        <Svg
+                            width={9}
+                            height={14}
+                            fill="none"
+                        >
+                            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />
+                        </Svg>
+                    </TouchableOpacity>
                     <Text style={styles.topFont}>거래 내역 조회</Text>
                 </View>
 
@@ -88,23 +153,37 @@ export default function AccountHistory({ navigation }: any) {
                     <View style={styles.historyArea}>
                         <View style={styles.account}>
                             <View style={styles.accountSub}>
-                                <Text style={styles.accountFont}>재민이의 텅...장</Text>
-                                <Image source={require('../../assets/image/edit.png')} />
+                                <Text style={styles.accountFont}>{accountInfo.accountName}</Text>
                             </View>
                             <View style={styles.accountSub}>
-                                <Text style={styles.accountFont}>938002-00-537764</Text>
-                                <Image source={require('../../assets/image/copy.png')} />
+                                <Text style={styles.accountFont}>{account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}</Text>
+                                <TouchableOpacity onPress={copyAccountToClipboard}>
+                                    <Svg
+                                        width={18}
+                                        height={18}
+                                        fill="none"
+                                    >
+                                        <Path
+                                            stroke="#222"
+                                            d="M10.5 5.25c0-.232 0-.348-.01-.446A2 2 0 0 0 8.696 3.01C8.598 3 8.482 3 8.25 3h-1.5c-1.644 0-2.466 0-3.019.454a2.001 2.001 0 0 0-.277.277C3 4.284 3 5.106 3 6.75v1.5c0 .232 0 .348.01.446a2 2 0 0 0 1.794 1.794c.098.01.214.01.446.01"
+                                        />
+                                        <Rect width={7.5} height={7.5} x={7.5} y={7.5} stroke="#222" rx={2} />
+                                    </Svg>
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.balanceArea}>
-                                <Text style={styles.balanceFont}>1,000,000,000 원</Text>
+                                <Text style={styles.balanceFont}>{(record.length > 0 ? record[0].bhBalance : 0).toLocaleString()} 원</Text>
                             </View>
                         </View>
-
+                        {/*record.length-1*/}
                         <View style={styles.accountBtnArea}>
-                            <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics("110-486-119643")}>
+                            <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics(account)}>
                                 <Text style={styles.accountBtnFont}>분석 / 예산</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.accountBtn}>
+                            <TouchableOpacity style={styles.accountBtn} onPress={() => navigation.navigate('Transfer',{ token: accountInfo.token,
+                                account: accountInfo.account,
+                                // accountName: item.accountName,
+                                moneyAmount: accountInfo.moneyAmount})}>
                                 <Text style={styles.accountBtnFont}>이체</Text>
                             </TouchableOpacity>
                         </View>
@@ -117,14 +196,22 @@ export default function AccountHistory({ navigation }: any) {
                                     placeholder={{ label: '전체', value: '전체', color:'black' }}
                                     value={purpose}
                                     Icon={() => {
-                                        return <Image style={imageStyles.icon} source={require('../../assets/image/select.png')} />;
+                                        return <Svg
+                                            width={20}
+                                            height={10}
+                                            fill="none"
+                                            viewBox="0 0 10 5"
+                                            style={imageStyles.icon}
+                                        >
+                                            <Path stroke="#222" strokeWidth={0.7} d="M9.6.3 5.4 4.5 1.2.3" />
+                                        </Svg>;
                                     }}
                                     style={pickerSelectStyles}
                                     useNativeAndroidPickerStyle={false}
                                 />
                                 {/*<Image source={require('../../assets/image/select.png')} />*/}
                             </View>
-                            {filteredHistories.slice().reverse().map((item: History) => (
+                            {filteredHistories.slice().map((item: History) => (
                                 <TouchableOpacity key={item.historyId} style={styles.history} onPress={() => navigateToDetail(item)}>
                                     <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
                                     <Text style={styles.historyNameFont}>{item.bhName}</Text>
@@ -138,10 +225,15 @@ export default function AccountHistory({ navigation }: any) {
                                     <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
                                 </TouchableOpacity>
                             ))}
+
+                            {hasMore && (
+                                <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
+                                    <Text style={styles.loadMoreButtonText}>+ 더 보기</Text>
+                                </TouchableOpacity>
+                            )}
+
                         </View>
                     </View>
-
-
                 </ScrollView>
             </View>
         </SafeAreaView>
@@ -175,8 +267,6 @@ const styles = StyleSheet.create({
     },
     topImage: {
         marginLeft: 5
-        // width: 15,
-        // height: 15,
     },
     accountContainer: {
         width: '100%',
@@ -287,6 +377,15 @@ const styles = StyleSheet.create({
         marginRight: 10,
         color: '#808080',
         textAlign: 'right'
+    },
+    loadMoreButton: {
+        paddingVertical: 10,
+        alignItems: 'center',
+    },
+    loadMoreButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#007AFF',
     }
 });
 
