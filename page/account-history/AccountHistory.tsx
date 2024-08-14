@@ -35,7 +35,7 @@ export default function AccountHistory({ route, navigation }: any) {
     const [record, setRecord] = useState<History[]>([]);
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(0);
     const [hasMore, setHasMore] = useState(true);
     const purposes = [
         { label: '입금', value: '입금' },
@@ -62,7 +62,7 @@ export default function AccountHistory({ route, navigation }: any) {
 
     const fetchHistories = async (): Promise<any> => {
         try {
-            setCount(1);
+            // setCount(1);
             setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
             console.log(response.data); //TODO 나중에 지우기
@@ -78,7 +78,12 @@ export default function AccountHistory({ route, navigation }: any) {
 
             const combinedHistories = histories.concat(res.data);
 
-            setRecord(combinedHistories);
+            // 버그 수정
+            const sortedHistories = combinedHistories.sort((a, b) => {
+                return Number(b.historyId) - Number(a.historyId);
+            });
+
+            setRecord(sortedHistories);
 
             if (res.data.length < 10) {
                 setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
