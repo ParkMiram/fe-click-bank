@@ -58,6 +58,7 @@ import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 import EditCard from './page/card/EditCard';
 import Bottom from './component/bottom-bar/Bottom';
 import MainTabs from './component/bottom-bar/Bottom';
+import ApplicantInformationCheck from './page/card/ApplicantInformationCheck';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -125,6 +126,9 @@ export default function App() {
                 <Stack.Screen name="AddCardList" component={AddCardList}/>
                 <Stack.Screen name="CreateCard" component={CreateCard}/>
                 <Stack.Screen name="ApplicantInformation" component={ApplicantInformation}/>
+                <Stack.Screen name="ApplicantInformationCheck" component={ApplicantInformationCheck}/>
+
+
                 <Stack.Screen name="MyCard" component={MyCard}/>
                 <Stack.Screen name="CardPassword" component={CardPassword}/>
                 <Stack.Screen name="CardComplete" component={CardComplete}/>
