@@ -23,7 +23,7 @@ export default function  FriendInvite (props: any) {
     }]);
 
     // 모임 통장 초대 조회
-    const getInviteListData = async () => {
+    const getInviteListData = async (): Promise<void> => {
         setInviteListData([]);
         try {
             const token = bearerToken.split(' ')[1];
@@ -38,7 +38,7 @@ export default function  FriendInvite (props: any) {
     }
 
     // 초대 수락
-    const inviteAccept = async () => {
+    const inviteAccept = async (): Promise<void> => {
         try {
             const token = bearerToken.split(' ')[1];
             console.log(token);
@@ -53,7 +53,7 @@ export default function  FriendInvite (props: any) {
     }
 
     // 초대 거절
-    const inviteReject = async () => {
+    const inviteReject = async (): Promise<void> => {
         try {
             const token = bearerToken.split(' ')[1];
             console.log(token);
@@ -67,7 +67,7 @@ export default function  FriendInvite (props: any) {
         }
     }
 
-    useEffect(() => {
+    useEffect((): void => {
         getInviteListData();
     }, []);
 
