@@ -60,7 +60,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
-      navigation.navigate('Transfer', {token, account, moneyAmount: sendUserInfo?.amount})
+      navigation.goBack();
     }
   };
 
@@ -72,14 +72,14 @@ const SendingTransfer = ({ navigation, route }: any) => {
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
-      navigation.navigate('Transfer', {token, account, moneyAmount: sendUserInfo?.amount})
+      navigation.goBack();
     }
   }
 
   useEffect(() => {
     fetchReceiveUserInfo(accountNumber, token);
     fetchSendUserInfo(account, token);
-  }, [accountNumber])
+  }, [accountNumber, account])
 
   const handleNumberPress = (num: string) => {
     setAmount(amount + num);
@@ -101,7 +101,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
         Alert.alert('', '사용자 정보가 없습니다.');
       }
     } else {
-      Alert.alert('', '돈 입력 안하냐? ***');
+      Alert.alert('', '돈을 입력해주세요.');
     }
   };
 
@@ -149,7 +149,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
           <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(100000)}>
             <Text style={styles.amountButtonText}>+ 10만</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount('100000000')}>
+          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount(sendUserInfo?.amount.toLocaleString() as string)}>
             <Text style={styles.amountButtonText}>전액</Text>
           </TouchableOpacity>
         </View>
