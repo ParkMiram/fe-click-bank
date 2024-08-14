@@ -89,6 +89,16 @@ const SendingTransfer = ({ navigation, route }: any) => {
     setAmount(amount.slice(0, -1));
   };
 
+  const handleAllAmlount = () => {
+    let allAmount;
+    if (sendUserInfo !== null && sendUserInfo !== undefined) {
+      allAmount = sendUserInfo.amount;
+      setAmount(allAmount.toLocaleString());
+    } else {
+        allAmount = undefined;
+    }
+  }
+
   const handlePredefinedAmount = (num: number) => {
     setAmount((parseInt(amount, 10) || 0) + num + '');
   };
