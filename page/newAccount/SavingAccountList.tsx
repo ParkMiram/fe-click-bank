@@ -25,7 +25,7 @@ export const SavingAccountList = ({ navigation, route }: any) => {
         { id: 1, product: '작은 거인 박미람 적금', interest: 3.30 },
         { id: 2, product: '그냥 개구리 김재민 적금', interest: 3.30 },
         { id: 3, product: '탈모 서연 적금', interest: 3.30 },
-        { id: 4, product: '탈모 서연 적금', interest: 3.30 },
+        { id: 4, product: '새치 수진 적금', interest: 3.30 },
         { id: 5, product: '탈모 서연 적금', interest: 3.30 },
         { id: 6, product: '탈모 서연 적금', interest: 3.30 },
         { id: 7, product: '탈모 서연 적금', interest: 3.30 },
