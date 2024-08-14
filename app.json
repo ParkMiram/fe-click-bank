@@ -13,8 +13,7 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.boondopark.Click"
+      "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
