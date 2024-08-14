@@ -33,7 +33,7 @@ type props = {
 }
 
 const SendingTransfer = ({ navigation, route }: any) => {
-  const [amount, setAmount] = useState('0');
+  const [amount, setAmount] = useState<string>('0');
   const [receiveUserInfo, setReceiveUserInfo] = useState<userInfo | undefined>(undefined);
   const [sendUserInfo, setSendUserInfo] = useState<userInfo | undefined>(undefined);
   const { bank, accountNumber, account, category}: props = route.params;
@@ -149,7 +149,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
           <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(100000)}>
             <Text style={styles.amountButtonText}>+ 10만</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount(sendUserInfo?.amount.toLocaleString() as string)}>
+          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount(Number(sendUserInfo?.amount).toLocaleString())}>
             <Text style={styles.amountButtonText}>전액</Text>
           </TouchableOpacity>
         </View>
