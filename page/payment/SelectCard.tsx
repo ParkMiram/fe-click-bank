@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
 import { getAllMyCard } from "../../component/api/CardListApi";
 
 interface CardResponse {
@@ -13,6 +13,13 @@ interface CardResponse {
 export default function SelectCard({ route, navigation }: any) {
     const { payData, token } = route.params;
     const [cardList, setCardList] = useState<CardResponse[]>([]);
+
+    const gobackPayment = useCallback(() => {
+        BackHandler.removeEventListener('hardwareBackPress', gobackPayment);
+        navigation.goBack();
+        return true;
+    },[]);
+    BackHandler.addEventListener('hardwareBackPress', gobackPayment);
 
     useEffect(() => {
         if (token) {

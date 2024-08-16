@@ -59,6 +59,7 @@ import EditCard from './page/card/EditCard';
 import Bottom from './component/bottom-bar/Bottom';
 import MainTabs from './component/bottom-bar/Bottom';
 import ApplicantInformationCheck from './page/card/ApplicantInformationCheck';
+import Error from './page/payment/Error';
 
 // export type RootStackParamList = {
 //     Home: undefined;
@@ -148,6 +149,7 @@ export default function App() {
                 <Stack.Screen name="PaymentSuccess" component={Success}/>
                 <Stack.Screen name="PaymentCancel" component={Cancel}/>
                 <Stack.Screen name="PaymentSelectCard" component={SelectCard}/>
+                <Stack.Screen name="PaymentError" component={Error}/>
                 <Stack.Screen name="PaymentLogin" component={LoginCheck}/>
                 <Stack.Screen name="PaymentLoading" component={Loading}/>
 
