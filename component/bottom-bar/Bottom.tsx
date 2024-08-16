@@ -153,7 +153,7 @@ export default function Bottom({ route }:any) {
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
           let iconImage;
-          if (route.name === 'Account') {
+          if (route.name === '내 계좌') {
             iconImage = require('../../assets/image/account.png');
           } else if (route.name === 'Friend') {
             iconImage = require('../../assets/image/friend.png');
@@ -173,7 +173,7 @@ export default function Bottom({ route }:any) {
         }
       })}
     >
-      <Tab.Screen name="Account" component={AccountStack} initialParams={{ token }} />
+      <Tab.Screen name="내 계좌" component={AccountStack} initialParams={{ token }} />
       <Tab.Screen name="Friend" component={FriendStack} initialParams={{ token }} options={{ headerShown: false }} />
       <Tab.Screen name="카드💳" component={CardStack} initialParams={{ token }} />
       {/* <Tab.Screen name="거래내역" component={HistoryStack} initialParams={{ token }} /> */}
