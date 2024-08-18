@@ -20,6 +20,7 @@ type userInfo = {
 type props = {
   bank: string;
   account: string;
+  sendNickname: string;
   transferAmount: number; // 보낼 금액
   category: number
 }
@@ -37,7 +38,8 @@ const ReminingTranfer = ({ navigation, route }: any) => {
     const userInfo: userInfo = route.params.userInfo;
     const data: props = route.params.data;
     const token: string = route.params.token;
-    // const { name, amount, accountNumber, account, moneyAmount, token }: data = route.params;
+    console.log(userInfo)
+    console.log(data)
 
     console.log(data.transferAmount.toLocaleString());
     return (

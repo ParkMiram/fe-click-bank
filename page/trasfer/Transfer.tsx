@@ -52,6 +52,7 @@ const Transfer = ({ navigation, route }: any) => {
     ]; 
 
     const { token, account, moneyAmount }: data = route.params;
+    console.log(accountNumber);
     
     const selectedCategory = categories.filter(cat => cat.value == selectedCategoryID).pop();
 
@@ -87,7 +88,7 @@ const Transfer = ({ navigation, route }: any) => {
             >
               <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
                 <View style={styles.inner}>
-                  <TouchableOpacity onPress={() => {navigation.navigate("AccountHome")}}>
+                  <TouchableOpacity onPress={() => {navigation.navigate("AccountHome", {token})}}>
                     <Svg
                       width={31}
                       height={23}
@@ -152,7 +153,7 @@ const Transfer = ({ navigation, route }: any) => {
                       style={styles.sendButton} 
                       onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber, account, moneyAmount, category: selectedCategoryID, token })}
                   >
-                  <Text style={styles.sendButtonText}>보내기</Text>
+                    <Text style={styles.sendButtonText}>보내기</Text>
                   </TouchableOpacity>
                 </View>
               </TouchableWithoutFeedback>

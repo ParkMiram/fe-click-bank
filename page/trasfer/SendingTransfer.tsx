@@ -33,38 +33,54 @@ type props = {
 }
 
 const SendingTransfer = ({ navigation, route }: any) => {
-  const [amount, setAmount] = useState('');
-  const [userInfo, setUserInfo] = useState<userInfo | undefined>(undefined);
-  const { bank, accountNumber, account, moneyAmount, category}: props = route.params;
+  const [amount, setAmount] = useState<string>('0');
+  const [receiveUserInfo, setReceiveUserInfo] = useState<userInfo | undefined>(undefined);
+  const [sendUserInfo, setSendUserInfo] = useState<userInfo | undefined>(undefined);
+  const { bank, accountNumber, account, category}: props = route.params;
   const token: string = route.params?.token;
-  console.log(userInfo)       // 상대 유저 정보
+  console.log(receiveUserInfo)       // 상대 유저 정보
   console.log(bank)
   console.log(accountNumber) // 상대 계좌
   console.log(account)      
-  console.log(moneyAmount) // 본인 잔액
+  console.log(sendUserInfo?.amount) // 본인 잔액
   console.log(category)
 
   const data = {
     bank: bank,
     account: account,
+    sendNickname: sendUserInfo?.nickName,
     transferAmount: parseInt(amount),
     category: category
   }
 
-  const fetchUserInfo = async (account: string, token: string) => {
+  const fetchReceiveUserInfo = async (account: string, token: string) => {
     try {
       const response = await getAccountUserInfo(account, token);
       console.log(response.data);
-      setUserInfo(response.data);
+      setReceiveUserInfo(response.data);
     } catch (error) {
       console.log(error);
       Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
+      navigation.goBack();
     }
   };
 
+  const fetchSendUserInfo = async (account: string, token: string) => {
+    try {
+      const response = await getAccountUserInfo(account, token);
+      console.log(response.data);
+      setSendUserInfo(response.data);
+    } catch (error) {
+      console.log(error);
+      Alert.alert('', '계좌 정보를 가져오는 데 실패했습니다.');
+      navigation.goBack();
+    }
+  }
+
   useEffect(() => {
-    fetchUserInfo(accountNumber, token);
-  }, [accountNumber])
+    fetchReceiveUserInfo(accountNumber, token);
+    fetchSendUserInfo(account, token);
+  }, [accountNumber, account])
 
   const handleNumberPress = (num: string) => {
     setAmount(amount + num);
@@ -74,28 +90,38 @@ const SendingTransfer = ({ navigation, route }: any) => {
     setAmount(amount.slice(0, -1));
   };
 
+  const handleAllAmlount = () => {
+    let allAmount;
+    if (sendUserInfo !== null && sendUserInfo !== undefined) {
+      allAmount = sendUserInfo.amount;
+      setAmount(allAmount.toLocaleString());
+    } else {
+        allAmount = undefined;
+    }
+  }
+
   const handlePredefinedAmount = (num: number) => {
     setAmount((parseInt(amount, 10) || 0) + num + '');
   };
 
   const handleSend = () => {
     if (!Number.isNaN(parseInt(amount)) && parseInt(amount) !== 0) {
-      if (userInfo && userInfo.nickName) {
-        navigation.navigate('ReminingTranfer', { userInfo: userInfo, data: data, token });
+      if (receiveUserInfo && receiveUserInfo.nickName) {
+        navigation.navigate('ReminingTranfer', { userInfo: receiveUserInfo, data: data, token });
       } else {
         Alert.alert('', '사용자 정보가 없습니다.');
       }
     } else {
-      Alert.alert('', '돈 입력 안하냐? ***');
+      Alert.alert('', '돈을 입력해주세요.');
     }
   };
 
     // 금액이 잔액을 초과할 경우 글자색을 빨간색으로 변경
-    const amountTextStyle = { color: parseInt(amount, 10) > (moneyAmount || 0) ? 'red' : 'black' };
+    const amountTextStyle = { color: parseInt(amount, 10) > (sendUserInfo?.amount || 0) ? 'red' : 'black' };
 
     // 잔액을 초과하면 보내기 버튼을 비활성화 (회색 배경)
-    const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (moneyAmount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };
-    const sendButtonDisabled = parseInt(amount, 10) > (moneyAmount || 0) || amount === '';
+    const sendButtonStyle = { backgroundColor: parseInt(amount, 10) > (sendUserInfo?.amount || 0)|| amount === '' ? '#CCCCCC' : '#B7E1CE' };
+    const sendButtonDisabled = parseInt(amount, 10) > (sendUserInfo?.amount || 0) || amount === '';
 
   return (
     
@@ -109,9 +135,9 @@ const SendingTransfer = ({ navigation, route }: any) => {
         <View style={styles.textContainer}>
           <Text style={styles.label}>예금주</Text>
           <Text style={styles.recipient}>
-            <Text style={styles.boldText}>{userInfo?.nickName}</Text>님에게
+            <Text style={styles.boldText}>{receiveUserInfo?.nickName}</Text>님에게
           </Text>
-          <Text style={styles.accountInfo}>{bank} {userInfo?.account}</Text>
+          <Text style={styles.accountInfo}>{bank} {receiveUserInfo?.account}</Text>
           <Text style={styles.question}>얼마를 보낼까요?</Text>
         </View>
         <View style={styles.amountContainer}>
@@ -121,7 +147,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>잔액</Text>
-          <Text style={styles.balance}>{moneyAmount.toLocaleString()}원</Text>
+          <Text style={styles.balance}>{sendUserInfo?.amount.toLocaleString()}원</Text>
         </View>
 
         <View style={styles.predefinedAmounts}>
@@ -134,7 +160,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
           <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => handlePredefinedAmount(100000)}>
             <Text style={styles.amountButtonText}>+ 10만</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount('100000000')}>
+          <TouchableOpacity style={styles.amountButtonWrapper} onPress={() => setAmount(Number(sendUserInfo?.amount).toLocaleString())}>
             <Text style={styles.amountButtonText}>전액</Text>
           </TouchableOpacity>
         </View>

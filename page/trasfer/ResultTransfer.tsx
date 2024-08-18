@@ -20,6 +20,7 @@ type userInfo = {
 type props = {
   bank: string;
   account: string;
+  sendNickname: string;
   transferAmount: number; // 보낼 금액
   category: number
 }
@@ -42,13 +43,14 @@ const ResultTransfer = ({ navigation, route }: any) => {
     console.log(userInfo);
     console.log(data);
     console.log(token);
+    console.log(userInfo.account);
 
     useEffect(() => {
       const performTransfer = async () => {
           const bodyToRecipient = {
               accountStatus: "deposit",
               account: userInfo.account,
-              transferAccount: data.account,
+              nickname: data.sendNickname,
               moneyAmount: data.transferAmount,
               category: data.category
           };
@@ -56,18 +58,17 @@ const ResultTransfer = ({ navigation, route }: any) => {
           const bodyToSender = {
               accountStatus: "transfer",
               account: data.account,
-              tranferAccount: userInfo.account,
+              nickname: userInfo.nickName,
               moneyAmount: data.transferAmount,
               category: data.category
           };
           
-
           console.log(bodyToRecipient.moneyAmount);
           console.log(bodyToSender.moneyAmount);
 
           try {
-              await setAccountMoney(bodyToRecipient, token);
               await setAccountMoney(bodyToSender, token);
+              await setAccountMoney(bodyToRecipient, token);
               console.log("Transfer successful");
           } catch (error) {
               console.error("Failed to set account money:", error);
@@ -86,7 +87,10 @@ const ResultTransfer = ({ navigation, route }: any) => {
             <Text style={{width: 500, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>{data.transferAmount.toLocaleString()}원을</Text>
             <Text style={{width: 150, alignSelf: 'center',textAlign: 'center', fontSize:30, color: '#000000'}}>보냈어요*</Text>
             <View style={{flex: 1}}/>
-            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.navigate('AccountHome', {token})}>
+            <TouchableOpacity style={styles.sendButton} onPress={() => navigation.reset({
+                        index: 0,
+                        routes: [{name: 'AccountHome', params: {token}}]
+            })}>
                 <Text style={styles.sendButtonText}>메인으로</Text>
             </TouchableOpacity>
         </View>
