@@ -30,7 +30,7 @@ import AccountPassword from '../../page/newAccount/AccountPassword';
 import AccountTerms from '../../page/newAccount/AccountTerms';
 import AccountType from '../../page/newAccount/AccountType';
 import EditAccount from '../../page/newAccount/EditAccount';
-import { SavingAccountList } from '../../page/newAccount/SavingAccountList';
+import SavingAccountList from '../../page/newAccount/SavingAccountList';
 import ReminingTranfer from '../../page/trasfer/ReminingTransfer';
 import ResultTransfer from '../../page/trasfer/ResultTransfer';
 import SendingTransfer from '../../page/trasfer/SendingTransfer';

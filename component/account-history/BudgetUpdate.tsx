@@ -10,7 +10,7 @@ import {
     TouchableOpacity, TouchableWithoutFeedback,
     View
 } from "react-native";
-import {useState} from "react";
+import React, {useState} from "react";
 import {Path, Svg} from "react-native-svg";
 import {updateNewBudget} from "../api/AccountHistoryApi";
 
@@ -48,27 +48,27 @@ export default function BudgetUpdate(props: any) {
                 >
                     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                         <View style={{padding: 20}}>
-                            <View style={{alignItems:'flex-end'}}>
-                                <TouchableOpacity
-                                    style={{width: 24, height: 24, marginBottom: 10}}
-                                    onPress={toggleModal}>
-                                    <View style={styles.closeBtn}>
-                                        <Svg
-                                            width={24}
-                                            height={24}
-                                            fill="none"
-                                        >
-                                            <Path
-                                                stroke="#33363F"
-                                                strokeLinecap="square"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M18 6 6 18M6 6l12 12"
-                                            />
-                                        </Svg>
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
+                            {/*<View style={{alignItems:'flex-end'}}>*/}
+                            {/*    <TouchableOpacity*/}
+                            {/*        style={{width: 24, height: 24, marginBottom: 10}}*/}
+                            {/*        onPress={toggleModal}>*/}
+                            {/*        <View style={styles.closeBtn}>*/}
+                            {/*            <Svg*/}
+                            {/*                width={24}*/}
+                            {/*                height={24}*/}
+                            {/*                fill="none"*/}
+                            {/*            >*/}
+                            {/*                <Path*/}
+                            {/*                    stroke="#33363F"*/}
+                            {/*                    strokeLinecap="square"*/}
+                            {/*                    strokeLinejoin="round"*/}
+                            {/*                    strokeWidth={2}*/}
+                            {/*                    d="M18 6 6 18M6 6l12 12"*/}
+                            {/*                />*/}
+                            {/*            </Svg>*/}
+                            {/*        </View>*/}
+                            {/*    </TouchableOpacity>*/}
+                            {/*</View>*/}
                             <View style={styles.budgetWrap}>
                                 <TextInput
                                     style={styles.budgetInput}
@@ -79,10 +79,23 @@ export default function BudgetUpdate(props: any) {
                                 />
                                 <TouchableOpacity style={styles.okayBtn} onPress={updateBudget}>
                                     <View>
-                                        <Text>확인</Text>
+                                        <Svg
+                                            width={12}
+                                            height={9}
+                                            fill="none"
+                                        >
+                                            <Path
+                                                stroke="#007378"
+                                                strokeLinecap="round"
+                                                d="m1 4.333 3.227 3.228a.15.15 0 0 0 .212 0L11 1"
+                                            />
+                                        </Svg>
                                     </View>
                                 </TouchableOpacity>
                             </View>
+                            <TouchableOpacity style={styles.close} onPress={toggleModal}>
+                                <Text>닫기</Text>
+                            </TouchableOpacity>
                         </View>
                     </TouchableWithoutFeedback>
                 </KeyboardAvoidingView>
@@ -122,26 +135,33 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10
     },
     budgetWrap: {
-        width: '100%',
-        borderRadius: 5,
-        backgroundColor: '#f8f8f8',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingLeft: 20,
         marginBottom: 20
     },
     budgetInput: {
         flex: 1,
-        paddingVertical: 15
+        padding: 15,
+        backgroundColor: '#f8f8f8',
+        borderRadius: 10,
     },
     okayBtn: {
-        width: '20%',
-        height: '100%',
-        marginLeft: 15,
+        width: 47,
+        minHeight: 47,
+        marginLeft: 10,
+        padding: 15,
         backgroundColor: 'rgba(0, 115, 120, 0.2)',
-        borderRadius: 5,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: "center"
     },
+    close: {
+        width: '100%',
+        backgroundColor: '#ddd',
+        borderRadius: 5,
+        height: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }
 })

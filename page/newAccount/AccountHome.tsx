@@ -28,6 +28,7 @@ interface UserAccountResponse {
     userName: string;
     userImg: string;
 }
+
 const { width, height } = Dimensions.get('window');
 
 export default function AccountHome({ route, navigation }: any) {
@@ -318,7 +319,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 5
+        // marginBottom: 5
     },
     flatListContainer: {
         width: width - 40,
@@ -369,18 +370,18 @@ const styles = StyleSheet.create({
     },
     accountCard: {
         borderRadius: 20,
-        padding: 16,
+        padding: 20,
         marginTop: 10,
         marginBottom: 10,
-        backgroundColor: '#f8f8f8',
+        backgroundColor: 'rgba(0,115,120,0.04)',
         minWidth: '100%'
     },
     accountName: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
     },
     accountNumber: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#666',
     },
     buttonContainer: {
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     balance: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
     },
     accountText: {
@@ -401,7 +402,7 @@ const styles = StyleSheet.create({
         marginLeft: 2
     },
     hiddenButton: {
-        backgroundColor: '#e8e8e8',
+        backgroundColor: '#E8F0F0',
         borderRadius: 10,
         width: 40,
         height: 25,
@@ -414,7 +415,7 @@ const styles = StyleSheet.create({
         width: '48%',
         alignItems: 'center',
         backgroundColor: 'rgba(0,115,120,0.1)',
-        borderRadius: 10,
+        borderRadius: 10
     },
     buttonText: {
         padding: 10,
@@ -425,7 +426,7 @@ const styles = StyleSheet.create({
     },
     buttonHiddenText: {
         color: '#888',
-        fontSize: 15,
+        fontSize: 12,
     },
     newAccount: {
         flexDirection: 'row',
@@ -445,6 +446,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        borderWidth: 0.5,
+        borderColor: 'rgba(0,115,120,0.1)'
     },
     historyText:{
         fontSize: 16,

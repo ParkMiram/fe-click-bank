@@ -1,5 +1,4 @@
 import {
-    Image,
     Platform,
     SafeAreaView,
     StyleSheet,
@@ -19,14 +18,14 @@ import BudgetUpdate from "../../component/account-history/BudgetUpdate";
 const screenWidth = Dimensions.get("window").width;
 
 const colors = [
-    "#C7F279",
-    "#6BC29A",
-    "#ACE685",
-    "#88D18E",
-    "#35A18D",
-    "#1D9287",
-    "#51AF93",
-    "#007378",
+    "#FADADD",
+    "#A2C2E8",
+    "#A8D5BA",
+    "#F9B4AB",
+    "#D7A9F0",
+    "#B4E2D7",
+    "#F6F7B0",
+    "#D0D0D0",
 ];
 
 interface Budget {
@@ -35,9 +34,11 @@ interface Budget {
     mbExpenditure: number;
 }
 
+const { width, height } = Dimensions.get('window');
+
 export default function AccountHistoryStatistics({ route, navigation }: any) {
     const [statistics, setStatistics] = useState<any>([]);
-    const [budget, setBudget] = useState<Budget | null>(null);
+    const [budget, setBudget] = useState<Budget | null>();
     const [percentage, setPercentage] = useState<number>(0);
     const [isModalVisible, setModalVisible] = useState<boolean>(false)
     const account = route.params.account;
@@ -106,57 +107,58 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
-                {/*<View style={styles.top}>*/}
-                {/*    <TouchableOpacity style={[{padding: 10, paddingLeft: 0, paddingRight: 15}]} onPress={goBack}>*/}
-                {/*        <Svg*/}
-                {/*            width={9}*/}
-                {/*            height={14}*/}
-                {/*            fill="none"*/}
-                {/*        >*/}
-                {/*            <Path stroke="#33363F" strokeWidth={2} d="M8 1 2 7l6 6" />*/}
-                {/*        </Svg>*/}
-                {/*    </TouchableOpacity>*/}
-                {/*    <Text style={styles.topFont}>분석 / 예산</Text>*/}
-                {/*</View>*/}
-
+                <TouchableOpacity onPress={goBack} style={styles.top}>
+                    <Svg
+                        width={10}
+                        height={16}
+                        fill="none"
+                        viewBox="0 0 8 14"
+                    >
+                        <Path stroke="#222" d="M7 1 1 7l6 6" />
+                    </Svg>
+                    <Text style={styles.topFont}>{month}월 지출</Text>
+                </TouchableOpacity>
                 <ScrollView style={styles.scrollView}>
-                    <View style={styles.monthExpenditure}>
-                        <Text style={styles.expenditureFont1}>{month}월 지출</Text>
-                        <Text style={styles.expenditureFont2}>{budget?.mbExpenditure?.toLocaleString() || '0'}원</Text>
-                    </View>
-
-                    <View style={styles.budgetArea}>
-                        <View style={styles.budgetFontArea1}>
-                            <Text style={styles.budgetFont}>예산</Text>
-                            <View style={styles.budgetFontArea2}>
-                                <Text style={styles.budgetFont}>{budget?.mbBudget.toLocaleString()}원</Text>
-                                <TouchableOpacity
-                                    style={[{padding: 10, paddingRight: 15, paddingLeft: 5}]}
-                                    onPress={toggleModal}
-                                >
-                                    <Svg
-                                        width={11}
-                                        height={10}
-                                        fill="none"
-                                    >
-                                        <Path
-                                            fill="#222"
-                                            fillRule="evenodd"
-                                            d="M8.634 4.046 9.64 3.04c.305-.305.458-.458.54-.623a1.12 1.12 0 0 0 0-.994c-.082-.165-.235-.318-.54-.623-.305-.305-.458-.458-.623-.54a1.12 1.12 0 0 0-.994 0C7.858.342 7.705.495 7.4.8L6.38 1.818a6.104 6.104 0 0 0 2.253 2.228ZM5.567 2.633 1.72 6.48c-.239.238-.358.357-.436.504-.078.146-.111.311-.177.641L.762 9.348c-.037.186-.056.28-.003.333.053.053.147.034.333-.003l1.723-.345c.33-.066.495-.099.641-.177.146-.079.265-.198.504-.436l3.858-3.858a7.225 7.225 0 0 1-2.251-2.23Z"
-                                            clipRule="evenodd"
-                                        />
-                                    </Svg>
-                                </TouchableOpacity>
-                            </View>
+                    <View style={styles.monthExpenditureWrap}>
+                        <View style={styles.monthExpenditure}>
+                            <Text style={styles.expenditureTitle}>총 지출</Text>
+                            <Text style={styles.expenditureFont}>{budget?.mbExpenditure?.toLocaleString() || '0'}원</Text>
                         </View>
-                        <View style={styles.budgetGraphArea}>
-                            <View style={styles.budgetBaseGraph}>
-                                <View
-                                    style={[{ width: `${percentage}%`, maxWidth: '100%', backgroundColor: `${percentage>=100? "#df2323": "#1D9287"}`},
-                                        styles.budgetGraph]} />
-                                <Text style={styles.budgetGraphFont}>
-                                    {budget?.mbBudget === 0 ? '예산을 설정해주세요' : `${percentage}%`}
-                                </Text>
+                        <View style={styles.budgetArea}>
+                            <View style={styles.budgetFontArea}>
+                                <Text style={styles.budgetFont}>예산</Text>
+                                <View style={styles.budgetFontArea}>
+                                    <Text style={styles.budgetFont}>{budget?.mbBudget.toLocaleString()}원</Text>
+                                    <TouchableOpacity
+                                        onPress={toggleModal}
+                                        style={{ marginLeft: 10 }}
+                                    >
+                                        <Svg
+                                            width={14}
+                                            height={14}
+                                            fill="none"
+                                            viewBox="0 0 18 18"
+                                        >
+                                            <Path
+                                                fill="#aaa"
+                                                fillRule="evenodd"
+                                                d="M14.204 7.796 16 6c.545-.545.818-.818.964-1.112a2 2 0 0 0 0-1.776C16.818 2.818 16.545 2.545 16 2c-.545-.545-.818-.818-1.112-.964a2 2 0 0 0-1.776 0c-.294.146-.567.419-1.112.964l-1.819 1.819a10.9 10.9 0 0 0 4.023 3.977ZM8.727 5.273l-6.87 6.87c-.426.426-.638.638-.778.9-.14.26-.199.555-.317 1.145l-.615 3.077c-.066.332-.1.498-.005.593.095.095.26.061.593-.005l3.077-.616c.59-.117.885-.176 1.146-.316.26-.14.473-.352.898-.777l6.89-6.89a12.902 12.902 0 0 1-4.02-3.98Z"
+                                                clipRule="evenodd"
+                                            />
+                                        </Svg>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={styles.budgetGraphArea}>
+                                <View style={styles.budgetBaseGraph}>
+                                    <View
+                                        style={[{ width: `${percentage}%`, maxWidth: '100%', backgroundColor: `${percentage>=100? "#df2323": "#4D9DA1"}`},
+                                            styles.budgetGraph]} />
+                                    <Text
+                                        style={[styles.budgetGraphFont, budget?.mbBudget !== 0 ? percentage>=100 ? { color: '#fff', fontWeight: 'bold' } : { color: '#333', fontWeight: 'bold' } : {}]}>
+                                        {budget?.mbBudget === 0 ? '예산을 설정해주세요' : `${percentage}%`}
+                                    </Text>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -179,12 +181,11 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
                             }}
                             accessor={"population"}
                             backgroundColor={"transparent"}
-                            paddingLeft={"25"}
-                            absolute
+                            paddingLeft={''}
+                            // absolute
                         />
                         <View style={styles.legendContainer}>{renderLegend()}</View>
                     </View>
-
                 </ScrollView>
                 {
                     isModalVisible &&
@@ -209,38 +210,59 @@ const styles = StyleSheet.create({
     innerContainer: {
         flex: 1,
         width: '100%',
-        marginTop: Platform.OS === 'ios' ? 10 : StatusBar.currentHeight,
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+    },
+    top: {
+        width: '100%',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginVertical: 20
+    },
+    topFont: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10
     },
     scrollView: {
         flex: 1,
         width: '100%',
+        backgroundColor: 'rgba(0,115,120,0.04)'
+    },
+    monthExpenditureWrap: {
+        backgroundColor: "#fff",
+        width: width - 40,
+        marginHorizontal: 20,
+        marginTop: 20,
+        padding: 20,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: 'rgba(0,115,120,0.1)'
     },
     monthExpenditure: {
-        backgroundColor: "#fff",
-        padding: 10
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,115,120,0.1)',
+        paddingBottom: 20
     },
-    expenditureFont1: {
-        fontSize: 18,
-        paddingLeft: 15,
+    expenditureTitle: {
+        fontSize: 16,
+        marginRight: 10,
     },
-    expenditureFont2: {
-        fontSize: 30,
-        paddingLeft: 15
+    expenditureFont: {
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     budgetArea: {
-        borderTopWidth: 1,
-        borderColor: 'black',
-        backgroundColor: "#fff"
+        marginTop: 20
     },
-    budgetFontArea1: {
+    budgetFontArea: {
         flexDirection: "row",
         justifyContent: 'space-between',
-        padding: 20,
-        paddingRight: 10
-    },
-    budgetFontArea2: {
-        flexDirection: "row",
-        alignItems: "center"
+        alignItems: 'center'
     },
     budgetEditImage: {
         marginLeft: 5,
@@ -248,40 +270,40 @@ const styles = StyleSheet.create({
         height: 20,
     },
     budgetFont: {
-        fontSize: 26,
-        marginRight: 5
+        fontSize: 20,
+        fontWeight: 'bold',
     },
     budgetGraphArea: {
-        marginTop: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 30
+        marginTop: 20,
     },
     budgetBaseGraph: {
-        backgroundColor: "#6BC29A",
-        height: 45,
-        borderRadius: 10,
-        justifyContent: 'center'
+        backgroundColor: "#eee",
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        overflow: 'hidden'
     },
     budgetGraph: {
-        // backgroundColor: "#1D9287",
-        // width: ,
-        height: 45,
-        borderRadius: 10,
+        height: 40,
+        borderRadius: 20,
         justifyContent: 'center'
     },
     budgetGraphFont: {
-        marginLeft: 10,
-        fontSize: 24,
-        color: 'white',
+        marginLeft: 15,
+        fontSize: 16,
+        color: '#888',
         zIndex: 1,
         position: "absolute"
     },
     categoryArea: {
+        width: width - 40,
         padding: 20,
-        marginTop: 30,
+        marginHorizontal: 20,
+        marginTop: 20,
+        borderRadius: 20,
         backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderColor: 'black',
+        borderWidth: 1,
+        borderColor: 'rgba(0,115,120,0.1)'
     },
     legendContainer: {
         marginTop: 10,
@@ -295,6 +317,7 @@ const styles = StyleSheet.create({
         width: 15,
         height: 15,
         marginRight: 10,
+        borderRadius: 8
     },
     legendText: {
         fontSize: 15,

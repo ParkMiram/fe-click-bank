@@ -52,7 +52,7 @@ import SelectCard from './page/payment/SelectCard';
 import LoginCheck from './page/payment/LoginCheck';
 import Cancel from './page/payment/Cancel';
 import Loading from './page/payment/Loading';
-import { SavingAccountList } from './page/newAccount/SavingAccountList';
+import SavingAccountList from './page/newAccount/SavingAccountList';
 import { CreateSavingAccount } from './page/newAccount/CreateSavingAccount';
 
 import EditCard from './page/card/EditCard';
