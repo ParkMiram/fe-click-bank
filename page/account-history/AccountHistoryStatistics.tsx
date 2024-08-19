@@ -228,6 +228,7 @@ const styles = StyleSheet.create({
     },
     scrollView: {
         flex: 1,
+        paddingBottom: 15,
         width: '100%',
         backgroundColor: 'rgba(0,115,120,0.04)'
     },
@@ -299,8 +300,7 @@ const styles = StyleSheet.create({
     categoryArea: {
         width: width - 40,
         padding: 20,
-        marginHorizontal: 20,
-        marginTop: 20,
+        margin: 20,
         borderRadius: 20,
         backgroundColor: '#fff',
         borderWidth: 1,

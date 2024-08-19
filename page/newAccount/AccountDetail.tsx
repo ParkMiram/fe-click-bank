@@ -1,9 +1,19 @@
-import { Alert, Image, ImageStyle, Modal, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import { SafeAreaView } from "react-native-safe-area-context"
-import { Circle, Path, Svg } from "react-native-svg"
-import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from "react";
-import { deleteAccount, deleteGroupMember, getGroupAccount } from "../../component/api/NewAccountApi";
+import {
+    Alert, Dimensions,
+    Image,
+    ImageStyle,
+    Modal,
+    Platform, SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native"
+import {Circle, Path, Svg} from "react-native-svg"
+import {Ionicons} from '@expo/vector-icons';
+import React, {useEffect, useState} from "react";
+import {deleteAccount, deleteGroupMember, getGroupAccount} from "../../component/api/NewAccountApi";
 
 type data = {
     token: string;
@@ -12,13 +22,15 @@ type data = {
     userImg: string;
 }
 
-export const AccountDetail = ({ navigation, route }: any) => {
+const { width, height } = Dimensions.get('window');
+
+export const AccountDetail = ({navigation, route}: any) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalGroupVisible, setModalGroupVisible] = useState(false);
     const [friend, setFriend] = useState([]);
     const [accountName, setAccountName] = useState([]);
     const [type, setType] = useState<number | null>(null);
-    const {token, account, userName, userImg }: data = route.params;
+    const {token, account, userName, userImg}: data = route.params;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -35,21 +47,30 @@ export const AccountDetail = ({ navigation, route }: any) => {
         fetchData();
     }, []);
 
-    const handleDeleteAccount = async () => {
-        setModalVisible(false);
-        try {
-            console.log(token);
-            console.log(account)
-            await deleteAccount(token, account);
-            navigation.reset({
-                index: 0,
-                routes: [{name: 'AccountHome', params: {token}}]
-            });
-        } catch(error: any) {
-            console.log(error.message);
-            Alert.alert("삭제 오류", "아직 돈이 존재합니다.");
-            navigation.navigate("AccountHome", {token})
-        }
+    const handleDeleteAccount = (): void => {
+        // setModalVisible(false);
+        Alert.alert("계좌 삭제", "계좌를 삭제하시겠습니까?",
+            [
+                { text: "취소", style: "default" },
+                { text: "삭제", style: "destructive",
+                    onPress: async (): Promise<void> => {
+                        try {
+                            console.log(token);
+                            console.log(account);
+                            await deleteAccount(token, account);
+                            navigation.reset({
+                                index: 0,
+                                routes: [{name: 'AccountHome', params: {token}}]
+                            });
+                        } catch (error: any) {
+                            console.log(error.message);
+                            Alert.alert("삭제 오류", "아직 돈이 존재합니다.");
+                            // navigation.navigate("AccountHome", {token})
+                        }
+                    }
+                }
+            ]
+        )
     };
 
     const handleDeleteGroupMember = async () => {
@@ -61,18 +82,18 @@ export const AccountDetail = ({ navigation, route }: any) => {
                 index: 0,
                 routes: [{name: 'AccountHome', params: {token}}]
             });
-        } catch(error) {
+        } catch (error) {
             console.log(error);
         }
     };
 
-    const ProfileComponent = ({ userImg }: any) => {
-        const imageUrl = userImg || null; 
+    const ProfileComponent = ({userImg}: any) => {
+        const imageUrl = userImg || null;
         return (
             <View style={styles.profileContainer}>
                 {imageUrl ? (
                     <Image
-                        source={{ uri: imageUrl }}
+                        source={{uri: imageUrl}}
                         style={styles.profileImage}
                     />
                 ) : (
@@ -103,10 +124,10 @@ export const AccountDetail = ({ navigation, route }: any) => {
     };
 
 
-    const GroupImageComponent = ({ userImg, index }: any) => {
+    const GroupImageComponent = ({userImg, index}: any) => {
         const imageStyle: ImageStyle[] = [styles.memberImage];
         const imageUrl = userImg || null;
-        
+
         if (index === 0)
             imageStyle.push(styles.firstImage);
         else if (index === 1)
@@ -116,7 +137,7 @@ export const AccountDetail = ({ navigation, route }: any) => {
             <View style={styles.imageWrapper}>
                 {imageUrl ? (
                     <Image
-                        source={{ uri: imageUrl }}
+                        source={{uri: imageUrl}}
                         style={imageStyle}
                     />
                 ) : (
@@ -143,8 +164,8 @@ export const AccountDetail = ({ navigation, route }: any) => {
             </View>
         );
     };
-    
-    const GroupImages = ({ members }: any) => {
+
+    const GroupImages = ({members}: any) => {
         return (
             <View style={styles.imageWrapper}>
                 {members.map((member: any, index: number) => (
@@ -160,77 +181,74 @@ export const AccountDetail = ({ navigation, route }: any) => {
 
     const AccountSettings = () => (
         <>
-            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate("EditAccount", {token, account})}}>
-                <Text style={styles.settingText}>계좌 정보 수정</Text>
-                <Svg
-                    width={24}
-                    height={23}
-                    fill="none"
-                >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
-                </Svg>
-            </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
-            <TouchableOpacity style={styles.settingOption} onPress={() => setModalGroupVisible(true)}>
-                <Text style={styles.settingText}>모임 통장 변환</Text>
-                <Svg
-                    width={24}
-                    height={23}
-                    fill="none"
-                >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
-                </Svg>
-            </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
-            <Modal
-                transparent={true}
-                visible={modalGroupVisible}
-                onRequestClose={() => setModalGroupVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalText}>모임 통장으로 변환하시겠습니까?</Text>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={() => {/* Confirm action */}}>
-                                <Text style={styles.buttonText}>확인</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} onPress={() => setModalGroupVisible(false)}>
-                                <Text style={styles.buttonText}>취소</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                <View>
+                    <TouchableOpacity style={styles.settingOption} onPress={() => {
+                        navigation.navigate("EditAccount", {token, account})
+                    }}>
+                        <Text style={styles.settingText}>계좌 정보 수정</Text>
+                        <Svg
+                            width={24}
+                            height={23}
+                            fill="none"
+                        >
+                            <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
+                        </Svg>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.settingOption, { marginBottom: 0 }]} onPress={() => Alert.alert("오류: 고객 센터에 문의해 주세요.")}>
+                        <Text style={styles.settingText}>모임 통장 변환</Text>
+                        <Svg
+                            width={24}
+                            height={23}
+                            fill="none"
+                        >
+                            <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
+                        </Svg>
+                    </TouchableOpacity>
+                    {/*<Modal*/}
+                    {/*    transparent={true}*/}
+                    {/*    visible={modalGroupVisible}*/}
+                    {/*    onRequestClose={() => setModalGroupVisible(false)}*/}
+                    {/*>*/}
+                    {/*    <View style={styles.modalContainer}>*/}
+                    {/*        <View style={styles.modalContent}>*/}
+                    {/*            <Text style={styles.modalText}>모임 통장으로 변환하시겠습니까?</Text>*/}
+                    {/*            <View style={styles.buttonContainer}>*/}
+                    {/*                <TouchableOpacity style={styles.button} onPress={() => {*/}
+                    {/*                }}>*/}
+                    {/*                    <Text style={styles.buttonText}>확인</Text>*/}
+                    {/*                </TouchableOpacity>*/}
+                    {/*                <TouchableOpacity style={styles.button} onPress={() => setModalGroupVisible(false)}>*/}
+                    {/*                    <Text style={styles.buttonText}>취소</Text>*/}
+                    {/*                </TouchableOpacity>*/}
+                    {/*            </View>*/}
+                    {/*        </View>*/}
+                    {/*    </View>*/}
+                    {/*</Modal>*/}
                 </View>
-            </Modal>
-            <TouchableOpacity style={styles.settingOption} onPress={() => setModalVisible(true)}>
-                <Text style={styles.settingText}>게좌 삭제</Text>
-                <Svg
-                    width={24}
-                    height={23}
-                    fill="none"
-                >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
-                </Svg>
-            </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
-            <Modal
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
-                                <Text style={styles.buttonText}>확인</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.buttonText}>취소</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+                <TouchableOpacity style={styles.accountDelete} onPress={handleDeleteAccount}>
+                    <Text style={styles.accountDeleteText}>계좌 삭제</Text>
+                </TouchableOpacity>
+                {/*<Modal*/}
+                {/*    transparent={true}*/}
+                {/*    visible={modalVisible}*/}
+                {/*    onRequestClose={() => setModalVisible(false)}*/}
+                {/*>*/}
+                {/*    <View style={styles.modalContainer}>*/}
+                {/*        <View style={styles.modalContent}>*/}
+                {/*            <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>*/}
+                {/*            <View style={styles.buttonContainer}>*/}
+                {/*                <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>*/}
+                {/*                    <Text style={styles.buttonText}>확인</Text>*/}
+                {/*                </TouchableOpacity>*/}
+                {/*                <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>*/}
+                {/*                    <Text style={styles.buttonText}>취소</Text>*/}
+                {/*                </TouchableOpacity>*/}
+                {/*            </View>*/}
+                {/*        </View>*/}
+                {/*    </View>*/}
+                {/*</Modal>*/}
+            </View>
         </>
     );
 
@@ -243,10 +261,9 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
             <Modal
                 transparent={true}
                 visible={modalVisible}
@@ -271,26 +288,27 @@ export const AccountDetail = ({ navigation, route }: any) => {
 
     const goInvitedUser = () => {
         console.log(`detail tap/ token: ${token}, account: ${account}`);
-        navigation.navigate('AccountInvitedUser', { token, account });
+        navigation.navigate('AccountInvitedUser', {token, account});
     }
 
     const GroupAccountSettings = () => (
         <>
-            <TouchableOpacity style={styles.settingOption} onPress={() => {navigation.navigate("EditAccount", {token})}}>
+            <TouchableOpacity style={styles.settingOption} onPress={() => {
+                navigation.navigate("EditAccount", {token})
+            }}>
                 <Text style={styles.settingText}>계좌 정보 수정</Text>
                 <Svg
                     width={24}
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
             <TouchableOpacity style={styles.settingOption} onPress={goInvitedUser}>
                 <Text style={styles.settingText}>참여 중 멤버</Text>
                 <View style={styles.membersInfo}>
-                    <GroupImages members={friend} />
+                    <GroupImages members={friend}/>
                     <Text style={styles.membersCount}>{friend.length}명</Text>
                 </View>
                 <Svg
@@ -298,21 +316,20 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
-            <TouchableOpacity style={styles.settingOption} onPress={() => navigation.navigate('AccountInviteFriends', {token, account})}>
+            <TouchableOpacity style={styles.settingOption}
+                              onPress={() => navigation.navigate('AccountInviteFriends', {token, account})}>
                 <Text style={styles.settingText}>친구 초대</Text>
                 <Svg
                     width={24}
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
             <TouchableOpacity style={styles.settingOption} onPress={() => setModalGroupVisible(true)}>
                 <Text style={styles.settingText}>모임 통장 삭제</Text>
                 <Svg
@@ -320,10 +337,9 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
             <Modal
                 transparent={true}
                 visible={modalGroupVisible}
@@ -350,10 +366,9 @@ export const AccountDetail = ({ navigation, route }: any) => {
                     height={23}
                     fill="none"
                 >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75" />
+                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
                 </Svg>
             </TouchableOpacity>
-            <View style={[styles.line, {width: '100%'}]} />
             <Modal
                 transparent={true}
                 visible={modalVisible}
@@ -379,65 +394,44 @@ export const AccountDetail = ({ navigation, route }: any) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <View style={styles.header}>
-                    <View style={styles.profileContainer}>
-                        <ProfileComponent userImg={userImg} userName={userName}/>
-                        <Text style={styles.profileName}>{userName}</Text>
-                    </View>
-                    <View style={styles.bellContainer}>
-                        <Ionicons name="notifications" size={24} color="green" />
-                    </View>
-                </View>
-                <View style={styles.accountNameContainer}>
-                    <Text style={styles.accountName}>{accountName}</Text>
+                {/*<View style={styles.header}>*/}
+                {/*    <View style={styles.profileContainer}>*/}
+                {/*        <ProfileComponent userImg={userImg} userName={userName}/>*/}
+                {/*        <Text style={styles.profileName}>{userName}</Text>*/}
+                {/*    </View>*/}
+                {/*    <View style={styles.bellContainer}>*/}
+                {/*        <Ionicons name="notifications" size={24} color="green" />*/}
+                {/*    </View>*/}
+                {/*</View>*/}
+                {/*<View style={styles.accountNameContainer}>*/}
+                {/*    <Text style={styles.accountName}>{accountName}</Text>*/}
+                {/*</View>*/}
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.accountNameContainer}>
                     <Svg
-                        width={21}
-                        height={22}
+                        width={10}
+                        height={16}
                         fill="none"
+                        viewBox="0 0 8 14"
                     >
-                        <Path
-                            fill="#222"
-                            fillRule="evenodd"
-                            d="m15.143 9.803 1.563-1.638c.328-.343.491-.514.6-.687a2 2 0 0 0 0-2.123c-.109-.172-.272-.344-.6-.686-.355-.373-.533-.56-.712-.68a2 2 0 0 0-2.238 0c-.179.12-.357.307-.712.68l-1.417 1.484a9.938 9.938 0 0 0 3.515 3.65Zm-4.95-2.148-5.879 6.158c-.404.424-.606.636-.738.893-.132.256-.187.544-.297 1.12l-.513 2.687c-.064.333-.096.5 0 .594.095.094.261.059.593-.01l2.425-.509c.604-.126.905-.19 1.17-.337.265-.147.478-.37.904-.816l5.876-6.157a11.941 11.941 0 0 1-3.541-3.623Z"
-                            clipRule="evenodd"
-                        />
+                        <Path stroke="#222" d="M7 1 1 7l6 6" />
                     </Svg>
-                </View>
-                <View style={[styles.line, {width: '90%'}]} />
-                <View style={styles.settingsContainer}>
-                    <View style={styles.row}>  
-                        <Text style={styles.sectionHeader}>계좌 설정</Text>
-                        <Svg
-                            width={24}
-                            height={24}
-                            fill="none"
-                            style={styles.icon}
-                        >
-                            <Circle cx={12} cy={12} r={8.5} stroke="#2A4157" strokeOpacity={0.24} />
-                            <Path
-                                fill="#222"
-                                stroke="#222"
-                                strokeWidth={0.2}
-                                d="M12 18.6a.6.6 0 1 0 0-1.2.6.6 0 0 0 0 1.2Z"
-                            />
-                            <Path
-                                stroke="#222"
-                                strokeWidth={1.2}
-                                d="M12 16v-.857c0-.714.357-1.381.951-1.777l.599-.4a3.257 3.257 0 0 0 1.45-2.71V10a3 3 0 1 0-6 0"
-                            />
-                        </Svg>
-                    </View>
-                    {type === 1 ? <AccountSettings /> : type === 2 ? <GroupAccountSettings /> : <SavingAccountSettings />}
-                </View>
-                <TouchableOpacity 
-                    style={styles.sendButton}
-                    onPress={() => navigation.reset({
-                        index: 0,
-                        routes: [{name: 'AccountHome', params: {token}}]
-                    })}
-                >
-                    <Text style={styles.sendButtonText}>나가기</Text>
+                    <Text style={styles.accountName}>{accountName}</Text>
                 </TouchableOpacity>
+                <View style={styles.settingsContainer}>
+                    {/*<View style={styles.row}>*/}
+                    {/*    <Text style={styles.sectionHeader}>계좌 설정</Text>*/}
+                    {/*</View>*/}
+                    {type === 1 ? <AccountSettings/> : type === 2 ? <GroupAccountSettings/> : <SavingAccountSettings/>}
+                </View>
+                {/*<TouchableOpacity*/}
+                {/*    style={styles.sendButton}*/}
+                {/*    onPress={() => navigation.reset({*/}
+                {/*        index: 0,*/}
+                {/*        routes: [{name: 'AccountHome', params: {token}}]*/}
+                {/*    })}*/}
+                {/*>*/}
+                {/*    <Text style={styles.sendButtonText}>나가기</Text>*/}
+                {/*</TouchableOpacity>*/}
             </View>
         </SafeAreaView>
     )
@@ -446,18 +440,12 @@ export const AccountDetail = ({ navigation, route }: any) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'space-between',
         backgroundColor: 'white',
     },
     innerContainer: {
         flex: 1,
-        height: '100%',
         width: "100%",
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        // display: 'flex'
-        // justifyContent: 'center',
     },
     header: {
         flexDirection: 'row',
@@ -489,28 +477,21 @@ const styles = StyleSheet.create({
         right: 40,
     },
     accountNameContainer: {
+        width: '100%',
+        backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%',
-        marginBottom: 10,
-        marginTop: 30,
-        marginLeft: 100,
+        paddingHorizontal: 20,
+        marginVertical: 20
     },
     accountName: {
-        fontSize: 35,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginRight: 10,
-    },
-    line: {
-        borderTopColor: '#B7E1CE',
-        borderTopWidth: 1,
-        alignSelf: 'center',
-        marginTop: 15,
-        marginBottom: 15,
+        marginLeft: 10
     },
     settingsContainer: {
-        width: '80%',
-        marginTop: 30,
+        width: width - 40,
+        marginHorizontal: 20,
         flex: 1
     },
     row: {
@@ -532,19 +513,36 @@ const styles = StyleSheet.create({
         color: '#555',
     },
     settingOption: {
+        width: '100%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        backgroundColor: '#f8f8f8',
+        padding: 20,
+        borderRadius: 20,
+        marginBottom: 10
     },
     settingText: {
-        fontSize: 16,
-        paddingLeft: 10
+        fontSize: 18,
+    },
+    accountDelete: {
+        width: '100%',
+        backgroundColor: 'rgba(220,20,60,0.1)',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+        marginBottom: 20
+    },
+    accountDeleteText: {
+        color: '#dc143c',
+        fontSize: 16
     },
     membersInfo: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        marginLeft: Platform.OS === 'ios'? 120 : 80
+        marginLeft: Platform.OS === 'ios' ? 120 : 80
     },
     memberImage: {
         width: 25,
@@ -572,7 +570,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     sendButton: {
-        marginTop: Platform.OS === 'ios'? 50 : 30,
+        marginTop: Platform.OS === 'ios' ? 50 : 30,
         backgroundColor: '#B7E1CE',
         padding: 16,
         alignItems: 'center',

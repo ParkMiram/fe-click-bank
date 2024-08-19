@@ -21,6 +21,20 @@ type data = {
     interestRate: number | null;
 }
 
+interface SavingAccount {
+    interestRate: number | null;
+    term: number | null;
+    product: string | null;
+    sendAccount: string | null;
+}
+
+interface Transfer {
+    type: string | null;
+    amount: number | null;
+    transferDate: number | null;
+    account: string | null;
+}
+
 const { width, height } = Dimensions.get('window');
 
 export default function AccountPassword({navigation, route}: any) {
@@ -53,12 +67,14 @@ export default function AccountPassword({navigation, route}: any) {
                 interestRate
             });
         } else {
-            navigation.navigate('AccountInformation', {
+            navigation.navigate('AccountComplete', {
                 accountStatus,
                 token,
-                userName,
+                // userName,
                 accountPassword: password,
-                purpose
+                // purpose,
+                savingAccountRequest: null,
+                transferRequest: null
             });
         }
     };
@@ -132,7 +148,7 @@ export default function AccountPassword({navigation, route}: any) {
                         </View>
                     </View>
                     <TouchableOpacity style={styles.button} onPress={handleNextPress}>
-                        <Text style={styles.buttonText}>다음</Text>
+                        <Text style={styles.buttonText}>신청하기</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

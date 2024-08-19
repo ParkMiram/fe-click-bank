@@ -27,7 +27,6 @@ export default function MyFriend({ navigation, route }: any) {
     // 친구 요청 목록
     const [friendRequestListData, setFriendRequestListData] = useState([{ id: '', code: '', img: '', name: '' }]);
     const [tabBarBadge, setTabBarBadge] = useState(0);
-    const [friendRequestLoading, setFriendRequestLoading] = useState(false);
     // 친구 추가
     const [isModalVisible, setIsModalVisible] = useState(false);
     // 모임 통장 초대 모달
@@ -58,7 +57,6 @@ export default function MyFriend({ navigation, route }: any) {
 
     // 친구 요청 조회
     const getFriendRequestList = async ():Promise<void> => {
-        setFriendRequestListData([]);
         try {
             const response: AxiosResponse<any, any> = await axios.get('https://just-click.shop/api/v1/friends/request', {
                 headers: {
@@ -67,7 +65,6 @@ export default function MyFriend({ navigation, route }: any) {
             });
             setFriendRequestListData(response.data);
             setTabBarBadge(response.data.length);
-            setFriendRequestLoading(true);
         } catch (error: any) {
             if (error.response) {
                 console.log('Error:', error.response.data);
@@ -106,7 +103,6 @@ export default function MyFriend({ navigation, route }: any) {
                 toggleInviteModal={toggleInviteModal}
                 bearerToken={bearerToken}
                 friendLoading={friendLoading}
-                setFriendLoading={setFriendLoading}
             />
         )
     }
@@ -118,8 +114,6 @@ export default function MyFriend({ navigation, route }: any) {
                 friendRequestListData={friendRequestListData}
                 getFriendRequestList={getFriendRequestList}
                 bearerToken={bearerToken}
-                friendRequestLoading={friendRequestLoading}
-                setFriendRequestLoading={setFriendRequestLoading}
             />
         )
     }
@@ -144,16 +138,13 @@ export default function MyFriend({ navigation, route }: any) {
                         tabBarLabel: '내 친구',
                         tabBarIcon: () => (
                             <Svg
-                                width={14}
-                                height={17}
+                                width={18}
+                                height={15}
                                 fill="none"
                             >
-                                <Rect width={14} height={17} fill="#7E869E" fillOpacity={0.25} rx={2}/>
                                 <Path
-                                    stroke="#007378"
-                                    strokeLinecap="round"
-                                    strokeWidth={1.2}
-                                    d="M4 5h6M4 9h6M4 13h4"
+                                    fill="#007378"
+                                    d="M9 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM5 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM.49 12.326a.78.78 0 0 1-.358-.442A3 3 0 0 1 4.44 8.367a6.484 6.484 0 0 0-1.905 3.96c-.023.222-.014.442.025.654a4.97 4.97 0 0 1-2.07-.655ZM15.44 12.98a4.97 4.97 0 0 0 2.07-.654.78.78 0 0 0 .357-.442 3 3 0 0 0-4.308-3.517 6.484 6.484 0 0 1 1.907 3.96 2.32 2.32 0 0 1-.025.654ZM17 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0ZM4.304 13.19a.844.844 0 0 1-.277-.71 5 5 0 0 1 9.947 0 .843.843 0 0 1-.277.71A6.975 6.975 0 0 1 9 15a6.974 6.974 0 0 1-4.696-1.81Z"
                                 />
                             </Svg>
                         ),

@@ -1,5 +1,4 @@
 import { Text,TouchableOpacity,Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
-import AccountType from './AccountType';
 
 type data = {
     accountStatus: string;

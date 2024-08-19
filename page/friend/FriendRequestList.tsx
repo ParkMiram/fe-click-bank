@@ -16,7 +16,7 @@ import axios, {AxiosResponse} from "axios";
 export default function FriendRequestList({...props}: any) {
 
     // props
-    const {friendRequestListData, getFriendRequestList, bearerToken, friendRequestLoading, setFriendRequestLoading} = props;
+    const {friendRequestListData, getFriendRequestList, bearerToken} = props;
     // state
     // 새로고침
     const [isRefreshing, setIsRefreshing] = useState(false);
@@ -146,8 +146,7 @@ export default function FriendRequestList({...props}: any) {
 
     const handleRefresh = async () => {
         setIsRefreshing(true);
-        setFriendRequestLoading(false);
-        getFriendRequestList();
+        await getFriendRequestList();
         setTimeout(() => {
             setIsRefreshing(false);
         }, 2000);
@@ -160,32 +159,25 @@ export default function FriendRequestList({...props}: any) {
     return (
         <>
             {
-                friendRequestLoading ?
-                    friendRequestListData.length > 0 ?
-                        <FlatList
-                            data={friendRequestListData}
-                            keyExtractor={item => item.id}
-                            style={styles.listWrap}
-                            renderItem={({item}) => {
-                                return (
-                                    <RenderItem item={item} />
-                                )}
-                            }
-                            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
-                        />
-                        :
-                        <ScrollView
-                            style={styles.listWrap}
-                            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
-                        >
-                            <View style={styles.noList}>
-                                <Text style={styles.noListTxt}>요청이 없습니다.</Text>
-                            </View>
-                        </ScrollView>
+                friendRequestListData.length > 0 ?
+                    <FlatList
+                        data={friendRequestListData}
+                        keyExtractor={item => item.id}
+                        style={styles.listWrap}
+                        renderItem={({item}) => {
+                            return <RenderItem item={item} />;
+                        }}
+                        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
+                    />
                     :
-                    <View style={styles.listWrap}>
-                        <Text style={styles.loading}>불러오는 중...</Text>
-                    </View>
+                    <ScrollView
+                        style={styles.listWrap}
+                        refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
+                    >
+                        <View style={styles.noList}>
+                            <Text style={styles.noListTxt}>요청이 없습니다.</Text>
+                        </View>
+                    </ScrollView>
             }
         </>
     )

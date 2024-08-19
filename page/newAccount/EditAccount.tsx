@@ -1,12 +1,29 @@
-import { useState } from 'react';
-import { TextInput,Modal,TouchableOpacity,Text, Platform, SafeAreaView, StatusBar, StyleSheet, View, KeyboardAvoidingView, Keyboard, Alert } from 'react-native';
+import React, { useState } from 'react';
+import {
+    TextInput,
+    Modal,
+    TouchableOpacity,
+    Text,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    View,
+    KeyboardAvoidingView,
+    Keyboard,
+    Alert,
+    Dimensions
+} from 'react-native';
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import {Path, Svg} from "react-native-svg";
 
 type props = {
     token: string;
     account: string;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export default function EditAccount( { route, navigation }: any ) {
     const [modalVisible, setModalVisible] = useState(false);
@@ -60,100 +77,108 @@ export default function EditAccount( { route, navigation }: any ) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <KeyboardAvoidingView 
-                    // style={styles.container}
-                    behavior={Platform.OS === "ios" ? "padding" : "height"}
-                >
-                    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-                        <View style = {styles.reContainer}>
-                            <View style ={styles.renameContainer}>
-                                <Text style = {styles.textcontainer}>계좌명 수정</Text> 
-                                <TextInput
-                                    style={styles.inputName}
-                                    value={name}
-                                    onChangeText={setName}
-                                    keyboardType="default"
-                                    placeholder="계좌명"
-                                />
-                            </View>
-                            <View style = {styles.rePasswordContianer}>
-                                <Text style = {styles.textcontainer}>계좌 비밀번호 수정</Text>
-                                <TextInput
-                                    style={styles.inputPassword}
-                                    value={password}
-                                    onChangeText={setPassword}
-                                    keyboardType="number-pad"
-                                    placeholder="0000"
-                                    maxLength={4}
-                                    secureTextEntry={true} 
-                            />
-                            </View>
-                            <View style = {styles.reLimitContainer}>
-                                <Text style = {styles.textcontainer}>일일 한도 수정</Text>
-                                <TextInput
-                                    style={styles.inputLimit}
-                                    value={dailyLimit}
-                                    onChangeText={setDailyLimit}
-                                    keyboardType="number-pad"
-                                    placeholder="50,000,000"
-                                />
-                            </View>
-                            <View style = {[styles.reLimitContainer]}>
-                                <Text style = {styles.textcontainer}>회별 한도 수정</Text>
-                                <TextInput
-                                    style={styles.inputLimit}
-                                    value={onetimeLimit}
-                                    onChangeText={setOnetimeLimit}
-                                    keyboardType="number-pad"
-                                    placeholder="10,000,000"
-                                />
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
-                    <View style = {styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={handleSubmit}
-                        >
-                            <Text style={styles.buttonText}>계좌 변경</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style = {styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={styles.button}
-                        >
-                            <Text style={styles.buttonText}>계좌 삭제</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={closeModal}
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.title}>
+                    <Svg
+                        width={10}
+                        height={16}
+                        fill="none"
+                        viewBox="0 0 8 14"
                     >
-                        <View style={styles.modalContainer}>
-                            <View style={styles.modalView}>
-                                <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>
-                                <View style={styles.modalButtonContainer}>
-                                    <TouchableOpacity
-                                        style={[styles.buttonAccount, styles.buttonClose]}
-                                        onPress={closeModal}
-                                    >
-                                        <Text style={styles.buttonText}>취소</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[styles.buttonAccount, styles.buttonDelete]}
-                                        onPress={() => {
-                                            closeModal();
-                                        }}
-                                    >
-                                        <Text style={styles.buttonText} onPress={handleDeleteAccount}>삭제</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                        <Path stroke="#222" d="M7 1 1 7l6 6" />
+                    </Svg>
+                    <Text style={styles.titleText}>계좌 정보 수정</Text>
+                </TouchableOpacity>
+                <View style={{ flex: 1, flexDirection: 'column' }}>
+                    <View style = {styles.reContainer}>
+                        <View style ={styles.renameContainer}>
+                            <Text style = {styles.textcontainer}>계좌명 수정</Text>
+                            <TextInput
+                                style={styles.inputName}
+                                value={name}
+                                onChangeText={setName}
+                                keyboardType="default"
+                                placeholder="계좌명"
+                            />
                         </View>
-                    </Modal>
-                </KeyboardAvoidingView>
+                        <View style = {styles.renameContainer}>
+                            <Text style = {styles.textcontainer}>계좌 비밀번호 수정</Text>
+                            <TextInput
+                                style={styles.inputName}
+                                value={password}
+                                onChangeText={setPassword}
+                                keyboardType="number-pad"
+                                placeholder="0000"
+                                maxLength={4}
+                                secureTextEntry={true}
+                        />
+                        </View>
+                        <View style = {styles.renameContainer}>
+                            <Text style = {styles.textcontainer}>일일 한도 수정</Text>
+                            <TextInput
+                                style={styles.inputName}
+                                value={dailyLimit}
+                                onChangeText={setDailyLimit}
+                                keyboardType="number-pad"
+                                placeholder="50,000,000"
+                            />
+                        </View>
+                        <View style = {[styles.renameContainer]}>
+                            <Text style = {styles.textcontainer}>회별 한도 수정</Text>
+                            <TextInput
+                                style={styles.inputName}
+                                value={onetimeLimit}
+                                onChangeText={setOnetimeLimit}
+                                keyboardType="number-pad"
+                                placeholder="10,000,000"
+                            />
+                        </View>
+                    </View>
+                    <View>
+                        <View style = {styles.buttonContainer}>
+                            <TouchableOpacity
+                                style={styles.button}
+                                onPress={handleSubmit}
+                            >
+                                <Text style={styles.buttonText}>계좌 변경</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style = {styles.buttonContainer}>
+                            <TouchableOpacity
+                                style={styles.button}
+                            >
+                                <Text style={styles.buttonText}>계좌 삭제</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    {/*<Modal*/}
+                    {/*    animationType="slide"*/}
+                    {/*    transparent={true}*/}
+                    {/*    visible={modalVisible}*/}
+                    {/*    onRequestClose={closeModal}*/}
+                    {/*>*/}
+                    {/*    <View style={styles.modalContainer}>*/}
+                    {/*        <View style={styles.modalView}>*/}
+                    {/*            <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>*/}
+                    {/*            <View style={styles.modalButtonContainer}>*/}
+                    {/*                <TouchableOpacity*/}
+                    {/*                    style={[styles.buttonAccount, styles.buttonClose]}*/}
+                    {/*                    onPress={closeModal}*/}
+                    {/*                >*/}
+                    {/*                    <Text style={styles.buttonText}>취소</Text>*/}
+                    {/*                </TouchableOpacity>*/}
+                    {/*                <TouchableOpacity*/}
+                    {/*                    style={[styles.buttonAccount, styles.buttonDelete]}*/}
+                    {/*                    onPress={() => {*/}
+                    {/*                        closeModal();*/}
+                    {/*                    }}*/}
+                    {/*                >*/}
+                    {/*                    <Text style={styles.buttonText} onPress={handleDeleteAccount}>삭제</Text>*/}
+                    {/*                </TouchableOpacity>*/}
+                    {/*            </View>*/}
+                    {/*        </View>*/}
+                    {/*    </View>*/}
+                    {/*</Modal>*/}
+                </View>
             </View>
         </SafeAreaView>
     );
@@ -164,74 +189,44 @@ const styles = StyleSheet.create({
         flex: 1,
         width: "100%",
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: 'white',
     },
+    title: {
+        width: '100%',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginVertical: 20
+    },
+    titleText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10
+    },
     reContainer:{
-        justifyContent:'flex-start',
-        alignItems:'center',
-        marginBottom:250
-        
-
+        width: width - 40,
+        marginHorizontal: 20,
+        flex: 1
     },
     renameContainer:{
-        flexDirection: 'row',
-        width:'90%',
-        justifyContent:'space-between',
-        alignItems:'center',
-        marginBottom:30,
-        marginTop:30
-       
-
+        width: '100%',
+        marginTop: 20
     },
     textcontainer:{
-        fontSize:23,
-        flex:1
-
-    },
-    nameText:{
-
-    },
-    rePasswordContianer:{
-        flexDirection:'row',
-        width:'90%',
-        justifyContent:'space-between',
-        alignItems:'center',
-        marginBottom:30
-    },
-    passwordText:{
-
-    },
-    reLimitContainer:{
-        flexDirection:'row',
-        width:'90%',
-        justifyContent:'space-between',
-        alignItems:'center',
-        marginBottom:30
-    },
-    limitText:{
-        
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 10
     },
     buttonContainer:{
         flexDirection: 'row',
         justifyContent:'space-evenly',
-        width: '100%',
-        
+        width: '100%'
     },
     button:{
-        // backgroundColor: '#B7E1CE',
-        // borderRadius:8,
-        // width:'80%',
-        // alignItems:'center',
-        // marginTop:10,
-        // paddingVertical:15,
-        // paddingHorizontal
         marginTop: 5,
         marginBottom: 30,
         backgroundColor: '#B7E1CE',
@@ -239,8 +234,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 8,
         width: '90%',
-        // maxWidth: 325,
-        // alignSelf: 'center',
         },
     buttonAccount:{
         fontSize:25,
@@ -253,7 +246,6 @@ const styles = StyleSheet.create({
         alignItems:'center',
         paddingHorizontal:10
     },
-    
     buttonText:{
         fontSize:18,
         textAlign:'center'
@@ -298,19 +290,11 @@ const styles = StyleSheet.create({
         // backgroundColor: '#FF0000',
     },
     inputName:{
-        fontSize:25,
-        borderColor: '#B7E1CE',
-        borderRadius:5,
-        borderWidth: 2,
-        height: 40,
-        width: 180,
-        // borderColor: 'gray',
-        // borderRadius:5,
-        // borderWidth: 1,
-        //  marginTop:20,
-        
-         textAlign:'center',
-    
+        borderRadius: 10,
+        backgroundColor: '#f8f8f8',
+        padding: 15,
+        width: '100%',
+        fontSize: 16
     },
     inputPassword:{
         fontSize:25,

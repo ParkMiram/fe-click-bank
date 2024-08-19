@@ -206,7 +206,7 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                         <View style={styles.historyData}>
                             {/* TODO: 결제 방법 넣을 건지 결정 */}
                             <Text style={styles.historyDataFont}>결제 방법</Text>
-                            <Text style={styles.historyDataFont}>{detail?.bhOutType}</Text>
+                            <Text style={[styles.historyDataFont, { fontWeight: 'bold' }]}>{detail?.bhOutType}</Text>
                         </View>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>카테고리</Text>

@@ -19,7 +19,7 @@ import MyFriendSearch from "./MyFriendSearch";
 export default function FriendList({ navigation, ...props }: any) {
 
     // props
-    const {myAccount, friendListData, getFriendList, toggleInviteModal, bearerToken, friendLoading, setFriendLoading} = props;
+    const {myAccount, friendListData, getFriendList, toggleInviteModal, bearerToken, friendLoading} = props;
 
     // state
     // 새로고침
@@ -135,8 +135,7 @@ export default function FriendList({ navigation, ...props }: any) {
     // pull to refresh
     const handleRefresh = async () => {
         setIsRefreshing(true);
-        setFriendLoading(false);
-        getFriendList();
+        await getFriendList();
         setTimeout(() => {
             setIsRefreshing(false);
         }, 2000);

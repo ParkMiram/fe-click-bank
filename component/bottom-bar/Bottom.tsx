@@ -168,9 +168,6 @@ export default function Bottom({ route }:any) {
         tabBarLabel: () => null,
         tabBarActiveTintColor: 'black',
         tabBarInactiveTintColor: 'gray',
-        tabBarStyle: {
-          borderWidth: 1
-        }
       })}
     >
       <Tab.Screen name="내 계좌" component={AccountStack} initialParams={{ token }} />
