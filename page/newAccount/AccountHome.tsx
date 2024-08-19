@@ -1,9 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { FlatList, Image, Text, TouchableOpacity, SafeAreaView, StyleSheet, View } from 'react-native';
+import {
+    FlatList,
+    Image,
+    Text,
+    TouchableOpacity,
+    SafeAreaView,
+    StyleSheet,
+    View,
+    Dimensions,
+    RefreshControl
+} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
 import { AxiosResponse } from 'axios';
 import { Container } from '../../css/sujin/Container';
+import {Circle, Path, Svg} from "react-native-svg";
 
 interface AccountResponse {
     account: string;
@@ -13,17 +24,21 @@ interface AccountResponse {
 
 interface UserAccountResponse {
     accounts: AccountResponse[];
+    userCode: string;
     userName: string;
     userImg: string;
 }
 
-export default function AccountHome({ route, navigation }: any) {
-    // const [numberHidden, setNumberHidden] = useState(false);
-    const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
+const { width, height } = Dimensions.get('window');
 
+export default function AccountHome({ route, navigation }: any) {
+    const [numberHidden, setNumberHidden] = useState<{ [key: string]: boolean }>({});
+    // 새로고침
+    const [isRefreshing, setIsRefreshing] = useState(false);
     const [accounts, setAccounts] = useState<AccountResponse[]>([]);
     const [userName, setUserName] = useState<string>('');
     const [userImg, setUserImg] = useState<string>('');
+    const [userCode, setUserCode] = useState('');
     const token = route.params?.token;
 
     const toggleNumberHidden = (accountId: string) => {
@@ -37,10 +52,11 @@ export default function AccountHome({ route, navigation }: any) {
         try {
             const response: AxiosResponse<UserAccountResponse[]> = await getAccountByUserId(token);
             const data = response.data[0]; 
-            const { accounts, userName, userImg } = data;
-    
+            const { accounts, userCode, userName, userImg} = data;
+
             if (data) {
                 setAccounts(accounts);
+                setUserCode(userCode);
                 setUserName(userName);
                 setUserImg(userImg);
             } else {
@@ -84,38 +100,95 @@ export default function AccountHome({ route, navigation }: any) {
             }
         }
     };
-    
-    // const numberShow = () => {
-    //     setNumberHidden(!numberHidden);
-    // };
+
+    // pull to refresh
+    const handleRefresh = async () => {
+        setIsRefreshing(true);
+        await fetchAccountsByUserId(token);
+        setIsRefreshing(false);
+    };
 
     const renderItem = ({ item }: { item: AccountResponse }) => (
         <View style={styles.accountCard}>
             <View style={styles.accountDetailContainer}>
                 <Text style={styles.accountName}>{item.accountName}</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('AccountDetail', {token, account: item.account, accountName: item.accountName, userName, userImg, amount: item.moneyAmount})}>
-                    <View style={styles.imageWrapper}>
-                        <Image
-                            source={require('../../assets/image/more.png')}
-                            style={styles.imageMore} resizeMode="contain"
-                        />
-                    </View>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('AccountDetail', {
+                        token,
+                        account: item.account,
+                        accountName: item.accountName,
+                        userName,
+                        userImg,
+                        amount: item.moneyAmount
+                    })}
+                    style={styles.btnMore}
+                >
+                    {/*<View>*/}
+                        {/*<Image*/}
+                        {/*    source={require('../../assets/image/more.png')}*/}
+                        {/*    style={styles.imageMore} resizeMode="contain"*/}
+                        {/*/>*/}
+                        <Svg
+                            width={16}
+                            height={4}
+                            fill="none"
+                        >
+                            <Circle
+                                cx={8}
+                                cy={2}
+                                r={1}
+                                stroke="#33363F"
+                                strokeLinecap="round"
+                                strokeWidth={2}
+                            />
+                            <Circle
+                                cx={2}
+                                cy={2}
+                                r={1}
+                                stroke="#33363F"
+                                strokeLinecap="round"
+                                strokeWidth={2}
+                            />
+                            <Circle
+                                cx={14}
+                                cy={2}
+                                r={1}
+                                stroke="#33363F"
+                                strokeLinecap="round"
+                                strokeWidth={2}
+                            />
+                        </Svg>
+                    {/*</View>*/}
                 </TouchableOpacity>
             </View>
             <View style = {styles.historyContainer}>
-            <Text style={styles.accountNumber}>
-                {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
-            </Text>
+                <Text style={styles.accountNumber}>
+                    {item.account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}
+                </Text>
             </View>
             <View style={styles.buttonContainer}>
-                <Text style={styles.balance}>
-                    {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
-                    {/* {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'} */}
-                    {numberHidden[item.account] ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'}
-                </Text>
-                <TouchableOpacity style={styles.sendButton} onPress={() => toggleNumberHidden(item.account)}>
-                    <Text style={styles.buttonSendText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
-                    
+                <TouchableOpacity
+                    style={styles.balanceWrap}
+                    onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}
+                >
+                    <Text style={numberHidden[item.account] ? {...styles.balance, fontSize: 24, color: '#aaa'} : styles.balance}>
+                        {/* {numberHidden ? '잔액보기' : `${item.moneyAmount.toLocaleString()}원`} */}
+                        {/* {numberHidden ? '잔액보기' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}원` : '잔액 없음'} */}
+                        {numberHidden[item.account] ? '잔액 숨김' : item.moneyAmount !== null ? `${item.moneyAmount.toLocaleString()}` : '잔액 없음'}
+                    </Text>
+                    {
+                        !numberHidden[item.account] && item.moneyAmount !== null ?
+                            <Text style={styles.accountText}>원</Text>
+                            : ""
+                    }
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.hiddenButton} onPress={() => toggleNumberHidden(item.account)}>
+                    <Text style={styles.buttonHiddenText}>{numberHidden [item.account]? '보기' : '숨김'}</Text>
+                </TouchableOpacity>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
+                <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
+                    <Text style ={styles.historyText}>거래 내역</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.transferButton} onPress={() => navigation.navigate('Transfer',{ token: token,
                         account: item.account,
@@ -124,9 +197,6 @@ export default function AccountHome({ route, navigation }: any) {
                     <Text style={styles.buttonText}>이체</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.history} onPress={() => navigation.navigate('AccountHistory',{token:token,account:item.account,moneyAmount:item.moneyAmount,accountName:item.accountName})}>
-                <Text style ={styles.historyText}>거래내역</Text>
-            </TouchableOpacity>
         </View>
     );
 
@@ -143,19 +213,79 @@ export default function AccountHome({ route, navigation }: any) {
         <SafeAreaView style={styles.container}>
             <View style={Container.innerContainer}>
                 <View style={styles.nameContainer}>
-                    <Image
-                        source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}
-                        style={styles.imagePerson}resizeMode="cover"
-                    />
-                    <Text style={styles.text}>{userName}</Text>
-                    <View style={styles.bellContainer}>
-                        {/* <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}> */}
-                            <Image
-                                source={require('../../assets/image/bell.png')}
-                                style={styles.imageBell} resizeMode="contain"
-                            />
-                        {/* </TouchableOpacity> */}
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        {
+                            userImg ?
+                                <Image
+                                    source={{ uri: userImg }}
+                                    style={styles.imagePerson}
+                                    resizeMode="cover"
+                                />
+                                :
+                                <Svg
+                                    width={40}
+                                    height={40}
+                                    fill="none"
+                                    viewBox="0 0 30 30"
+                                    style={styles.imagePerson}
+                                >
+                                    <Path
+                                        fill="#7E869E"
+                                        fillOpacity={0.25}
+                                        d="M0 15C0 6.716 6.716 0 15 0c8.284 0 15 6.716 15 15 0 8.284-6.716 15-15 15-8.284 0-15-6.716-15-15Z"
+                                    />
+                                    <Circle cx={15} cy={11.667} r={6.667} fill="#7E869E" fillOpacity={0.5}/>
+                                    <Path
+                                        fill="#7E869E"
+                                        fillOpacity={0.5}
+                                        fillRule="evenodd"
+                                        d="M25.433 25.52c.057.097.04.22-.042.298A14.95 14.95 0 0 1 15 30a14.95 14.95 0 0 1-10.391-4.182.243.243 0 0 1-.042-.298C6.484 22.247 10.436 20 15 20s8.516 2.246 10.433 5.52Z"
+                                        clipRule="evenodd"
+                                    />
+                                </Svg>
+                        }
+                        {/*<Image*/}
+                        {/*    source={userImg ? { uri: userImg } : require('../../assets/image/person.png')}*/}
+                        {/*    style={styles.imagePerson}resizeMode="cover"*/}
+                        {/*/>*/}
+                        <Text style={styles.text}>{userName}</Text>
+                        <Text style={styles.code}>#{userCode}</Text>
                     </View>
+                    {/*<View style={styles.bellContainer}>*/}
+                    {/*    /!* <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}> *!/*/}
+                    {/*        <Image*/}
+                    {/*            source={require('../../assets/image/bell.png')}*/}
+                    {/*            style={styles.imageBell} resizeMode="contain"*/}
+                    {/*        />*/}
+                    {/*    /!* </TouchableOpacity> *!/*/}
+                    {/*</View>*/}
+
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}
+                        style={styles.newAccount}
+                    >
+                        {/*<Image*/}
+                        {/*    source={require('../../assets/image/plus.png')}*/}
+                        {/*    style={styles.imagePlus}*/}
+                        {/*    resizeMode="contain"*/}
+                        {/*/>*/}
+                        <Text style={styles.newAccountText}>새 계좌</Text>
+                        <View style={styles.newAccountImg}>
+                            <Svg
+                                width={16}
+                                height={16}
+                                fill="none"
+                                viewBox="0 0 22 22"
+                            >
+                                <Path
+                                    stroke="#222"
+                                    strokeLinecap="round"
+                                    strokeWidth={3}
+                                    d="M11 2.111V19.89M19.889 11H2.11"
+                                />
+                            </Svg>
+                        </View>
+                    </TouchableOpacity>
                 </View>
                 
                 <FlatList
@@ -164,14 +294,9 @@ export default function AccountHome({ route, navigation }: any) {
                     keyExtractor={(item, index) => index.toString()}
                     extraData={numberHidden}
                     contentContainerStyle={styles.flatListContainer}
+                    refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}
                 />
             </View>
-            <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token, userName: userName })}>
-                <Image
-                    source={require('../../assets/image/plus.png')}
-                    style={styles.imagePlus} resizeMode="contain"
-                />
-            </TouchableOpacity>
         </SafeAreaView>
     );
 }
@@ -193,20 +318,22 @@ const styles = StyleSheet.create({
     accountDetailContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        height: 30
+        alignItems: 'center',
+        // marginBottom: 5
     },
     flatListContainer: {
-        width: '100%',
+        width: width - 40,
         alignItems: 'center',
-        paddingBottom: 20,
+        paddingBottom: 10,
+        marginHorizontal: 20
     },
     nameContainer: {
         marginTop: 15,
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
         flexDirection: 'row',
-        marginBottom: 8,
+        marginBottom: 15,
     },
     bellContainer: {
         position: 'absolute',
@@ -218,37 +345,36 @@ const styles = StyleSheet.create({
         borderRadius:50,
         marginLeft:20
     },
-    imageMore: {
-        width: 50,
+    btnMore: {
+        width: 20,
         height: 20,
-        position: 'absolute',
-        right: 1,
-        marginTop: 5,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     imageBell: {
         width: 80,
         height: 80,
     },
-    imageWrapper: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
-        overflow: 'hidden',
-        marginLeft: 20,
-    },
     text: {
         textAlign: 'left',
         fontSize: 20,
         color: 'black',
-        marginLeft: 15,
+        marginLeft: 10,
+        fontWeight: '600'
+    },
+    code: {
+        color: '#888',
+        marginLeft: 5,
+        fontSize: 16
     },
     accountCard: {
-        backgroundColor: '#B7E1CE',
-        borderRadius: 10,
-        padding: 16,
-        margin: 16,
-        width: '90%',
-        height: 160,
+        borderRadius: 20,
+        padding: 20,
+        marginTop: 10,
+        marginBottom: 10,
+        backgroundColor: 'rgba(0,115,120,0.04)',
+        minWidth: '100%'
     },
     accountName: {
         fontSize: 16,
@@ -260,55 +386,76 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        alignItems: 'center',
+        // justifyContent: 'flex-end'
+    },
+    balanceWrap: {
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     balance: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginRight: 10,
     },
-    sendButton: {
-        backgroundColor: 'white',
-        padding: 10,
-        borderRadius: 5,
+    accountText: {
+        fontSize: 20,
+        marginLeft: 2
+    },
+    hiddenButton: {
+        backgroundColor: '#E8F0F0',
+        borderRadius: 10,
+        width: 40,
+        height: 25,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginLeft: 10
     },
     transferButton: {
-        alignItems: 'flex-end',
-        // width: '90%',
-        width:90,
-        borderRadius:5
+        width: '48%',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0,115,120,0.1)',
+        borderRadius: 10
     },
     buttonText: {
-        width: 60,
-        backgroundColor: '#6BC29A',
-        color: 'black',
         padding: 10,
-        borderRadius: 10,
         textAlign: 'center',
         fontSize: 16,
+        fontWeight: 'bold',
+        color: '#007378'
     },
-    buttonSendText: {
-        color: 'black',
-        fontSize: 15,
+    buttonHiddenText: {
+        color: '#888',
+        fontSize: 12,
     },
-    imagePlus: {
-        width: 90,
-        height: 95,
+    newAccount: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    newAccountText: {
+        marginRight: 5,
+        fontSize: 16
+    },
+    newAccountImg: {
+        fontWeight: 'bold',
+        marginRight: 20,
     },
     history:{
-        backgroundColor: '#6BC29A',
-        padding: 10,
-        borderRadius: 5,
-        marginTop:10
-
+        width: '48%',
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 0.5,
+        borderColor: 'rgba(0,115,120,0.1)'
     },
     historyText:{
-
+        fontSize: 16,
+        fontWeight: 'bold'
     },
     historyContainer:{
         flexDirection: 'row',
         justifyContent: 'flex-start',
-
+        marginBottom: 20
     }
-
 });

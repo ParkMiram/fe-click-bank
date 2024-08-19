@@ -1,18 +1,17 @@
 import {
-    Image,
     Platform,
     SafeAreaView,
     StyleSheet,
     Text,
     View,
-    StatusBar, Animated, TouchableOpacity, TextInput
+    StatusBar, TouchableOpacity, TextInput, Dimensions
 } from "react-native";
 import React, {useEffect, useState} from "react";
 import {AxiosResponse} from "axios";
 import {
     getAccountHistory,
     getAccountHistoryDetail, getPastHistoryDetail, updateAccountHistoryCategory,
-    updateAccountHistoryMemo
+    updateAccountHistoryMemo, updatePastHistoryCategory, updatePastHistorymemo
 } from "../../component/api/AccountHistoryApi";
 import {Path, Svg} from "react-native-svg";
 import RNPickerSelect from "react-native-picker-select";
@@ -38,6 +37,8 @@ interface Detail {
     cardId: number;
     bhMemo: string;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export default function AccountHistoryDetail({ route, navigation }: any) {
     const [detail, setDetail] = useState<Detail>();
@@ -106,11 +107,10 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             // const differenceInDays = (today.getTime() - bhAtDate.getTime()) / (1000 * 3600 * 24);
 
             let response: AxiosResponse<Detail>;
-
-            if (bhAtDate.getTime() !== today.getTime()) {
+            if (bhAtDate.getDate() !== today.getDate()) {
                 // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
                 response = await getPastHistoryDetail(id);
-                console.log("데이터: " + response.data)
+                console.log(response.data)
             } else {
                 // 그렇지 않다면 getAccountHistoryDetail 호출
                 response = await getAccountHistoryDetail(id);
@@ -124,61 +124,77 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
     const updateMemo = async (param: any): Promise<any> => {
         let memo = param.memo;
         const categoryId = param.purpose;
-        if (memo && memo.length > 0) {
-            try {
-                const data = {id, memo};
-                await updateAccountHistoryMemo(data);
-                const data2 = {id, categoryId};
-                await updateAccountHistoryCategory(data2);
-            } catch (error) {
-                console.log(error);
+
+        try {
+            const bhAtDate = new Date(history.bhAt);
+            const today = new Date();
+
+            // 시간을 0시 0분 0초로 설정하여 날짜만 비교할 수 있게 함
+            bhAtDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+
+            if (bhAtDate.getDate() !== today.getDate()) {
+                if (memo && memo.length > 0) {
+                    const data = {id, memo};
+                    await updatePastHistorymemo(data);
+                    const data2 = {id, categoryId};
+                    await updatePastHistoryCategory(data2);
+                } else if(memo.length == 0) {
+                    memo = "";
+                    const data = {id, memo}
+                    await updatePastHistorymemo(data);
+                    const data2 = {id, categoryId};
+                    await updatePastHistoryCategory(data2);
+                }
+            } else {
+                if (memo && memo.length > 0) {
+                    const data = {id, memo};
+                    await updateAccountHistoryMemo(data);
+                    const data2 = {id, categoryId};
+                    await updateAccountHistoryCategory(data2);
+                } else if(memo.length == 0) {
+                    memo = '';
+                    const data = {id, memo}
+                    await updateAccountHistoryMemo(data);
+                    const data2 = {id, categoryId};
+                    await updateAccountHistoryCategory(data2);
+                }
+                // const data = {id, memo};
+                // await updateAccountHistoryMemo(data);
+                // const data2 = {id, categoryId};
+                // await updateAccountHistoryCategory(data2);
             }
-        } else if(memo.length == 0) {
-            try {
-                memo = "";
-                const data = {id, memo}
-                await updateAccountHistoryMemo(data);
-                const data2 = {id, categoryId};
-                await updateAccountHistoryCategory(data2);
-            } catch (error) {
-                console.log(error);
-            }
+        } catch (error) {
+            console.log(error);
         }
+
         goBack();
     };
 
     return (
         <SafeAreaView style={styles.whole}>
             <View style={styles.innerContainer}>
-                <View style={styles.top}>
-                    <Text style={styles.topFont}>거래 내역 조회</Text>
-                    <TouchableOpacity onPress={goBack}>
-                        <Svg
-                            width={24}
-                            height={24}
-                            fill="none"
-                        >
-                            <Path
-                                stroke="#33363F"
-                                strokeLinecap="square"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M18 6 6 18M6 6l12 12"
-                            />
-                        </Svg>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={goBack} style={styles.top}>
+                    <Svg
+                        width={10}
+                        height={16}
+                        fill="none"
+                        viewBox="0 0 8 14"
+                    >
+                        <Path stroke="#222" d="M7 1 1 7l6 6" />
+                    </Svg>
+                    <Text style={styles.topFont}>{history.bhName}</Text>
+                </TouchableOpacity>
 
                 <View style={styles.wrap}>
-                    <View style={[{marginBottom: 30}]}>
-                        <Text style={styles.title}>{history.bhName}</Text>
+                    <View>
+                        {/*<Text style={styles.title}>{history.bhName}</Text>*/}
                         <Text style={styles.memoFont}>메모</Text>
-
                         <View style={styles.inputBox}>
                             <TextInput
                                 style={styles.inputTextFont}
-                                placeholder="메모 입력(최대 20자)"
-                                value={memo}
+                                placeholder="메모 입력 (최대 20자)"
+                                value={memo === "\"\"" ? undefined : memo?.replace(/^"|"$/g, '')}
                                 onChangeText={setMemo}
                                 maxLength={20}
                             />
@@ -186,21 +202,25 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                     </View>
                     <View style={styles.historyDetailData}>
                         <Text style={styles.historyDate}>{new Date(history.bhAt).toLocaleString()}</Text>
-                        <Text style={styles.historyTitle}>{history.bhName}</Text>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>거래 금액</Text>
                             <View style={[{flexDirection: 'row', alignItems: 'center'}]}>
-                                <Text style={styles.historyDataFont}>{history.bhStatus}</Text>
-                                <Text style={[styles.historyDataFont, {fontWeight: 'bold', color: history.bhStatus === '입금' ? 'blue' : 'red'}]}>{history.bhAmount.toLocaleString()}</Text>
-                                <Text style={styles.historyDataFont}>원</Text>
+                                {/*<Text style={styles.historyDataFont}>{history.bhStatus}</Text>*/}
+                                <Text
+                                    style={[styles.historyDataFont, {fontWeight: 'bold', color: history.bhStatus === '입금' ? '#4169e1' : '#dc143c'}]}
+                                >
+                                    {history.bhStatus === '출금' ? `-` : ''}{history.bhAmount.toLocaleString()}원
+                                </Text>
+                                {/*<Text style={styles.historyDataFont}>원</Text>*/}
                             </View>
                         </View>
                         <View style={styles.historyData}>
                             <Text style={styles.historyDataFont}>거래 후 잔액</Text>
-                            <Text style={styles.historyDataFont}>{history.bhBalance.toLocaleString()}원</Text>
+                            <Text style={[styles.historyDataFont, { fontWeight: 'bold' }]}>{history.bhBalance.toLocaleString()}원</Text>
                         </View>
                         <View style={styles.historyData}>
-                            <Text style={styles.historyDataFont}>거래 유형</Text>
+                            {/* TODO: 결제 방법 넣을 건지 결정 */}
+                            <Text style={styles.historyDataFont}>결제 방법</Text>
                             <Text style={styles.historyDataFont}>{detail?.bhOutType}</Text>
                         </View>
                         <View style={styles.historyData}>
@@ -211,13 +231,16 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                                 value={purpose}
                                 Icon={() => {
                                     return <Svg
-                                        width={20}
-                                        height={10}
+                                        width={10}
+                                        height={8}
                                         fill="none"
-                                        viewBox="0 0 10 5"
-                                        style={imageStyles.icon}
+                                        viewBox="0 0 12 10"
+                                        style={{ marginTop: 5 }}
                                     >
-                                        <Path stroke="#222" strokeWidth={0.7} d="M9.6.3 5.4 4.5 1.2.3" />
+                                        <Path
+                                            fill="#33363F"
+                                            d="M5.18 8.83.543 2.203C-.108 1.275.556 0 1.689 0h8.622c1.133 0 1.796 1.275 1.147 2.203L6.819 8.83a1 1 0 0 1-1.638 0Z"
+                                        />
                                     </Svg>;
                                 }}
                                 style={pickerSelectStyles}
@@ -226,14 +249,13 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                             {/*<Text style={styles.historyDataFont}>{history?.categoryId.categoryName}</Text>*/}
                         </View>
                     </View>
+                    <TouchableOpacity
+                        onPress={() => updateMemo({memo,purpose})}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>확인</Text>
+                    </TouchableOpacity>
                 </View>
-
-                <TouchableOpacity onPress={() => updateMemo({memo,purpose})}>
-                    <View style={styles.bottom}>
-                        <Text style={styles.bottomText}>확인</Text>
-                    </View>
-                </TouchableOpacity>
-
             </View>
         </SafeAreaView>
     );
@@ -248,119 +270,99 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        // alignItems: 'center',
     },
     top: {
         width: '100%',
-        height: '8%',
         backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20
+        paddingHorizontal: 20,
+        marginTop: 20
     },
     topFont: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         marginLeft: 10
     },
     wrap: {
         flex: 1,
-        // width: '100%',
-        // height: '82%',
-        paddingVertical: 20,
-        paddingHorizontal: 30
+        width: width - 40,
+        marginHorizontal: 20
     },
     title: {
-        fontSize: 26,
+        fontSize: 20,
         fontWeight: 'bold',
     },
     memoFont: {
-        fontSize: 18,
-        color: '#acacac',
-        marginVertical: 20,
-        marginBottom: 10
-    },
-    memoData: {
-        borderBottomColor: '#000',
-        borderBottomWidth: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 5
-    },
-    memoDataFont: {
-        fontSize: 26,
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: '#888',
+        marginTop: 10,
     },
     inputBox: {
-        marginVertical: 10,
+        marginTop: 10,
         width: '100%',
-        height: 50,
-        borderColor: '#000',
-        borderWidth: 0.5,
-        justifyContent: 'center'
+        borderRadius: 10,
+        backgroundColor: '#f8f8f8',
+        padding: 15,
+        fontSize: 14,
     },
     inputTextFont: {
-        fontSize: 18,
-        color: '#808080',
+        fontSize: 16,
+        color: '#222',
         marginLeft: 5
     },
     historyDetailData: {
-        borderTopColor: '#e7e7e7',
-        borderBottomColor: '#e7e7e7',
-        borderTopWidth: 2,
-        borderBottomWidth: 2,
-        paddingVertical: 30,
-        paddingHorizontal: 5
+        borderTopWidth: 1,
+        borderTopColor: '#ddd',
+        marginTop: 20,
+        paddingTop: 20,
+        flex: 1
     },
     historyDate: {
-        fontSize: 18,
-        color: '#808080',
-        marginVertical: 2.5
-    },
-    historyTitle: {
-        fontSize: 22,
-        fontWeight: '400',
-        marginVertical: 5
+        fontSize: 14,
+        color: '#aaa',
+        marginBottom: 20
     },
     historyData: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginVertical: 4
+        marginBottom: 20
     },
     historyDataFont: {
-        fontSize: 22,
-        marginRight:5
+        fontSize: 16,
     },
-    bottom: {
-        // width: '100%',
-        height: 60,
-        backgroundColor: '#6BC29A',
-        alignItems: 'center',
+    button: {
+        backgroundColor: '#007378',
+        borderRadius: 10,
+        width: width - 40,
+        height: 40,
         justifyContent: 'center',
+        marginVertical: 20
     },
-    bottomText: {
-        fontSize: 26,
-    }
+    buttonText: {
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center'
+    },
 });
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        width: 120,
-        // height: '100%',
         color: 'black',
         paddingRight: 10,
-        fontSize:22,
-        textAlign: "center"
+        fontSize: 16,
+        textAlign: "center",
+        marginRight: 10,
+        fontWeight: 'bold'
     },
     inputAndroid: {
-        width: 120,
-        // height: '100%',
         color: 'black',
         paddingRight: 10,
-        fontSize:22,
-        textAlign: "center"
+        fontSize: 16,
+        textAlign: "center",
+        marginRight: 10,
+        fontWeight: 'bold'
     },
     placeholder: {
         color: 'black',  // placeholder 텍스트 색상

@@ -1,6 +1,7 @@
 import { Platform, SafeAreaView, StatusBar, StyleSheet, View ,Image,Text,TouchableOpacity, Alert} from 'react-native';
 import { saveAccount } from '../../component/api/NewAccountApi';
 import { getUserInfo, setMainAccount } from '../../component/api/AuthApi';
+import { AxiosError } from 'axios';
 
 type data = {
     accountStatus: string;
@@ -42,11 +43,25 @@ export default function AccountComplete( {  navigation, route }: any ) {
             if (response && response.status == 201) {
                 console.log(response.status);
                 
-                const userInfo = await getUserInfo(token);
-                if (userInfo.data.account == null) {
-                    console.log({data:response.data});
-                    const updateResponse = await setMainAccount(userInfo.data.id, {data:response.data});
-                    console.log("updateResponse: " + updateResponse.status);
+                try {
+                    console.log(`token:${token}`);
+                    const userInfo = await getUserInfo(token);
+                    if (userInfo.data.account == null) {
+                        console.log({data:response.data});
+                        try {
+                            console.log(`userInfo.data.id:${userInfo.data.id}`);
+                            const updateResponse = await setMainAccount(userInfo.data.id, {data:response.data});
+                            console.log("updateResponse: " + updateResponse.status);
+                        } catch (error) {
+                            console.log("asd");
+                        }
+                    }
+                } catch (error) {
+                    const {response} = error as unknown as AxiosError;
+                    if(response){
+                        console.log(response.data);
+                    }
+                    console.log(error);
                 }
 
                 if (accountStatus === 'group') {

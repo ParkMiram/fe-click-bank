@@ -13,7 +13,7 @@ export default function KakaoLogin({ navigation }: any) {
 
     const onNavigationStateChange = async (state: WebViewNativeEvent) => {
         const url = new URL(state.url);
-        if (url.host == '34.30.12.64:31000'){
+        if (url.host == 'just-click.shop'){
             navigation.navigate('UserGetLoginToken', {url: state.url});
         }
     }

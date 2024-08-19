@@ -1,13 +1,11 @@
 import {
     Platform,
-    SafeAreaView,
     StyleSheet,
     Text,
     View,
     StatusBar,
-    TouchableOpacity, Animated, Alert, RefreshControl
+    TouchableOpacity, Animated, Alert, RefreshControl, Dimensions, ScrollView, SafeAreaView
 } from "react-native";
-import ScrollView = Animated.ScrollView;
 import React, {useCallback, useEffect, useState} from "react";
 import {getAccountHistory, getPastAllHistories} from "../../component/api/AccountHistoryApi";
 import {AxiosResponse} from "axios";
@@ -30,6 +28,8 @@ interface History {
     bhBalance: number;
     categoryId: Category;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export default function AccountHistory({ route, navigation }: any) {
     const [record, setRecord] = useState<History[]>([]);
@@ -65,7 +65,7 @@ export default function AccountHistory({ route, navigation }: any) {
         fetchHistories();
         setTimeout(() => {
             setIsRefreshing(false);
-        }, 2000);
+        }, 1000);
     };
 
     const fetchHistories = async (): Promise<any> => {
@@ -73,7 +73,6 @@ export default function AccountHistory({ route, navigation }: any) {
             setCount(0);
             setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
-            console.log(response.data); //TODO 나중에 지우기
 
             let histories: History[] = [];
             if (response.data && response.data.length > 0) {
@@ -147,92 +146,127 @@ export default function AccountHistory({ route, navigation }: any) {
     };
 
     return (
-        <SafeAreaView style={styles.whole}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <ScrollView style={styles.scrollView} refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh}/>}>
-                    <View style={styles.historyArea}>
+                    <View style={styles.accountContainer}>
                         <View style={styles.account}>
-                            <View style={styles.accountSub}>
+                            <View style={[styles.accountSub, { marginBottom: 5 }]}>
                                 <Text style={styles.accountFont}>{accountInfo.accountName}</Text>
                             </View>
                             <View style={styles.accountSub}>
-                                <Text style={styles.accountFont}>{account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}</Text>
+                                <Text style={[styles.accountFont, { color: '#888' }]}>{account.replace(/^(\d{3})(\d{3})(\d+)$/, "$1-$2-$3")}</Text>
                                 <TouchableOpacity onPress={copyAccountToClipboard}>
                                     <Svg
                                         width={18}
                                         height={18}
                                         fill="none"
+                                        style={{ marginLeft: 5 }}
                                     >
                                         <Path
-                                            stroke="#222"
+                                            stroke="#888"
                                             d="M10.5 5.25c0-.232 0-.348-.01-.446A2 2 0 0 0 8.696 3.01C8.598 3 8.482 3 8.25 3h-1.5c-1.644 0-2.466 0-3.019.454a2.001 2.001 0 0 0-.277.277C3 4.284 3 5.106 3 6.75v1.5c0 .232 0 .348.01.446a2 2 0 0 0 1.794 1.794c.098.01.214.01.446.01"
                                         />
-                                        <Rect width={7.5} height={7.5} x={7.5} y={7.5} stroke="#222" rx={2} />
+                                        <Rect width={7.5} height={7.5} x={7.5} y={7.5} stroke="#888" rx={2} />
                                     </Svg>
                                 </TouchableOpacity>
                             </View>
                             <View style={styles.balanceArea}>
-                                <Text style={styles.balanceFont}>{(record.length > 0 ? record[0].bhBalance : 0).toLocaleString()} 원</Text>
+                                <Text style={styles.balanceFont}>{(record.length > 0 ? record[0].bhBalance : 0).toLocaleString()}</Text>
+                                <Text style={{ fontSize: 22 }}>원</Text>
                             </View>
                         </View>
                         {/*record.length-1*/}
                         <View style={styles.accountBtnArea}>
-                            <TouchableOpacity style={styles.accountBtn} onPress={()=>goToStatistics(account)}>
-                                <Text style={styles.accountBtnFont}>분석 / 예산</Text>
+                            <TouchableOpacity
+                                style={[styles.accountBtn, { backgroundColor: '#fff', borderWidth: 1, borderColor: 'rgba(0,115,120,0.1)' }]}
+                                onPress={()=>goToStatistics(account)}
+                            >
+                                <Text style={[styles.accountBtnFont, { color: '#333' }]}>분석 / 예산</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={styles.accountBtn} onPress={() => navigation.navigate('Transfer',{ token: accountInfo.token,
-                                account: accountInfo.account,
-                                // accountName: item.accountName,
-                                moneyAmount: accountInfo.moneyAmount})}>
+                            <TouchableOpacity
+                                style={styles.accountBtn}
+                                onPress={() => navigation.navigate('Transfer',
+                                    {token: accountInfo.token,
+                                    account: accountInfo.account,
+                                    // accountName: item.accountName,
+                                    moneyAmount: accountInfo.moneyAmount}
+                                )}>
                                 <Text style={styles.accountBtnFont}>이체</Text>
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.historyArea}>
-                            <View style={styles.filterArea}>
-                                <RNPickerSelect
-                                    onValueChange={(value) => setPurpose(value)}
-                                    items={purposes}
-                                    placeholder={{ label: '전체', value: '전체', color:'black' }}
-                                    value={purpose}
-                                    Icon={() => {
-                                        return <Svg
-                                            width={20}
-                                            height={10}
-                                            fill="none"
-                                            viewBox="0 0 10 5"
-                                            style={imageStyles.icon}
-                                        >
-                                            <Path stroke="#222" strokeWidth={0.7} d="M9.6.3 5.4 4.5 1.2.3" />
-                                        </Svg>;
-                                    }}
-                                    style={pickerSelectStyles}
-                                    useNativeAndroidPickerStyle={false}
+                    </View>
+                    <View>
+                        <View style={styles.filterArea}>
+                            <Svg
+                                width={14}
+                                height={10}
+                                fill="none"
+                                viewBox="0 0 16 12"
+                                style={{ marginRight: 10 }}
+                            >
+                                <Path
+                                    stroke="#888"
+                                    strokeLinecap="round"
+                                    strokeWidth={2}
+                                    d="M1 1h14M3 6h10M5 11h6"
                                 />
-                                {/*<Image source={require('../../assets/image/select.png')} />*/}
-                            </View>
-                            {filteredHistories.slice().map((item: History) => (
-                                <TouchableOpacity key={item.historyId} style={styles.history} onPress={() => navigateToDetail(item)}>
-                                    <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
-                                    <Text style={styles.historyNameFont}>{item.bhName}</Text>
-                                    <View style={styles.historyAmountArea}>
-                                        <Text style={styles.historyAmountFont}>{item.bhStatus}</Text>
-                                        <Text style={[styles.historyAmountFontColor, {color: item.bhStatus === '입금' ? 'blue' : 'red'}]}>
-                                            {item.bhAmount.toLocaleString()}
-                                        </Text>
-                                        <Text style={styles.historyAmountFont}>원</Text>
-                                    </View>
-                                    <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
-                                </TouchableOpacity>
-                            ))}
-
-                            {hasMore && (
-                                <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
-                                    <Text style={styles.loadMoreButtonText}>+ 더 보기</Text>
-                                </TouchableOpacity>
-                            )}
-
+                            </Svg>
+                            <RNPickerSelect
+                                onValueChange={(value) => setPurpose(value)}
+                                items={purposes}
+                                placeholder={{ label: '전체', value: '전체', color:'black' }}
+                                value={purpose}
+                                Icon={() => {
+                                    return <Svg
+                                        width={10}
+                                        height={8}
+                                        fill="none"
+                                        viewBox="0 0 12 10"
+                                        style={{ marginTop: 5 }}
+                                    >
+                                        <Path
+                                            fill="#33363F"
+                                            d="M5.18 8.83.543 2.203C-.108 1.275.556 0 1.689 0h8.622c1.133 0 1.796 1.275 1.147 2.203L6.819 8.83a1 1 0 0 1-1.638 0Z"
+                                        />
+                                    </Svg>;
+                                }}
+                                style={pickerSelectStyles}
+                                useNativeAndroidPickerStyle={false}
+                            />
+                            {/*<Image source={require('../../assets/image/select.png')} />*/}
                         </View>
+                        {
+                            filteredHistories.length > 0 ?
+                                filteredHistories.slice().map((item: History, index) => (
+                                    <TouchableOpacity
+                                        key={item.historyId}
+                                        style={[styles.history, index === filteredHistories.length - 1 ? { borderBottomWidth: 0 } : {} ]}
+                                        onPress={() => navigateToDetail(item)}
+                                    >
+                                        <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
+                                        <View style={styles.historyInfo}>
+                                            <Text style={styles.historyNameFont}>{item.bhName}</Text>
+                                            <View style={styles.historyAmountArea}>
+                                                {/*<Text style={styles.historyAmountFont}>{item.bhStatus}</Text>*/}
+                                                <Text style={[styles.historyAmountFontColor, {color: item.bhStatus === '입금' ? '#4169e1' : '#dc143c'}]}>
+                                                    {item.bhStatus === '출금' ? `-` : ''}{item.bhAmount.toLocaleString()}원
+                                                </Text>
+                                                {/*<Text style={styles.historyAmountFont}>원</Text>*/}
+                                            </View>
+                                        </View>
+                                        <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
+                                    </TouchableOpacity>
+                                ))
+                                :
+                                <Text style={styles.noHistory}>거래 내역이 없습니다.</Text>
+                        }
+
+                        {hasMore && (
+                            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
+                                <Text style={styles.loadMoreButtonText}>+ 더 보기</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </ScrollView>
             </View>
@@ -241,26 +275,28 @@ export default function AccountHistory({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    whole: {
+    container: {
         flex: 1,
         backgroundColor: 'white',
-        alignItems: 'center',
     },
     innerContainer: {
         flex: 1,
         width: '100%',
-        marginTop: Platform.OS === 'ios' ? 20 : StatusBar.currentHeight,
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+    },
+    scrollView: {
+
     },
     accountContainer: {
         width: '100%',
-        backgroundColor: 'white',
         alignItems: 'center',
+        backgroundColor: 'rgba(0,115,120,0.04)',
     },
     account: {
-        width: '100%',
-        padding: 20,
-        paddingTop: 0,
+        width: width - 40,
         alignItems: 'center',
+        marginHorizontal: 20,
+        marginTop: 20
     },
     accountSub: {
         width: '100%',
@@ -268,98 +304,94 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     accountFont: {
-        fontSize: 22,
-        marginRight: 5
+        fontSize: 16,
     },
     balanceArea: {
-        marginVertical: 5,
         width: '100%',
+        marginTop: 15,
+        marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     balanceFont: {
-        fontSize: 35,
-        marginTop: 10,
+        fontSize: 30,
+        textAlign: 'right',
         fontWeight: 'bold',
-        textAlign: 'right'
-    },
-    accountBtnArea: {
-        width: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-evenly',
-        marginVertical: 10,
-    },
-    accountBtn: {
-        width: '40%',
-        height: 40,
-        borderRadius: 10,
-        backgroundColor: '#B7E1CE',
-        justifyContent: "center"
-    },
-    accountBtnFont: {
-        fontSize: 20,
-        textAlign: "center",
-    },
-    scrollView: {
-        flex: 1,
-        width: '100%',
-    },
-    historyArea: {
-        width: '100%'
-    },
-    filterArea: {
-        width: '100%',
-        height: 60,
-        backgroundColor: '#d9d9d9',
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderTopWidth: 1.5,
-        borderTopColor: '#c7c7c7',
-    },
-    filterFont: {
-        fontSize: 20,
-        marginLeft: 20,
         marginRight: 5
     },
-    history: {
-        width: '100%',
+    accountBtnArea: {
+        width: width - 40,
+        marginHorizontal: 20,
+        marginBottom: 20,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
+    accountBtn: {
+        width: '48%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(0,115,120,0.1)',
+        borderRadius: 10,
+        height: 36
+    },
+    accountBtnFont: {
         padding: 10,
+        textAlign: 'center',
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#007378',
+    },
+    filterArea: {
+        width: width - 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        marginVertical: 15,
+        marginRight: 20
+    },
+    history: {
+        width: width - 40,
         backgroundColor: '#fff',
-        borderTopWidth: 1,
-        borderTopColor: '#c7c7c7'
+        marginHorizontal: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        paddingBottom: 10
     },
     historyDateFont: {
-        fontSize: 16,
-        marginLeft: 10,
         marginTop: 10,
-        color: '#808080',
+        color: '#aaa',
     },
     historyNameFont: {
-        fontSize: 20,
-        marginLeft: 10,
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    historyInfo: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 5
     },
     historyAmountArea:{
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        marginTop: 10,
     },
     historyAmountFont: {
-        fontSize: 20,
-        marginRight: 10,
+        fontSize: 18,
         textAlign: 'right',
-        fontWeight: 'bold',
     },
     historyAmountFontColor: {
-        fontSize: 24,
-        marginRight: 0,
+        fontSize: 20,
         textAlign: 'right',
         fontWeight: 'bold',
+        marginLeft: 10
     },
     historyBalanceFont: {
-        fontSize: 16,
-        marginRight: 10,
-        color: '#808080',
-        textAlign: 'right'
+        fontSize: 14,
+        color: '#888',
+        textAlign: 'right',
+        marginTop: 5
     },
     loadMoreButton: {
         paddingVertical: 10,
@@ -369,23 +401,24 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         color: '#007AFF',
+    },
+    noHistory: {
+        textAlign: 'center',
+        marginVertical: 30,
+        color: '#aaa'
     }
 });
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-        width: 80,
-        height: '100%',
+        width: 60,
         color: 'black',
-        paddingHorizontal: 20,
-        fontSize:16,
+        fontSize: 16,
     },
     inputAndroid: {
         width: 80,
-        height: '100%',
         color: 'black',
-        paddingHorizontal: 20,
-        fontSize:16,
+        fontSize: 16,
     },
     placeholder: {
         color: 'black',  // placeholder 텍스트 색상

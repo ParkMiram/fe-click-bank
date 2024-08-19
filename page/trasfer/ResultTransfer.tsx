@@ -20,6 +20,7 @@ type userInfo = {
 type props = {
   bank: string;
   account: string;
+  nickname: string;
   transferAmount: number; // 보낼 금액
   category: number
 }
@@ -49,6 +50,7 @@ const ResultTransfer = ({ navigation, route }: any) => {
           const bodyToRecipient = {
               accountStatus: "deposit",
               account: userInfo.account,
+              nickname: data.nickname,
               moneyAmount: data.transferAmount,
               category: data.category
           };
@@ -56,6 +58,7 @@ const ResultTransfer = ({ navigation, route }: any) => {
           const bodyToSender = {
               accountStatus: "transfer",
               account: data.account,
+              nickname: userInfo.nickName,
               moneyAmount: data.transferAmount,
               category: data.category
           };

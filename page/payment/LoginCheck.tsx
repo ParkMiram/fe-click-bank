@@ -19,7 +19,7 @@ export default function LoginCheck({ navigation, route }: any) {
         BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
         navigation.reset({
             index: 0,
-            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl, payId: payData?.payId}}]
         });
         return true;
     },[]);

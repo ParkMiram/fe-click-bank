@@ -1,283 +1,239 @@
-import React, { useState } from 'react';
-import { Keyboard,TouchableWithoutFeedback, Text, TextInput, TouchableOpacity, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import React, {useState} from 'react';
+import {
+    Keyboard,
+    TouchableWithoutFeedback,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    View, Dimensions
+} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 type data = {
-  accountStatus: string;
-  token: string;
-  userName: string;
-  product: string | null;
-  interestRate: number | null;
+    accountStatus: string;
+    token: string;
+    userName: string;
+    product: string | null;
+    interestRate: number | null;
 }
 
-export default function AccountPassword( {  navigation, route }: any ) {
+const { width, height } = Dimensions.get('window');
+
+export default function AccountPassword({navigation, route}: any) {
     const [password, setPassword] = useState('');
     const [purpose, setPurpose] = useState('계좌사용용도');
     const [firstQuestion, setFirstQuestion] = useState(false);
     const [secondQuestion, setSecondQuestion] = useState(false);
 
-    const { accountStatus, token, userName, product, interestRate }: data = route.params;
+    const {accountStatus, token, userName, product, interestRate}: data = route.params;
 
     const dismissKeyboard = () => {
-      Keyboard.dismiss();
+        Keyboard.dismiss();
     };
     const purposes = [
-        { label: '급여 및 아르바이트', value: '급여 및 아르바이트' },
-        { label: '생활비 관리', value: '생활비 관리' },
-        { label: '적금 자동이체', value: '적금 자동이체' },
-        { label: '예금가입', value: '예금가입' }
+        {label: '급여 및 아르바이트', value: '급여 및 아르바이트'},
+        {label: '생활비 관리', value: '생활비 관리'},
+        {label: '적금 자동이체', value: '적금 자동이체'},
+        {label: '예금가입', value: '예금가입'}
     ];
 
     const handleNextPress = () => {
-      if (accountStatus === 'saving') {
-        navigation.navigate('CreateSavingAccount', { 
-          accountStatus, 
-          token, 
-          userName, 
-          accountPassword: password, 
-          purpose,
-          product,
-          interestRate
-        });
-      } else {
-        navigation.navigate('AccountInformation', { 
-          accountStatus, 
-          token, 
-          userName, 
-          accountPassword: password, 
-          purpose 
-        });
-      }
+        if (accountStatus === 'saving') {
+            navigation.navigate('CreateSavingAccount', {
+                accountStatus,
+                token,
+                userName,
+                accountPassword: password,
+                purpose,
+                product,
+                interestRate
+            });
+        } else {
+            navigation.navigate('AccountInformation', {
+                accountStatus,
+                token,
+                userName,
+                accountPassword: password,
+                purpose
+            });
+        }
     };
-      
+
     return (
-        <TouchableWithoutFeedback onPress={dismissKeyboard}>
-        <SafeAreaView style={styles.container}>
-            <View style={styles.innerContainer}>
-            <View style={styles.purposeContainer}>
-        <Text style={styles.title}>통장 비밀번호 만들기</Text>
-        <View style={styles.purposeInput}>
-        <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={setPassword}
-        keyboardType="number-pad"
-        placeholder="0000"
-        maxLength={4}
-        secureTextEntry={true}
-      />
-        </View> 
-      </View>
-      <Text style={styles.subtitle}>어떤 용도로 통장을 사용하실 건가요?</Text>
-      <View style={styles.purposeContainer}>
-        <Text style={styles.purposeLabel}>계좌사용용도</Text>
-        <View style={styles.pickerWrapper}>
-          <RNPickerSelect
-            onValueChange={(value) => setPurpose(value)}
-            useNativeAndroidPickerStyle={false}
-            items={purposes}
-            placeholder={{ label: '선택하세요', value: 'null',color:'black' }}
-            value={purpose}
-            style={pickerSelectStyles}
-          />
-        </View> 
-      </View>
-      <Text style={styles.question1}>타인으로부터 통장대여 요청을 받은 사실이 있나요?</Text>
-      <View style={styles.radioContainer}>
-        <TouchableOpacity 
-          onPress={() => setFirstQuestion(true)} 
-          style={[styles.radioLeft, firstQuestion === true && styles.selectedRadio]}
+        <TouchableWithoutFeedback
+            onPress={dismissKeyboard}
+            style={{ flexGrow: 1 }}
         >
-          <Text>예 </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => setFirstQuestion(false)} 
-          style={[styles.radioRight, firstQuestion === false && styles.selectedRadio]}
-        >
-          <Text>아니요 </Text>
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.question2}>타인으로부터 신용정보 상환, 대출 등의 목적으로 통장 개설을 요청받은 사실이 있나요?</Text>
-      <View style={styles.radioContainer}>
-        <TouchableOpacity 
-          onPress={() => setSecondQuestion(true)} 
-          style={[styles.radioLeft, secondQuestion === true && styles.selectedRadio]}
-        >
-          <Text>예 </Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => setSecondQuestion(false)} 
-          style={[styles.radioRight, secondQuestion === false && styles.selectedRadio]}
-        >
-          <Text>아니요 </Text>
-        </TouchableOpacity>
-      </View>
-      <TouchableOpacity style={styles.button}  onPress={handleNextPress}>
-        <Text style={styles.buttonText}>다음</Text>
-      </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.innerContainer}>
+                    <View>
+                        <Text style={styles.title}>통장 비밀번호를 설정해 주세요.</Text>
+                        <View style={styles.purposeContainer}>
+                            <View style={styles.purposeInput}>
+                                <TextInput
+                                    style={styles.input}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                    keyboardType="number-pad"
+                                    placeholder='4자리 비밀번호'
+                                    placeholderTextColor="#aaa"
+                                    maxLength={4}
+                                    secureTextEntry={true}
+                                />
+                            </View>
+                        </View>
+                        <Text style={styles.title}>어떤 용도로 통장을 사용하실 건가요?</Text>
+                        <View style={styles.purposeContainer}>
+                            {/*<Text style={styles.purposeLabel}>계좌사용용도</Text>*/}
+                            <View style={styles.pickerWrapper}>
+                                <RNPickerSelect
+                                    onValueChange={(value) => setPurpose(value)}
+                                    useNativeAndroidPickerStyle={false}
+                                    items={purposes}
+                                    placeholder={{label: '선택하세요', value: 'null'}}
+                                    value={purpose}
+                                    style={pickerSelectStyles}
+                                />
+                            </View>
+                        </View>
+                        <Text style={styles.title}>타인으로부터 통장대여 요청을 받은 사실이 있나요?</Text>
+                        <View style={styles.radioContainer}>
+                            <TouchableOpacity
+                                onPress={() => setFirstQuestion(true)}
+                                style={[styles.radio, firstQuestion && styles.selectedRadio]}
+                            >
+                                <Text style={firstQuestion && styles.selectedRadioText}>예 </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setFirstQuestion(false)}
+                                style={[styles.radio, !firstQuestion && styles.selectedRadio]}
+                            >
+                                <Text style={!firstQuestion && styles.selectedRadioText}>아니요 </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.title}>타인으로부터 신용정보 상환, 대출 등의 목적으로 통장 개설을 요청받은 사실이 있나요?</Text>
+                        <View style={styles.radioContainer}>
+                            <TouchableOpacity
+                                onPress={() => setSecondQuestion(true)}
+                                style={[styles.radio, secondQuestion && styles.selectedRadio]}
+                            >
+                                <Text style={secondQuestion && styles.selectedRadioText}>예 </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => setSecondQuestion(false)}
+                                style={[styles.radio, !secondQuestion && styles.selectedRadio]}
+                            >
+                                <Text style={!secondQuestion && styles.selectedRadioText}>아니요 </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <TouchableOpacity style={styles.button} onPress={handleNextPress}>
+                        <Text style={styles.buttonText}>다음</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
         </TouchableWithoutFeedback>
     );
 }
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'center',
-      
-    },
     container: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexGrow: 1,
         backgroundColor: 'white',
     },
+    innerContainer: {
+        flexGrow: 1,
+        width: '100%',
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        justifyContent: 'space-between'
+    },
     purposeContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 20,
-        backgroundColor: '#B7E1CE',
-        padding: 10,
-        borderRadius:5,
-        height:80,
-        width:350,
-      },
-      title: {
-        marginLeft:10,
+        marginBottom: 40,
+    },
+    title: {
         fontSize: 16,
         fontWeight: 'bold',
-       marginRight: 20,
-  
-       
-      },
-      purposeInput: {
-        flex: 1,
-        height: 40,
-        justifyContent: 'center',
-        backgroundColor: '#B7E1CE',
-        paddingHorizontal: 10,
-        marginBottom: 20,
-        
-      },
-      pickerWrapper: {
-        flex: 1,
-        height: 40,
-        justifyContent: 'center',
-        backgroundColor: '#B7E1CE',
-        paddingHorizontal: 10,
-        marginBottom: 20,
-        // borderWidth: 1,
-        borderColor: 'black',
-        borderRadius: 5,
-      },
-      input: {
-        height: 40,
-        width: 150,
-        borderColor: 'gray',
-        borderRadius:5,
+    },
+    purposeInput: {
+        marginTop: 20
+    },
+    input: {
+        width: '100%',
+        borderRadius: 10,
+        backgroundColor: '#fff',
         borderWidth: 1,
-         marginTop:20,
-         backgroundColor: '#B7E1CE',
-         textAlign:'center',
-
-      },
-      subtitle: {
-        marginTop:20,
-        fontSize: 16,
-        marginBottom: 15,
-        fontWeight: 'bold',
-        textAlign:'left',
-        marginRight:100
-     
-      },
-      purposeLabel: {
+        borderColor: '#e3e3e3',
+        padding: 15,
+        fontSize: 16
+    },
+    pickerWrapper: {
+        borderRadius: 10,
+    },
+    purposeLabel: {
         fontSize: 16,
         marginRight: 10,
         fontWeight: 'bold',
-        marginLeft:10
-      },
-      question1: {
-        fontSize: 16,
-        marginBottom: 10,
-        marginTop:50,
-        fontWeight: 'bold',
-      },
-      question2: {
-        fontSize: 16,
-        marginBottom: 10,
-        marginTop:30,
-        fontWeight: 'bold',
-        marginRight:20,
-        marginLeft:20
-      },
-      radioContainer: {
+        marginLeft: 10
+    },
+    radioContainer: {
         flexDirection: 'row',
-        marginBottom: 20,
-      },
-      radioLeft: {
-        flex: 1,
+        marginBottom: 40,
+        marginTop: 20,
+        justifyContent: 'space-between'
+    },
+    radio: {
+        width: '49%',
         alignItems: 'center',
         padding: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        backgroundColor: '#fff',
-        marginLeft:30
-      },
-      radioRight: {
-        flex: 1,
-        alignItems: 'center',
-        padding: 10,
-        borderWidth: 1,
-        borderColor: 'gray',
-        backgroundColor: '#fff',
-        marginRight:30
-      },
-
-      selectedRadio: {
-        backgroundColor: '#B7E1CE',
-      },
-      buttonText: {
+        backgroundColor: '#eee',
+        borderRadius: 10
+    },
+    selectedRadio: {
+        backgroundColor: 'rgba(0,115,120,0.2)',
+    },
+    selectedRadioText: {
+        color: '#007378',
+        fontWeight: 'bold'
+    },
+    button: {
+        backgroundColor: '#007378',
+        borderRadius: 10,
+        width: width - 40,
+        height: 40,
+        justifyContent: 'center'
+    },
+    buttonText: {
         fontSize: 16,
+        color: '#fff',
         fontWeight: 'bold',
-      },
-      button: {
-        backgroundColor: '#B7E1CE',
-        // padding: 15,
-        borderRadius:8,
-        width:'100%',
-        alignItems: 'center',
-        marginTop:80,
-        maxWidth: 325,
-        // height:60,
-        // width:350,
-        paddingHorizontal: 10,
-        paddingVertical: 20,
-      },
+        textAlign: 'center'
+    },
 });
 
 const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
-      height: 40,
-      marginTop: 20,
-      backgroundColor: '#B7E1CE',
-      paddingHorizontal: 20,
-      paddingVertical: 30,
-      borderRadius: 5,
-      color:'black',
-      fontSize:16
+        padding: 15,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        fontSize: 16,
+        marginTop: 10
     },
     inputAndroid: {
-      fontSize: 16,
-      borderRadius: 8,
-      color: 'black',
-      paddingRight: 30, 
+        fontSize: 16,
+        padding: 15,
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        marginTop: 10
     },
     placeholder: {
-        color: 'black',  
-      },
-  });
+        color: '#aaa'
+    }
+});

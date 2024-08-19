@@ -24,7 +24,7 @@ export default function Payment({ navigation, route }: any) {
         BackHandler.removeEventListener('hardwareBackPress', cancelPayment);
         navigation.reset({
             index: 0,
-            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+            routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl, payId: payData?.payId}}]
         });
         return true;
     },[]);
@@ -74,7 +74,7 @@ export default function Payment({ navigation, route }: any) {
                 } else {
                     navigation.reset({
                         index: 0,
-                        routes: [{name: 'PaymentCancel', params: {redirect: payData?.failRedirUrl}}]
+                        routes: [{name: 'PaymentError', params: {redirect: payData?.failRedirUrl}}]
                     });
                 }
             } else {
