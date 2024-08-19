@@ -151,7 +151,7 @@ const Transfer = ({ navigation, route }: any) => {
                   <View style={{ flex: 1 }} />
                   <TouchableOpacity 
                       style={styles.sendButton} 
-                      onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber, account, moneyAmount, category: selectedCategoryID, token })}
+                      onPress={() => navigation.navigate('SendingTransfer', { bank: selectedBank, accountNumber, account, category: selectedCategoryID, token })}
                   >
                     <Text style={styles.sendButtonText}>보내기</Text>
                   </TouchableOpacity>

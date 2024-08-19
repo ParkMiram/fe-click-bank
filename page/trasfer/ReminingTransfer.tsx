@@ -20,6 +20,7 @@ type userInfo = {
 type props = {
   bank: string;
   account: string;
+  nickname: string;
   transferAmount: number; // 보낼 금액
   category: number
 }

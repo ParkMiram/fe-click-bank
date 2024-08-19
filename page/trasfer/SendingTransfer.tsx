@@ -48,6 +48,7 @@ const SendingTransfer = ({ navigation, route }: any) => {
   const data = {
     bank: bank,
     account: account,
+    nickname: sendUserInfo?.nickName,
     transferAmount: parseInt(amount),
     category: category
   }
