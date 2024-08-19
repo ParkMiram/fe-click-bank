@@ -80,7 +80,8 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
         const data = {month,account};
 
         try{
-            const response = await getAccountHistoryStatistics(data);
+            const response = await getAccountHistoryStatistics(account);
+            console.log(response.data);
             setStatistics(response.data);
         } catch (error){
             console.log(error);
