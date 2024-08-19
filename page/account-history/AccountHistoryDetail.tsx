@@ -110,7 +110,7 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             if (bhAtDate.getDate() !== today.getDate()) {
                 // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
                 response = await getPastHistoryDetail(id);
-                console.log("데이터: " + response.data)
+                console.log(response.data)
             } else {
                 // 그렇지 않다면 getAccountHistoryDetail 호출
                 response = await getAccountHistoryDetail(id);
@@ -133,21 +133,36 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
             bhAtDate.setHours(0, 0, 0, 0);
             today.setHours(0, 0, 0, 0);
 
-            // 날짜 차이 계산 (밀리초 단위 차이 -> 일 단위로 변환)
-            // const differenceInDays = (today.getTime() - bhAtDate.getTime()) / (1000 * 3600 * 24);
-
-            let response: AxiosResponse<Detail>;
             if (bhAtDate.getDate() !== today.getDate()) {
-                // bhAt이 오늘보다 하루 전이라면 getPastHistoryDetail 호출
-                const data = {id, memo};
-                await updatePastHistorymemo(data);
-                const data2 = {id, categoryId};
-                await updatePastHistoryCategory(data2);
+                if (memo && memo.length > 0) {
+                    const data = {id, memo};
+                    await updatePastHistorymemo(data);
+                    const data2 = {id, categoryId};
+                    await updatePastHistoryCategory(data2);
+                } else if(memo.length == 0) {
+                    memo = "";
+                    const data = {id, memo}
+                    await updatePastHistorymemo(data);
+                    const data2 = {id, categoryId};
+                    await updatePastHistoryCategory(data2);
+                }
             } else {
-                const data = {id, memo};
-                await updateAccountHistoryMemo(data);
-                const data2 = {id, categoryId};
-                await updateAccountHistoryCategory(data2);
+                if (memo && memo.length > 0) {
+                    const data = {id, memo};
+                    await updateAccountHistoryMemo(data);
+                    const data2 = {id, categoryId};
+                    await updateAccountHistoryCategory(data2);
+                } else if(memo.length == 0) {
+                    memo = '';
+                    const data = {id, memo}
+                    await updateAccountHistoryMemo(data);
+                    const data2 = {id, categoryId};
+                    await updateAccountHistoryCategory(data2);
+                }
+                // const data = {id, memo};
+                // await updateAccountHistoryMemo(data);
+                // const data2 = {id, categoryId};
+                // await updateAccountHistoryCategory(data2);
             }
         } catch (error) {
             console.log(error);
@@ -179,7 +194,7 @@ export default function AccountHistoryDetail({ route, navigation }: any) {
                             <TextInput
                                 style={styles.inputTextFont}
                                 placeholder="메모 입력 (최대 20자)"
-                                value={memo}
+                                value={memo === "\"\"" ? undefined : memo?.replace(/^"|"$/g, '')}
                                 onChangeText={setMemo}
                                 maxLength={20}
                             />
