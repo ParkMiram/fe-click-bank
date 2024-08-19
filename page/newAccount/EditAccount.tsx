@@ -21,17 +21,18 @@ import {Path, Svg} from "react-native-svg";
 type props = {
     token: string;
     account: string;
+    accountName: string;
 }
 
 const { width, height } = Dimensions.get('window');
 
 export default function EditAccount( { route, navigation }: any ) {
+    const { token, account, accountName }: props = route.params;
     const [modalVisible, setModalVisible] = useState(false);
-    const [name, setName] = useState('');
+    const [name, setName] = useState(accountName);
     const [password, setPassword] = useState('');
     const [dailyLimit, setDailyLimit] = useState('');
     const [onetimeLimit, setOnetimeLimit] = useState('')
-    const { token, account }: props = route.params;
 
     console.log(account);
 
@@ -69,6 +70,9 @@ export default function EditAccount( { route, navigation }: any ) {
                 await setAccountLimit(body, token);
                 navigation.navigate('AccountHome', { token });
             }
+            if (!name && !password && !dailyLimit && !onetimeLimit) {
+                return Alert.alert("계좌 수정", "수정된 정보가 없습니다.");
+            }
         } catch (error) {
             console.error(error);
         }
@@ -97,6 +101,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                 value={name}
                                 onChangeText={setName}
                                 keyboardType="default"
+                                returnKeyType='done'
                                 placeholder="계좌명"
                             />
                         </View>
@@ -107,7 +112,8 @@ export default function EditAccount( { route, navigation }: any ) {
                                 value={password}
                                 onChangeText={setPassword}
                                 keyboardType="number-pad"
-                                placeholder="0000"
+                                returnKeyType='done'
+                                placeholder="4자리 비밀번호"
                                 maxLength={4}
                                 secureTextEntry={true}
                         />
@@ -119,6 +125,7 @@ export default function EditAccount( { route, navigation }: any ) {
                                 value={dailyLimit}
                                 onChangeText={setDailyLimit}
                                 keyboardType="number-pad"
+                                returnKeyType='done'
                                 placeholder="50,000,000"
                             />
                         </View>
@@ -129,55 +136,17 @@ export default function EditAccount( { route, navigation }: any ) {
                                 value={onetimeLimit}
                                 onChangeText={setOnetimeLimit}
                                 keyboardType="number-pad"
+                                returnKeyType='done'
                                 placeholder="10,000,000"
                             />
                         </View>
                     </View>
-                    <View>
-                        <View style = {styles.buttonContainer}>
-                            <TouchableOpacity
-                                style={styles.button}
-                                onPress={handleSubmit}
-                            >
-                                <Text style={styles.buttonText}>계좌 변경</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style = {styles.buttonContainer}>
-                            <TouchableOpacity
-                                style={styles.button}
-                            >
-                                <Text style={styles.buttonText}>계좌 삭제</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    {/*<Modal*/}
-                    {/*    animationType="slide"*/}
-                    {/*    transparent={true}*/}
-                    {/*    visible={modalVisible}*/}
-                    {/*    onRequestClose={closeModal}*/}
-                    {/*>*/}
-                    {/*    <View style={styles.modalContainer}>*/}
-                    {/*        <View style={styles.modalView}>*/}
-                    {/*            <Text style={styles.modalText}>정말로 계좌를 삭제하시겠습니까?</Text>*/}
-                    {/*            <View style={styles.modalButtonContainer}>*/}
-                    {/*                <TouchableOpacity*/}
-                    {/*                    style={[styles.buttonAccount, styles.buttonClose]}*/}
-                    {/*                    onPress={closeModal}*/}
-                    {/*                >*/}
-                    {/*                    <Text style={styles.buttonText}>취소</Text>*/}
-                    {/*                </TouchableOpacity>*/}
-                    {/*                <TouchableOpacity*/}
-                    {/*                    style={[styles.buttonAccount, styles.buttonDelete]}*/}
-                    {/*                    onPress={() => {*/}
-                    {/*                        closeModal();*/}
-                    {/*                    }}*/}
-                    {/*                >*/}
-                    {/*                    <Text style={styles.buttonText} onPress={handleDeleteAccount}>삭제</Text>*/}
-                    {/*                </TouchableOpacity>*/}
-                    {/*            </View>*/}
-                    {/*        </View>*/}
-                    {/*    </View>*/}
-                    {/*</Modal>*/}
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleSubmit}
+                    >
+                        <Text style={styles.buttonText}>저장</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </SafeAreaView>
@@ -221,35 +190,31 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10
     },
-    buttonContainer:{
-        flexDirection: 'row',
-        justifyContent:'space-evenly',
-        width: '100%'
-    },
     button:{
-        marginTop: 5,
-        marginBottom: 30,
-        backgroundColor: '#B7E1CE',
-        padding: 16,
+        width: width - 40,
+        backgroundColor: '#007378',
         alignItems: 'center',
-        borderRadius: 8,
-        width: '90%',
-        },
+        justifyContent: 'center',
+        borderRadius: 10,
+        marginHorizontal: 20,
+        marginBottom: 20,
+        height: 40,
+    },
     buttonAccount:{
         fontSize:25,
         borderColor: '#B7E1CE',
         borderRadius:5,
         borderWidth: 2,
-        height: 40,
         width: 60,
         flexDirection:'row',
         alignItems:'center',
-        paddingHorizontal:10
+        paddingHorizontal:10,
     },
     buttonText:{
-        fontSize:18,
-        textAlign:'center'
-
+        fontSize: 16,
+        textAlign:'center',
+        color: '#fff',
+        fontWeight: 'bold'
     },
     modalContainer: {
         flex: 1,

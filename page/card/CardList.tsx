@@ -13,6 +13,8 @@ interface CardResponse {
     };
 }
 
+const { width, height } = Dimensions.get('window');
+
 export default function CardList({ route, navigation }: any) {
     const token = route.params?.token;
     const [cardList, setCardList] = useState<CardResponse[]>([]);
@@ -62,9 +64,6 @@ export default function CardList({ route, navigation }: any) {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                {/* <View style={styles.nameContainer}>
-                    <Text style={styles.cardText}>카드</Text>
-                </View> */}
                 <FlatList
                     data={combinedData}
                     renderItem={({ item }) => item.cardId === -1 ? renderAddCardButton() : renderItem({ item })}
@@ -93,10 +92,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     flatListContainer: {
-        width: '100%',
+        width: width - 40,
         alignItems: 'flex-start',
-        paddingBottom: 20,
-        marginTop:15
+        margin: 20
     },
     nameContainer: {
         width: '100%',
@@ -115,27 +113,22 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     cardButton: {
-        width: Dimensions.get('window').width / 2 - 60,
+        width: width / 2 - 60,
         height: 200,
-        // borderWidth: 1.5,
-        // borderColor: '#B7E1CE',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 20
     },
     cardAddButton:{
-        width: Dimensions.get('window').width / 2 - 60,
+        width: width / 2 - 60,
         height: 200,
-        borderWidth: 1.5,
-        borderColor: '#B7E1CE',
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 20
+        backgroundColor: '#eee'
     },
     cardImg: {
-        width: Dimensions.get('window').width / 2 - 60,
+        width: width / 2 - 60,
         height: 190,
         borderRadius: 10,
     },

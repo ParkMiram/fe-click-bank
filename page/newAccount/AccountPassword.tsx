@@ -95,6 +95,7 @@ export default function AccountPassword({navigation, route}: any) {
                                     value={password}
                                     onChangeText={setPassword}
                                     keyboardType="number-pad"
+                                    returnKeyType='done'
                                     placeholder='4자리 비밀번호'
                                     placeholderTextColor="#aaa"
                                     maxLength={4}

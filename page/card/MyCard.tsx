@@ -28,9 +28,6 @@ export default function MyCard({ route, navigation }: any) {
     const [modalVisible, setModalVisible] = useState(false);
     const token = route.params?.token;
 
-    // useEffect(() => {
-    //     getMyCardInfo();
-    // }, []);
     useFocusEffect(
         useCallback(() => {
                  getMyCardInfo();
