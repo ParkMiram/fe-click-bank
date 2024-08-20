@@ -13,8 +13,7 @@ export default function CardInformation({ route, navigation }:any) {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
-                    <Text style={styles.cardText}>카드 상품
-                    </Text>
+                    <Text style={styles.cardText}>카드 상품</Text>
                 </View>
                 <View style={styles.header}>
                     <View style={styles.cardImageContainer}>

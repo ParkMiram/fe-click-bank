@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
     TextInput,
-    Modal,
     TouchableOpacity,
     Text,
     Platform,
@@ -9,13 +8,10 @@ import {
     StatusBar,
     StyleSheet,
     View,
-    KeyboardAvoidingView,
-    Keyboard,
     Alert,
     Dimensions
 } from 'react-native';
 import { deleteAccount, setAccountLimit, setAccountName, setAccountPassword } from '../../component/api/NewAccountApi';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {Path, Svg} from "react-native-svg";
 
 type props = {

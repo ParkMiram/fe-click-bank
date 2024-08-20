@@ -264,7 +264,7 @@ export default function AccountHistory({ route, navigation }: any) {
 
                         {hasMore && (
                             <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
-                                <Text style={styles.loadMoreButtonText}>+ 더 보기</Text>
+                                <Text style={styles.loadMoreButtonText}>더 보기</Text>
                             </TouchableOpacity>
                         )}
                     </View>
@@ -394,13 +394,20 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     loadMoreButton: {
-        paddingVertical: 10,
+        backgroundColor: '#eee',
+        height: 30,
+        width: width - 40,
+        marginHorizontal: 20,
+        justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 10,
+        marginTop: 10,
+        marginBottom: 20
     },
     loadMoreButtonText: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: 'bold',
-        color: '#007AFF',
+        color: '#888',
     },
     noHistory: {
         textAlign: 'center',

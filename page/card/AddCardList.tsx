@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
-import MyCardInformation from './CardInformation';
 import {getAllCardProduct} from "../../component/api/CardListApi";
-import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 interface CardProductResponse {
     cardProductId: number;
     cardProductName: string;
     cardImg: string;
 }
+
+const { width, height } = Dimensions.get('window');
 
 export default function AddCardList({ route, navigation }: any) {
     const [cardProductList, setCardProductList] = useState<CardProductResponse[]>([]);
@@ -29,9 +29,9 @@ export default function AddCardList({ route, navigation }: any) {
     }
 
     const renderItem = ({ item }: { item: CardProductResponse }) => (
-        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('CardInformation',{ id: item.cardProductId,token })}>
+        <TouchableOpacity style={styles.cardButton} onPress={() => navigation.navigate('CardInformation',{ id: item.cardProductId, token })}>
             <Image source={{ uri: item.cardImg  }} style={styles.cardImg} />
-            <Text>{item.cardProductName}</Text>
+            <Text style={styles.cardProductName}>{item.cardProductName}</Text>
         </TouchableOpacity>
     );
 
@@ -41,7 +41,7 @@ export default function AddCardList({ route, navigation }: any) {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
-                    <Text style={styles.cardText}>카드 목록</Text>
+                    <Text style={styles.cardText}>카드를 골라주세요.</Text>
                 </View>
                 <FlatList
                     data={combinedData}
@@ -56,13 +56,6 @@ export default function AddCardList({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     container: {
         flex: 1,
         width: "100%",
@@ -70,46 +63,46 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
     },
+    innerContainer: {
+        flex: 1,
+        width: "100%",
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        justifyContent: 'flex-start',
+    },
+    nameContainer: {
+        width: '100%',
+        backgroundColor: 'white',
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        marginVertical: 20
+    },
+    cardText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
     flatListContainer: {
         width: '100%',
         alignItems: 'flex-start',
         paddingBottom: 20,
+        marginHorizontal: 10
     },
-    nameContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        marginTop: 15,
-        justifyContent: 'flex-start',
-    },
-    cardText: {
-        fontSize: 30,
-        marginLeft: 20,
-    },
-    // cardContainer: {
-    //     flex: 1,
-    //     alignItems: 'center',
-    //     justifyContent: 'center',
-    //     margin: 10,
-    // },
     cardButton: {
-        width: Dimensions.get('window').width / 2 - 60,
-        height: 200,
-        // borderWidth: 1,
-        // borderColor: 'lightgrey',
-        borderRadius: 10,
-        alignItems: 'center',
+        width: width / 2 - 30,
         justifyContent: 'center',
-        margin: 20
+        marginHorizontal: 10
     },
     cardImg: {
-        width: Dimensions.get('window').width / 2 - 60,
-        height: 190,
-        borderRadius: 10,
-        overflow:"hidden"
+        width: '100%',
+        height: 260,
+        borderRadius: 20,
+        overflow:"hidden",
+        marginBottom: 5
     },
-    plusIcon: {
-        width: 50,
-        height: 50,
-        tintColor: 'grey',
+    cardProductName: {
+        fontSize: 16,
+        marginBottom: 20,
+        textAlign: 'center',
+        fontWeight: 'bold'
     }
 });
