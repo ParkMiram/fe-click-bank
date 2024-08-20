@@ -97,13 +97,32 @@ export default function AccountHistoryStatistics({ route, navigation }: any) {
     }));
 
     const renderLegend = () => {
-        return pieChartData.map((entry, index) => (
+        // pieChartData의 값의 합계를 구합니다.
+        const totalValue = pieChartData.reduce((sum, entry) => sum + entry.population, 0);
+
+        // 퍼센트 값에 따라 내림차순으로 정렬하고 0%인 항목은 제외합니다.
+        const sortedData = [...pieChartData]
+            .map(entry => {
+                const percentage = (entry.population / totalValue) * 100;
+                return {
+                    ...entry,
+                    percentage: percentage
+                };
+            })
+            .filter(entry => entry.percentage > 0) // 퍼센트가 0%가 아닌 항목만 필터링
+            .sort((a, b) => b.percentage - a.percentage); // 숫자로 정렬
+
+        return sortedData.map((entry, index) => (
             <View key={index} style={styles.legendItem}>
                 <View style={[styles.legendColorBox, { backgroundColor: entry.color }]} />
-                <Text style={styles.legendText}>{entry.name}</Text>
+                <Text style={styles.legendText}>
+                    {entry.name} ({entry.percentage.toFixed(2)}%)
+                </Text>
             </View>
         ));
     };
+
+
 
     return (
         <SafeAreaView style={styles.whole}>
