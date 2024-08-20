@@ -86,11 +86,11 @@ export default function AccountHistory({ route, navigation }: any) {
             const combinedHistories = histories.concat(res.data);
 
             // 버그 수정
-            const sortedHistories = combinedHistories.sort((a, b) => {
-                return Number(b.historyId) - Number(a.historyId);
-            });
+            // const sortedHistories = combinedHistories.sort((a, b) => {
+            //     return Number(b.historyId) - Number(a.historyId);
+            // });
 
-            setRecord(sortedHistories);
+            setRecord(combinedHistories);
 
             if (res.data.length < 10) {
                 setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
