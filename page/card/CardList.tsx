@@ -1,9 +1,18 @@
 import React, { useCallback,useEffect, useState } from 'react';
-import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity } from 'react-native';
+import {
+    Image,
+    Text,
+    FlatList,
+    Dimensions,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    View,
+    TouchableOpacity,
+} from 'react-native';
 import { getAllMyCard } from "../../component/api/CardListApi";
 import { useFocusEffect } from '@react-navigation/native';
-
-
 
 interface CardResponse {
     cardId: number;
@@ -58,9 +67,6 @@ export default function CardList({ route, navigation }: any) {
 
     const combinedData: Array<CardResponse | { cardId: number; cardName: string; cardProduct: { cardImg: string } }> = [...cardList, { cardId: -1, cardName: '', cardProduct: { cardImg: '' } }];
 
-
-
-    
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -69,7 +75,6 @@ export default function CardList({ route, navigation }: any) {
                     renderItem={({ item }) => item.cardId === -1 ? renderAddCardButton() : renderItem({ item })}
                     keyExtractor={(item) => item.cardId.toString()}
                     contentContainerStyle={styles.flatListContainer}
-                    numColumns={2}
                 />
             </View>
         </SafeAreaView>
@@ -77,19 +82,18 @@ export default function CardList({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     container: {
         flex: 1,
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
+    },
+    innerContainer: {
+        flex: 1,
+        width: '100%',
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        justifyContent: 'flex-start',
     },
     flatListContainer: {
         width: width - 40,
@@ -113,19 +117,20 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     cardButton: {
-        width: width / 2 - 60,
-        height: 200,
+        width: width / 2 - 30,
+        height: 220,
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
     cardAddButton:{
-        width: width / 2 - 60,
-        height: 200,
-        borderRadius: 10,
+        width: width / 2 - 30,
+        height: 260,
+        borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#eee'
+        backgroundColor: '#eee',
+        marginBottom: 20
     },
     cardImg: {
         width: width / 2 - 60,

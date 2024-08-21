@@ -336,18 +336,18 @@ export default function AccountHome({ route, navigation }: any) {
 }
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     container: {
         flex: 1,
         width: "100%",
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
+    },
+    innerContainer: {
+        flex: 1,
+        width: "100%",
+        alignItems: 'center',
+        justifyContent: 'flex-start',
     },
     accountDetailContainer: {
         marginLeft: 10
