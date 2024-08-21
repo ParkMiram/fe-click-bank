@@ -22,6 +22,7 @@ export default function MyFriendSearch({ ...props }) {
                 placeholder='내 친구 검색하기'
                 value={srchMyFriend}
                 onChangeText={onChangeSrchMyFriend}
+                returnKeyType={'done'}
             />
             <View style={styles.searchIcon}>
                 <Svg
