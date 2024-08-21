@@ -14,12 +14,15 @@ import {Circle, Path, Svg} from "react-native-svg"
 import {Ionicons} from '@expo/vector-icons';
 import React, {useEffect, useState} from "react";
 import {deleteAccount, deleteGroupMember, getGroupAccount} from "../../component/api/NewAccountApi";
+import * as authApi from '../../component/api/AuthApi';
+import { AxiosError, AxiosResponse } from "axios";
 
 type data = {
     token: string;
     account: string;
     userName: string;
     userImg: string;
+    userCode: string;
 }
 
 const { width, height } = Dimensions.get('window');
@@ -30,7 +33,7 @@ export const AccountDetail = ({navigation, route}: any) => {
     const [friend, setFriend] = useState([]);
     const [accountName, setAccountName] = useState([]);
     const [type, setType] = useState<number | null>(null);
-    const {token, account, userName, userImg}: data = route.params;
+    const {token, account, userName, userImg, userCode}: data = route.params;
 
     useEffect(() => {
         const fetchData = async () => {
@@ -179,12 +182,36 @@ export const AccountDetail = ({navigation, route}: any) => {
         );
     };
 
+    const SetMainAccountAlert = () => {
+        Alert.alert("대표 계좌", "대표 계좌로 설정하시겠습니까?",
+            [
+                {text:"조아요", style:"default"},
+                {text:"시른데요", style:"cancel", 
+                    onPress: async(): Promise<void> => {
+                        try {
+                            const response: AxiosResponse<any> = await authApi.setMainAccount(userCode, account);
+                            if (response.status == 200) {
+                                alert("대표 계좌가 변경되었습니다.");
+                            }
+                        } catch (error) {
+                            const {response} = error as unknown as AxiosError;
+                            if(response){
+                                console.log(response.data);
+                            }
+                        }
+                    }
+                }
+            ]
+        );
+    }
+
     const AccountSettings = () => (
         <>
             <View style={{ flex: 1, justifyContent: 'space-between' }}>
                 <View>
                     <TouchableOpacity
                         style={styles.settingOption}
+                        onPress={SetMainAccountAlert}
                     >
                         <Text style={styles.settingText}>대표 계좌 설정</Text>
                         <Svg

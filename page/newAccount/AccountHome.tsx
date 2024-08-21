@@ -149,6 +149,7 @@ export default function AccountHome({ route, navigation }: any) {
                         accountName: item.accountName,
                         userName,
                         userImg,
+                        userCode,
                         amount: item.moneyAmount
                     })}
                     style={styles.btnMore}
