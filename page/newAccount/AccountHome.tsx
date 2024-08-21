@@ -15,6 +15,7 @@ import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountA
 import { AxiosResponse } from 'axios';
 import { Container } from '../../css/sujin/Container';
 import {Circle, Defs, G, Path, Svg} from "react-native-svg";
+import * as Clipboard from 'expo-clipboard';
 
 interface AccountResponse {
     account: string;
@@ -40,6 +41,11 @@ export default function AccountHome({ route, navigation }: any) {
     const [userImg, setUserImg] = useState<string>('');
     const [userCode, setUserCode] = useState('');
     const token = route.params?.token;
+
+
+    const copyCodeToClipboard = async () => {
+        await Clipboard.setStringAsync(userCode);
+    };
 
     const toggleNumberHidden = (accountId: string) => {
         setNumberHidden(prevState => ({
@@ -275,7 +281,9 @@ export default function AccountHome({ route, navigation }: any) {
                         {/*    style={styles.imagePerson}resizeMode="cover"*/}
                         {/*/>*/}
                         <Text style={styles.text}>{userName}</Text>
-                        <Text style={styles.code}>#{userCode}</Text>
+                        <TouchableOpacity onPress={copyCodeToClipboard}>
+                            <Text style={styles.code}>#{userCode}</Text>
+                        </TouchableOpacity>
                     </View>
                     {/*<View style={styles.bellContainer}>*/}
                     {/*    /!* <TouchableOpacity onPress={() => navigation.navigate('AccountType',{ token: token})}> *!/*/}
