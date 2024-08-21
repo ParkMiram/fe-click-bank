@@ -99,22 +99,22 @@ const Transfer = ({navigation, route}: any) => {
                 {/*>*/}
                 {/*    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>*/}
                         <View style={styles.inner}>
-                            <View style={styles.title}>
-                                <TouchableOpacity onPress={() => {
-                                    navigation.navigate("AccountHome", {token})
-                                }}>
-                                    <Svg
-                                        width={10}
-                                        height={16}
-                                        fill="none"
-                                        viewBox="0 0 8 14"
-                                    >
-                                        <Path stroke="#222" d="M7 1 1 7l6 6"/>
-                                    </Svg>
-                                </TouchableOpacity>
-                                <Text style={styles.titleText}>이체</Text>
-                            </View>
-                            <View style={{ marginBottom: 20 }}>
+                            {/*<View style={styles.title}>*/}
+                            {/*    <TouchableOpacity onPress={() => {*/}
+                            {/*        navigation.navigate("AccountHome", {token})*/}
+                            {/*    }}>*/}
+                            {/*        <Svg*/}
+                            {/*            width={10}*/}
+                            {/*            height={16}*/}
+                            {/*            fill="none"*/}
+                            {/*            viewBox="0 0 8 14"*/}
+                            {/*        >*/}
+                            {/*            <Path stroke="#222" d="M7 1 1 7l6 6"/>*/}
+                            {/*        </Svg>*/}
+                            {/*    </TouchableOpacity>*/}
+                            {/*    <Text style={styles.titleText}>이체</Text>*/}
+                            {/*</View>*/}
+                            <View style={{ marginVertical: 20 }}>
                                 <Text style={styles.label}>계좌 번호를 입력해 주세요.</Text>
                                 <TextInput
                                     style={styles.input}
@@ -127,9 +127,12 @@ const Transfer = ({navigation, route}: any) => {
                             </View>
                             <View>
                                 <Text style={styles.label}>은행을 선택해 주세요.</Text>
-                                <TouchableOpacity style={styles.button} onPress={toggleModal}>
-                                    <Text style={styles.buttonText}>은행 선택</Text>
-                                </TouchableOpacity>
+                                <View style={styles.selectButtonWrap}>
+                                    <TouchableOpacity style={styles.button} onPress={toggleModal}>
+                                        <Text style={styles.buttonText}>은행 선택</Text>
+                                    </TouchableOpacity>
+                                    <Text style={styles.selected}>{selectedBank}</Text>
+                                </View>
                                 <ReactNativeModal isVisible={isModalVisible} onBackdropPress={toggleModal}>
                                     <View style={styles.modalContent}>
                                         <Text style={styles.modalTitle}>은행 선택</Text>
@@ -142,11 +145,20 @@ const Transfer = ({navigation, route}: any) => {
                                         />
                                     </View>
                                 </ReactNativeModal>
-                                <Text style={styles.selectedBankText}>선택된 은행: {selectedBank}</Text>
                             </View>
-                            <TouchableOpacity style={styles.button} onPress={toggleCategoryModal}>
-                                <Text style={styles.buttonText}>카테고리 선택</Text>
-                            </TouchableOpacity>
+                            <View style={{ marginTop: 20 }}>
+                                <Text style={styles.label}>카테고리를 선택해 주세요.</Text>
+                                <View style={styles.selectButtonWrap}>
+                                    <TouchableOpacity style={styles.button} onPress={toggleCategoryModal}>
+                                        <Text style={styles.buttonText}>카테고리 선택</Text>
+                                    </TouchableOpacity>
+                                    {selectedCategoryID !== null && selectedCategory && (
+                                        <Text style={styles.selected}>
+                                            {selectedCategory.label}
+                                        </Text>
+                                    )}
+                                </View>
+                            </View>
                             <ReactNativeModal isVisible={isCategoryModalVisible} onBackdropPress={toggleCategoryModal}>
                                 <View style={styles.modalContent}>
                                     <Text style={styles.modalTitle}>카테고리 선택</Text>
@@ -164,11 +176,6 @@ const Transfer = ({navigation, route}: any) => {
                                     </Picker>
                                 </View>
                             </ReactNativeModal>
-                            {selectedCategoryID !== null && selectedCategory && (
-                                <Text style={styles.selectedBankText}>
-                                    선택된 카테고리: {selectedCategory.label}
-                                </Text>
-                            )}
                             <View style={{flex: 1}}/>
                             <TouchableOpacity
                                 style={styles.sendButton}
@@ -217,7 +224,6 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 18,
-        fontWeight: 'bold',
         marginLeft: 10
     },
     image: {
@@ -225,7 +231,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start'
     },
     label: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold'
     },
     input: {
@@ -237,17 +243,38 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 15
     },
-    button: {
-        backgroundColor: 'rgba(0,115,120,0.2)',
-        marginBottom: 10,
-        borderRadius: 10,
-        width: '100%',
+    selectButtonWrap: {
+        flexDirection: 'row',
+        alignItems: 'center',
         marginTop: 10,
-        height: 40
+        backgroundColor: '#f3f3f3',
+        borderRadius: 10,
+        padding: 10
+    },
+    selected: {
+        fontSize: 16,
+        alignSelf: 'center',
+        alignItems: 'center',
+        marginLeft: 10,
+        color: '#555',
+        fontWeight: 'bold'
+    },
+    selectedBankName: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginLeft: 10
+    },
+    button: {
+        width: '100%',
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        backgroundColor: '#ddd',
+        borderRadius: 5
     },
     buttonText: {
-        color: 'black',
-        fontSize: 16,
+        color: '#333'
     },
     modalContent: {
         backgroundColor: 'white',
@@ -285,15 +312,11 @@ const styles = StyleSheet.create({
         height: 60,
         borderRadius: 30,
         resizeMode: 'cover',
+        borderWidth: 1,
+        borderColor: '#eee'
     },
     bankText: {
         fontSize: 16,
-    },
-    selectedBankText: {
-        marginTop: 20,
-        fontSize: 16,
-        alignSelf: 'center',
-        alignItems: 'center',
     },
     sendButton: {
         height: 40,
