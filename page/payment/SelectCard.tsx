@@ -1,6 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { Image, Text, FlatList, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
-import { getAllMyCard } from "../../component/api/CardListApi";
+import React, {useCallback, useEffect, useState} from 'react';
+import {
+    Image,
+    Text,
+    FlatList,
+    Dimensions,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    View,
+    TouchableOpacity,
+    BackHandler,
+    ScrollView, RefreshControl
+} from 'react-native';
+import {getAllMyCard} from "../../component/api/CardListApi";
+import {Path, Svg} from "react-native-svg";
 
 interface CardResponse {
     cardId: number;
@@ -10,15 +24,17 @@ interface CardResponse {
     };
 }
 
-export default function SelectCard({ route, navigation }: any) {
-    const { payData, token } = route.params;
+const {width, height} = Dimensions.get('window');
+
+export default function SelectCard({route, navigation}: any) {
+    const {payData, token} = route.params;
     const [cardList, setCardList] = useState<CardResponse[]>([]);
 
     const gobackPayment = useCallback(() => {
         BackHandler.removeEventListener('hardwareBackPress', gobackPayment);
         navigation.goBack();
         return true;
-    },[]);
+    }, []);
     BackHandler.addEventListener('hardwareBackPress', gobackPayment);
 
     useEffect(() => {
@@ -29,7 +45,7 @@ export default function SelectCard({ route, navigation }: any) {
         }
     }, [token]);
 
-    const selectCard = (cardId:number) => {
+    const selectCard = (cardId: number) => {
         navigation.reset({
             index: 0,
             routes: [{name: 'Payment', params: {payData: payData, userToken: token, card: cardId}}]
@@ -49,41 +65,73 @@ export default function SelectCard({ route, navigation }: any) {
         }
     };
 
-    const renderItem = ({ item }: { item: CardResponse }) => (
+    const renderItem = ({item}: { item: CardResponse }) => (
         <TouchableOpacity style={styles.cardButton} onPress={() => selectCard(item.cardId)}>
-            <Image source={{ uri: item.cardProduct.cardImg }} style={styles.cardImg} />
+            <Image source={{uri: item.cardProduct.cardImg}} style={styles.cardImg}/>
             <Text>{item.cardName}</Text>
         </TouchableOpacity>
     );
+
+    const renderCardList = () => {
+        return (
+            <View style={styles.flatListContainer}>
+                {
+                    combinedData.map((item, index) => (
+                        <>
+                            {
+                                item.cardId !== -1 ?
+                                    <TouchableOpacity style={styles.cardButton}
+                                                      onPress={() => selectCard(item.cardId)}
+                                                      key={item.cardId}
+                                    >
+                                        <Image source={{uri: item.cardProduct.cardImg}} style={styles.cardImg}/>
+                                        <Text style={styles.cardName}>{item.cardName}</Text>
+                                    </TouchableOpacity>
+                                    :
+                                    <></>
+                            }
+                        </>
+                    ))
+                }
+            </View>
+        )
+    }
 
     const combinedData: Array<CardResponse> = [...cardList];
 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <View style={styles.nameContainer}>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    style={styles.nameContainer}
+                >
+                    <Svg
+                        width={10}
+                        height={16}
+                        fill="none"
+                        viewBox="0 0 8 14"
+                    >
+                        <Path stroke="#222" d="M7 1 1 7l6 6"/>
+                    </Svg>
                     <Text style={styles.cardText}>카드</Text>
-                </View>
-                <FlatList
-                    data={combinedData}
-                    renderItem={({ item }) => renderItem({ item })}
-                    keyExtractor={(item) => item.cardId.toString()}
-                    contentContainerStyle={styles.flatListContainer}
-                    numColumns={2}
-                />
+                </TouchableOpacity>
+                <ScrollView>
+                    {renderCardList()}
+                </ScrollView>
+                {/*<FlatList*/}
+                {/*    data={combinedData}*/}
+                {/*    renderItem={({ item }) => renderItem({ item })}*/}
+                {/*    keyExtractor={(item) => item.cardId.toString()}*/}
+                {/*    contentContainerStyle={styles.flatListContainer}*/}
+                {/*    numColumns={2}*/}
+                {/*/>*/}
             </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-    },
     container: {
         flex: 1,
         width: "100%",
@@ -91,54 +139,46 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'white',
     },
-    flatListContainer: {
-        width: '100%',
-        alignItems: 'flex-start',
-        paddingBottom: 20,
-        marginTop:15
-    },
-    nameContainer: {
-        width: '100%',
-        flexDirection: 'row',
-        marginTop: 15,
+    innerContainer: {
+        flex: 1,
+        width: "100%",
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        alignItems: 'center',
         justifyContent: 'flex-start',
     },
-    cardText: {
-        fontSize: 30,
-        marginLeft: 20,
+    nameContainer: {
+        width: width - 40,
+        flexDirection: 'row',
+        marginTop: 20,
+        alignItems: 'center'
     },
-    cardContainer: {
+    cardText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10
+    },
+    flatListContainer: {
+        width: width - 20,
+        marginHorizontal: 10,
+        marginBottom: 20,
         flex: 1,
-        alignItems: 'flex-start',
-        justifyContent: 'center',
-        margin: 10,
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     cardButton: {
-        width: Dimensions.get('window').width / 2 - 60,
-        height: 200,
+        width: width / 2 - 30,
         borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 20
-    },
-    cardAddButton:{
-        width: Dimensions.get('window').width / 2 - 60,
-        height: 200,
-        borderWidth: 1.5,
-        borderColor: '#B7E1CE',
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        margin: 20
+        marginHorizontal: 10,
+        marginTop: 20
     },
     cardImg: {
-        width: Dimensions.get('window').width / 2 - 60,
-        height: 190,
-        borderRadius: 10,
+        width: '100%',
+        height: 260,
+        borderRadius: 20,
     },
-    plusIcon: {
-        width: 50,
-        height: 50,
-        tintColor: 'grey',
-    }
+    cardName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 5
+    },
 });

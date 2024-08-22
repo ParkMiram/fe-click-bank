@@ -36,7 +36,7 @@ export default function AccountHistory({ route, navigation }: any) {
     const [filteredHistories, setFilteredHistories] = useState<History[]>([]);
     const [purpose, setPurpose] = useState("전체");
     const [count, setCount] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
+    const [hasMore, setHasMore] = useState(false);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -73,7 +73,6 @@ export default function AccountHistory({ route, navigation }: any) {
     const fetchHistories = async (): Promise<any> => {
         try {
             setCount(0);
-            setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
             const response: AxiosResponse<History[]> = await getAccountHistory(account);
 
             let histories: History[] = [];
@@ -94,6 +93,7 @@ export default function AccountHistory({ route, navigation }: any) {
 
             setRecord(combinedHistories);
             setLoading(true);
+            setHasMore(true); // 초기화 시 hasMore 값을 true로 설정
 
             if (res.data.length < 10) {
                 setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
@@ -265,15 +265,15 @@ export default function AccountHistory({ route, navigation }: any) {
                                     :
                                     <>
                                         <Text style={styles.noHistory}>거래 내역이 없습니다.</Text>
-                                        {hasMore && (
-                                            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
-                                                <Text style={styles.loadMoreButtonText}>더 보기</Text>
-                                            </TouchableOpacity>
-                                        )}
                                     </>
                                 :
                                 <></>
                         }
+                        {hasMore && (
+                            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
+                                <Text style={styles.loadMoreButtonText}>더 보기</Text>
+                            </TouchableOpacity>
+                        )}
                     </View>
                 </ScrollView>
             </View>
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     innerContainer: {
-        flex: 1,
+        flexGrow: 1,
         width: '100%',
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
     },
@@ -295,6 +295,7 @@ const styles = StyleSheet.create({
 
     },
     accountContainer: {
+        flex: 1,
         width: '100%',
         alignItems: 'center',
         backgroundColor: 'rgba(0,115,120,0.04)',
@@ -341,10 +342,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'rgba(0,115,120,0.1)',
         borderRadius: 10,
-        height: 36
+        height: 34
     },
     accountBtnFont: {
-        padding: 10,
         textAlign: 'center',
         fontSize: 16,
         fontWeight: 'bold',
@@ -428,11 +428,15 @@ const pickerSelectStyles = StyleSheet.create({
         width: 60,
         color: 'black',
         fontSize: 16,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     inputAndroid: {
-        width: 80,
+        width: 60,
         color: 'black',
         fontSize: 16,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     placeholder: {
         color: 'black',  // placeholder 텍스트 색상

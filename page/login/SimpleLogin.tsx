@@ -72,7 +72,7 @@ export default function SimpleLogin({ navigation, route }: any) {
                     index: 0,
                     routes: [{name: 'AccountHome', params: {token: data}}]
                 });
-                navigation.navigate('Bottom', {token: data})
+                navigation.navigate('Bottom', {token: data});
             }
         }
     }

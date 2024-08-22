@@ -43,8 +43,14 @@ export default function CardList({route, navigation}: any) {
             if (token) {
                 getMyCardList();
             }
+            if (route.params?.flag) {
+                navigation.navigate('Bottom', {token: token, flag: true});
+            }
         }, [token])
     );
+
+    useEffect(() => {
+    }, []);
 
     const getMyCardList = async () => {
         try {

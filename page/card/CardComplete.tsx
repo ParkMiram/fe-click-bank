@@ -16,6 +16,14 @@ const { width, height } = Dimensions.get('window');
 
 export default function CardComplete({route, navigation}: any) {
     const {token} = route.params;
+
+    const handleGoCardList = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'CardList', params: { token: token, flag: true } }],
+        });
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
@@ -53,7 +61,7 @@ export default function CardComplete({route, navigation}: any) {
                     </Svg>
                     <Text style={styles.text}>카드가 발급되었습니다! 🥳</Text>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CardList', {token})}>
+                <TouchableOpacity style={styles.button} onPress={handleGoCardList}>
                     <Text style={styles.buttonText}>카드 목록</Text>
                 </TouchableOpacity>
             </View>

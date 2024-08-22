@@ -41,7 +41,7 @@ export default function AddCardList({ route, navigation }: any) {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
-                    <Text style={styles.cardText}>카드를 골라주세요.</Text>
+                    <Text style={styles.cardText}>카드를 선택해 주세요.</Text>
                 </View>
                 <FlatList
                     data={combinedData}

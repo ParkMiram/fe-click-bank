@@ -13,8 +13,8 @@ export default function NextButton(props: any) {
             onPress={isPress} 
             activeOpacity={.5}
             disabled={!props.active}
-            style={[styles.nextButton, Shadow.dropShadow, {width: props.width?props.width:"70%"}]}>
-            <Text style={[styles.nextButtonText, {color:props.active?"#000":"#aaa"}]}>
+            style={styles.nextButton}>
+            <Text style={[styles.nextButtonText, {color:props.active?"#fff":"#aaa"}]}>
                 {props.text}
             </Text>
         </TouchableOpacity >
@@ -23,16 +23,16 @@ export default function NextButton(props: any) {
 
 const styles = StyleSheet.create({
     nextButton: {
-        marginBottom: 26,
-        borderWidth: 0,
-        borderRadius: 12,
-        overflow: 'hidden',
+        backgroundColor: '#007378',
+        borderRadius: 10,
+        height: 40,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     nextButtonText: {
-        width: "100%",
-        padding: 12,
-        backgroundColor: "#B7E1CE",
-        textAlign: 'center',
-        fontSize: 18
+        fontSize: 16,
+        color: '#fff',
+        fontWeight: 'bold'
     },
 });

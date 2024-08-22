@@ -1,4 +1,4 @@
-import { BackHandler, Image, StyleSheet, Text, Vibration, View } from 'react-native';
+import {BackHandler, Image, SafeAreaView, StyleSheet, Text, Vibration, View} from 'react-native';
 import { Container } from '../../css/sujin/Container';
 import { useCallback, useEffect, useState } from 'react';
 import Keypad from '../../component/auth/Keypad';
@@ -6,7 +6,7 @@ import axios, { AxiosError } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PaymentData } from '../../types/PayTypes';
 
-const SERVER_URI = "http://34.30.12.64:31000/api/v1/auth";
+const SERVER_URI = "https://just-click.shop/api/v1/auth";
 
 export default function LoginCheck({ navigation, route }: any) {
     const { payData } = route.params;
@@ -62,9 +62,10 @@ export default function LoginCheck({ navigation, route }: any) {
                 });
             }
         }
-
-
     }
+
+    const splitePassword = password.split('');
+
     const removePassword = () => {
         if (password.length == 0) return;
         setInfoText("");
@@ -88,20 +89,27 @@ export default function LoginCheck({ navigation, route }: any) {
     },[])
 
     return (
-        <View style={Container.container}>
-        <View style={Container.innerContainer}>
-            <Image
-                style={styles.logo}
-                source={require('../../assets/image/Click_logo.png')}
-            />
-            <Text>간편 로그인</Text>
-            <View style={styles.passwordBox}>
-                <Text style={styles.passwordStar}>{toStar}</Text>
-                <Text>{infoText}</Text>
+        <SafeAreaView style={Container.container}>
+            <View style={Container.innerContainer}>
+                <Text style={styles.titleText}>간편 로그인</Text>
+                <View style={styles.passwordBox}>
+                    <View style={styles.circleWrap}>
+                        <Text style={splitePassword[0] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                        <Text style={splitePassword[1] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                        <Text style={splitePassword[2] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                        <Text style={splitePassword[3] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                        <Text style={splitePassword[4] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                        <Text style={splitePassword[5] !== undefined ? styles.circleOn : styles.circleOff}>●</Text>
+                    </View>
+                    <View style={infoText !== "" ? styles.infoTextView : { position: "absolute", bottom: 100 }}>
+                        <Text
+                            style={styles.infoText}
+                        >{infoText}</Text>
+                    </View>
+                </View>
+                <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
             </View>
-            <Keypad numberKeyEvent={addPassword} backKeyEvent={removePassword}/>
-        </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -112,11 +120,9 @@ const styles = StyleSheet.create({
         height: 100
     },
     titleText: {
-        paddingTop:38,
-        paddingBottom:12,
-        fontSize: 48,
-        color: "#007378",
-        fontWeight: '600'
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 30,
     },
     passwordBox: {
         flex: 1,
@@ -136,4 +142,32 @@ const styles = StyleSheet.create({
         borderBottomWidth: 2,
         borderColor: "#000"
     },
+    circleWrap: {
+        width: 240,
+        flexDirection: 'row',
+        justifyContent: 'space-between'
+    },
+    circleOn: {
+        color: "#333",
+        fontSize: 30
+    },
+    circleOff: {
+        color: '#ddd',
+        fontSize: 30
+    },
+    infoTextView: {
+        position: 'absolute',
+        bottom: 100,
+        marginTop: 50,
+        backgroundColor: '#f3f3f3',
+        borderRadius: 10,
+    },
+    infoText: {
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+        textAlign: 'center',
+        fontSize: 14,
+        color: '#888',
+        fontWeight: 'bold',
+    }
 });

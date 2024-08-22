@@ -40,7 +40,7 @@ export default function Loading({ navigation, route }: any) {
         <SafeAreaView style={Container.container}>
             <View style={Container.innerContainer}>
                 <CurserLogo />
-                <Text style={{fontSize:20, marginTop:100}}>
+                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
                     결제 정보를 불러오는 중입니다...
                 </Text>
             </View>

@@ -127,8 +127,17 @@ function FriendStack({route}: any) {
 export default function Bottom({route}: any) {
     const token = route?.params?.token || '';
 
+    const initialRoute = () => {
+        if(route?.params?.flag) {
+            return "카드";
+        } else {
+            return "계좌";
+        }
+    }
+
     return (
         <Tab.Navigator
+            initialRouteName={initialRoute()}
             screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
                     let iconImage;

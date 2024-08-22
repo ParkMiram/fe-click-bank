@@ -16,10 +16,10 @@ export default function Success({ navigation, route }: any) {
         <SafeAreaView style={Container.container}>
             <View style={Container.innerContainer}>
                 <CurserLogo />
-                <Text style={{fontSize:48, fontWeight:500, marginTop:80, marginBottom:40}}>
+                <Text style={{fontSize:32, fontWeight: 'bold', marginBottom:30}}>
                     결제 성공!
                 </Text>
-                <Text style={{fontSize:18}}>
+                <Text style={{fontSize:20}}>
                     잠시 후 이전 페이지로 돌아갑니다.
                 </Text>
             </View>
