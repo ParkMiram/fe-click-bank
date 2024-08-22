@@ -185,11 +185,10 @@ export const AccountDetail = ({navigation, route}: any) => {
     const SetMainAccountAlert = () => {
         Alert.alert("대표 계좌", "대표 계좌로 설정하시겠습니까?",
             [
-                {text:"조아요", style:"default"},
-                {text:"시른데요", style:"cancel", 
+                {text:"조아요", style:"default", 
                     onPress: async(): Promise<void> => {
                         try {
-                            const response: AxiosResponse<any> = await authApi.setMainAccount(userCode, account);
+                            const response: AxiosResponse<any> = await authApi.setMainAccount(userCode, {data: account});
                             if (response.status == 200) {
                                 alert("대표 계좌가 변경되었습니다.");
                             }
@@ -200,7 +199,8 @@ export const AccountDetail = ({navigation, route}: any) => {
                             }
                         }
                     }
-                }
+                },
+                {text:"시른데요", style:"cancel"}
             ]
         );
     }
