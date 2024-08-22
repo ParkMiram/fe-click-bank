@@ -146,7 +146,7 @@ export default function Bottom({route}: any) {
                 tabBarInactiveTintColor: 'gray',
             })}
         >
-            <Tab.Screen name="내 계좌" component={AccountStack} initialParams={{token}}/>
+            <Tab.Screen name="계좌" component={AccountStack} initialParams={{token}}/>
             <Tab.Screen name="친구" component={FriendStack} initialParams={{token}} options={{headerShown: false}}/>
             <Tab.Screen name="카드" component={CardStack} initialParams={{token}}/>
         </Tab.Navigator>
