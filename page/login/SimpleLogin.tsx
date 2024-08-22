@@ -70,8 +70,9 @@ export default function SimpleLogin({ navigation, route }: any) {
                 }
                 navigation.reset({
                     index: 0,
-                    routes: [{name: 'ClickHome', params: {token: data}}]
+                    routes: [{name: 'AccountHome', params: {token: data}}]
                 });
+                navigation.navigate('Bottom', {token: data})
             }
         }
     }

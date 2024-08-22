@@ -37,7 +37,9 @@ export default function AccountHistory({ route, navigation }: any) {
     const [purpose, setPurpose] = useState("전체");
     const [count, setCount] = useState(0);
     const [hasMore, setHasMore] = useState(true);
-    const [isRefreshing, setIsRefreshing] = useState(false)
+    const [isRefreshing, setIsRefreshing] = useState(false);
+    const [loading, setLoading] = useState(false);
+
     const purposes = [
         { label: '입금', value: '입금' },
         { label: '출금', value: '출금' },
@@ -91,6 +93,7 @@ export default function AccountHistory({ route, navigation }: any) {
             // });
 
             setRecord(combinedHistories);
+            setLoading(true);
 
             if (res.data.length < 10) {
                 setHasMore(false); // 불러온 데이터가 10개 미만일 경우 더 이상 데이터를 불러오지 않도록 설정
@@ -237,36 +240,40 @@ export default function AccountHistory({ route, navigation }: any) {
                             {/*<Image source={require('../../assets/image/select.png')} />*/}
                         </View>
                         {
-                            filteredHistories.length > 0 ?
-                                filteredHistories.slice().map((item: History, index) => (
-                                    <TouchableOpacity
-                                        key={item.historyId}
-                                        style={[styles.history, index === filteredHistories.length - 1 ? { borderBottomWidth: 0 } : {} ]}
-                                        onPress={() => navigateToDetail(item)}
-                                    >
-                                        <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
-                                        <View style={styles.historyInfo}>
-                                            <Text style={styles.historyNameFont}>{item.bhName}</Text>
-                                            <View style={styles.historyAmountArea}>
-                                                {/*<Text style={styles.historyAmountFont}>{item.bhStatus}</Text>*/}
-                                                <Text style={[styles.historyAmountFontColor, {color: item.bhStatus === '입금' ? '#4169e1' : '#dc143c'}]}>
-                                                    {item.bhStatus === '출금' ? `-` : ''}{item.bhAmount.toLocaleString()}원
-                                                </Text>
-                                                {/*<Text style={styles.historyAmountFont}>원</Text>*/}
+                            loading ?
+                                filteredHistories.length > 0 ?
+                                    filteredHistories.slice().map((item: History, index) => (
+                                        <TouchableOpacity
+                                            key={item.historyId}
+                                            style={[styles.history, index === filteredHistories.length - 1 ? { borderBottomWidth: 0 } : {} ]}
+                                            onPress={() => navigateToDetail(item)}
+                                        >
+                                            <Text style={styles.historyDateFont}>{new Date(item.bhAt).toLocaleString()}</Text>
+                                            <View style={styles.historyInfo}>
+                                                <Text style={styles.historyNameFont}>{item.bhName}</Text>
+                                                <View style={styles.historyAmountArea}>
+                                                    {/*<Text style={styles.historyAmountFont}>{item.bhStatus}</Text>*/}
+                                                    <Text style={[styles.historyAmountFontColor, {color: item.bhStatus === '입금' ? '#4169e1' : '#dc143c'}]}>
+                                                        {item.bhStatus === '출금' ? `-` : ''}{item.bhAmount.toLocaleString()}원
+                                                    </Text>
+                                                    {/*<Text style={styles.historyAmountFont}>원</Text>*/}
+                                                </View>
                                             </View>
-                                        </View>
-                                        <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
-                                    </TouchableOpacity>
-                                ))
+                                            <Text style={styles.historyBalanceFont}>잔액 {item.bhBalance.toLocaleString()}원</Text>
+                                        </TouchableOpacity>
+                                    ))
+                                    :
+                                    <>
+                                        <Text style={styles.noHistory}>거래 내역이 없습니다.</Text>
+                                        {hasMore && (
+                                            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
+                                                <Text style={styles.loadMoreButtonText}>더 보기</Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    </>
                                 :
-                                <Text style={styles.noHistory}>거래 내역이 없습니다.</Text>
+                                <></>
                         }
-
-                        {hasMore && (
-                            <TouchableOpacity style={styles.loadMoreButton} onPress={loadMoreHistories}>
-                                <Text style={styles.loadMoreButtonText}>더 보기</Text>
-                            </TouchableOpacity>
-                        )}
                     </View>
                 </ScrollView>
             </View>

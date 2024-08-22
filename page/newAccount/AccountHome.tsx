@@ -8,7 +8,7 @@ import {
     StyleSheet,
     View,
     Dimensions,
-    RefreshControl
+    RefreshControl, Alert
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { getAccountByUserId, getUserInfo } from "../../component/api/NewAccountApi";
@@ -45,6 +45,7 @@ export default function AccountHome({ route, navigation }: any) {
 
     const copyCodeToClipboard = async () => {
         await Clipboard.setStringAsync(userCode);
+        Alert.alert("친구 코드", "복사되었습니다.");
     };
 
     const toggleNumberHidden = (accountId: string) => {

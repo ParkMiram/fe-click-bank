@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { TouchableOpacity, Image, TextInput, Text, Dimensions, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+import { TouchableOpacity, Image, TextInput, Text, Platform, SafeAreaView, StatusBar, StyleSheet, View } from 'react-native';
+
 interface CardResponse {
     cardImg:string;
     annualFee:number;
     cardEvent:string;
-
 }
+
 export default function CardInformation({ route, navigation }:any) {
     const [cardImg, setCardImg] = useState<string>('');
     const [cardEvent,setCardEvent] = useState<string>('');
+
+    console.log("라우트");
+    console.log(route);
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>

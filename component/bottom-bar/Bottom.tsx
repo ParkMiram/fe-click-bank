@@ -36,7 +36,6 @@ import SendingTransfer from '../../page/trasfer/SendingTransfer';
 import Transfer from '../../page/trasfer/Transfer';
 import {CreateSavingAccount} from '../../page/newAccount/CreateSavingAccount';
 
-
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
@@ -44,11 +43,11 @@ function AccountStack({navigation, route}: any) {
     const token = route?.params?.token || '';
     React.useLayoutEffect(() => {
         const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === 'CreateAccount' || routeName === 'SavingAccountList' || routeName === 'AccountPassword' || routeName === 'AccountInformation' || routeName === 'AccountTerms') {
-            navigation.setOptions({tabBarStyle: {display: 'none'}});
-        } else {
-            navigation.setOptions({tabBarStyle: {display: ''}});
-        }
+        // if (routeName === 'CreateAccount' || routeName === 'SavingAccountList' || routeName === 'AccountPassword' || routeName === 'AccountInformation' || routeName === 'AccountTerms') {
+        //     navigation.setOptions({tabBarStyle: {display: 'none'}});
+        // } else {
+        navigation.setOptions({tabBarStyle: {display: ''}});
+        // }
     }, [navigation, route]);
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -81,11 +80,11 @@ function CardStack({navigation, route}: any) {
 
     React.useLayoutEffect(() => {
         const routeName = getFocusedRouteNameFromRoute(route);
-        if (routeName === 'CreateCard' || routeName === 'ApplicantInformation' || routeName === 'CardPassword' || routeName === 'CardPassword' || routeName === 'CardComplete') {
-            navigation.setOptions({tabBarStyle: {display: 'none'}});
-        } else {
-            navigation.setOptions({tabBarStyle: {display: undefined}});
-        }
+        // if (routeName === 'CreateCard' || routeName === 'ApplicantInformation' || routeName === 'CardPassword' || routeName === 'CardPassword' || routeName === 'CardComplete') {
+        //     navigation.setOptions({tabBarStyle: {display: 'none'}});
+        // } else {
+        navigation.setOptions({tabBarStyle: {display: undefined}});
+        // }
     }, [navigation, route]);
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
@@ -121,24 +120,9 @@ function FriendStack({route}: any) {
                 component={FriendSearch}
                 initialParams={{token}}
             />
-
-
         </Stack.Navigator>
     );
 }
-
-// function HistoryStack({ route }:any) {
-//   const token = route?.params?.token || '';
-//   return (
-//     <Stack.Navigator screenOptions={{ headerShown: false }}>
-//       <Stack.Screen name="AccountHistory" component={AccountHistory} initialParams={{ token }} />
-//       <Stack.Screen name="AccountHistoryDetail" component={AccountHistoryDetail} initialParams={{ token }} />
-//       <Stack.Screen name="AccountHistoryStatistics" component={AccountHistoryStatistics} initialParams={{ token }} />
-
-
-//     </Stack.Navigator>
-//   );
-// }
 
 export default function Bottom({route}: any) {
     const token = route?.params?.token || '';
@@ -148,16 +132,13 @@ export default function Bottom({route}: any) {
             screenOptions={({route}) => ({
                 tabBarIcon: ({color, size}) => {
                     let iconImage;
-                    if (route.name === '내 계좌') {
+                    if (route.name === '계좌') {
                         iconImage = require('../../assets/image/account.png');
-                    } else if (route.name === 'Friend') {
+                    } else if (route.name === '친구') {
                         iconImage = require('../../assets/image/friend.png');
-                    } else if (route.name === '카드💳') {
+                    } else if (route.name === '카드') {
                         iconImage = require('../../assets/image/card.png');
                     }
-                    // else if (route.name === '거래내역') {
-                    //   iconImage = require('../../assets/image/history.png');
-                    // }
                     return <Image source={iconImage} style={{width: size, height: size, tintColor: color}}/>;
                 },
                 tabBarLabel: () => null,
@@ -166,9 +147,8 @@ export default function Bottom({route}: any) {
             })}
         >
             <Tab.Screen name="내 계좌" component={AccountStack} initialParams={{token}}/>
-            <Tab.Screen name="Friend" component={FriendStack} initialParams={{token}} options={{headerShown: false}}/>
-            <Tab.Screen name="카드💳" component={CardStack} initialParams={{token}}/>
-            {/* <Tab.Screen name="거래내역" component={HistoryStack} initialParams={{ token }} /> */}
+            <Tab.Screen name="친구" component={FriendStack} initialParams={{token}} options={{headerShown: false}}/>
+            <Tab.Screen name="카드" component={CardStack} initialParams={{token}}/>
         </Tab.Navigator>
     );
 }

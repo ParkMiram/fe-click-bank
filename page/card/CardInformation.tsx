@@ -18,6 +18,8 @@ export default function CardInformation({ route, navigation }:any) {
     const [cardProduct, setCardProduct] = useState<CardProductResponse>();
     const token = route.params?.token;
 
+    console.log("카드 id: " + id);
+
     useEffect(() => {
         getCardProductInfo();
     },[])
@@ -76,7 +78,7 @@ export default function CardInformation({ route, navigation }:any) {
                 <TouchableOpacity style={styles.applyButton} onPress={() =>
                     navigation.navigate('ApplicantInformationCheck', {
                         cardCheck: "CHECK",
-                        cardTransportation: "PREPATMENT",
+                        cardTransportation: "PREPAYMENT",
                         id,
                         token,
                     })}

@@ -24,7 +24,7 @@ type data = {
     cardCheck: CardCheck;
     account: string;
     cardTransportation: CardTransportation;
-    cardProductId: number;
+    id: number;
     cardPaymentDate: number;
 }
 
@@ -50,7 +50,7 @@ export default function ApplicantInformationCheck({route, navigation}: any) {
         label: day.toString(),
         value: day.toString(),
     }));
-    const {cardPassword, cardCheck, cardTransportation, cardProductId}: data = route.params;
+    const {cardPassword, cardCheck, cardTransportation, id}: data = route.params;
 
     const {token} = route.params;
 
@@ -90,7 +90,7 @@ export default function ApplicantInformationCheck({route, navigation}: any) {
                 account,
                 cardCheck,
                 cardTransportation,
-                cardProductId,
+                id,
                 token
             });
         }

@@ -1,27 +1,38 @@
-
-import { Modal, Platform, View, StatusBar, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView } from 'react-native';
-import { useCallback,useEffect, useState } from "react";
-import { getMyCard } from "../../component/api/CardListApi";
-import { deleteCard } from '../../component/api/CardApi';
-import { useFocusEffect } from '@react-navigation/native';
-import EditCard from './EditCard';
-
+import {
+    Modal,
+    Platform,
+    View,
+    StatusBar,
+    Text,
+    StyleSheet,
+    Image,
+    TouchableOpacity,
+    SafeAreaView,
+    Dimensions, Alert
+} from 'react-native';
+import React, {useCallback, useEffect, useState} from "react";
+import {getMyCard} from "../../component/api/CardListApi";
+import {deleteCard} from '../../component/api/CardApi';
+import {useFocusEffect} from '@react-navigation/native';
+import {Circle, Svg} from "react-native-svg";
 
 interface CardResponse {
-    cardId : number
-    cardName : string
-    cardNumber : string
-    account : string
-    cardCVC : string
+    cardId: number
+    cardName: string
+    cardNumber: string
+    account: string
+    cardCVC: string
     cardMonthLimit: number
-    cardAnnualFee : number
+    cardAnnualFee: number
     cardProduct: {
-        cardImg : string
+        cardImg: string
         cardBenefits: string
     }
 }
 
-export default function MyCard({ route, navigation }: any) {
+const {width, height} = Dimensions.get('window');
+
+export default function MyCard({route, navigation}: any) {
     const id = route.params?.id;
     console.log("Card ID:", id);
     const [myCard, setMyCard] = useState<CardResponse>();
@@ -30,9 +41,8 @@ export default function MyCard({ route, navigation }: any) {
 
     useFocusEffect(
         useCallback(() => {
-                 getMyCardInfo();
-    }, [])
-          
+            getMyCardInfo();
+        }, [])
     );
     const getMyCardInfo = async () => {
         try {
@@ -45,15 +55,23 @@ export default function MyCard({ route, navigation }: any) {
     }
 
     const handleDeleteCard = async () => {
-        try {
-            if (myCard && myCard.cardNumber) {
-                await deleteCard(token, myCard.cardNumber);
-                setModalVisible(false); // 모달을 닫음
-                // navigation.goBack(); // 카드 목록 화면으로 돌아감
+        Alert.alert("카드 해지", "카드 해지하시겠습니까?", [
+            { text: "취소", style: "default" },
+            {
+                text: "삭제", style: "destructive",
+                onPress: async (): Promise<void> => {
+                    try {
+                        if (myCard && myCard.cardNumber) {
+                            await deleteCard(token, myCard.cardNumber);
+                            Alert.alert("카드 해지", "해지되었습니다.");
+                            navigation.goBack();
+                        }
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
             }
-        } catch (error) {
-            console.log(error);
-        }
+        ]);
     }
 
     return (
@@ -61,56 +79,81 @@ export default function MyCard({ route, navigation }: any) {
             <View style={styles.innerContainer}>
                 <View style={styles.nameContainer}>
                     <Text style={styles.cardText}>카드 정보</Text>
-                    <TouchableOpacity onPress={() => navigation.navigate('EditCard', {id,token})}>
-                        <View style={styles.imageWrapper}>
-                            <Image
-                                source={require('../../assets/image/more.png')}
-                                style={styles.imageMore} resizeMode="contain"
+                    <TouchableOpacity style={styles.imageWrapper}
+                                      onPress={() => navigation.navigate('EditCard', {id, token, cardName: myCard?.cardName})}>
+                        <Svg
+                            width={16}
+                            height={4}
+                            fill="none"
+                            style={styles.imageMore}
+                        >
+                            <Circle
+                                cx={8}
+                                cy={2}
+                                r={1}
+                                stroke="#333"
+                                strokeLinecap="round"
+                                strokeWidth={2}
                             />
-                        </View>
+                            <Circle
+                                cx={2}
+                                cy={2}
+                                r={1}
+                                stroke="#333"
+                                strokeLinecap="round"
+                                strokeWidth={2}
+                            />
+                            <Circle
+                                cx={14}
+                                cy={2}
+                                r={1}
+                                stroke="#333"
+                                strokeLinecap="round"
+                                strokeWidth={2}
+                            />
+                        </Svg>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.cardContainer}>
-                    <View style={styles.cardImageContainer}>
-                    <Image source={{ uri: myCard?.cardProduct.cardImg }} style={styles.cardImage} />
-                      
+                <View style={{ flex: 1, justifyContent: 'space-between', marginTop: 30 }}>
+                    <View style={styles.cardContainer}>
+                        <View style={styles.cardImageContainer}>
+                            <Image source={{uri: myCard?.cardProduct.cardImg}} style={styles.cardImage}/>
+                        </View>
+                        <Text style={styles.cardName}>{myCard?.cardName}</Text>
+                        <View style={styles.infoWrap}>
+                            <Text style={styles.infoLabel}>카드 번호</Text>
+                            <Text style={styles.infoValue}>{myCard?.cardNumber}</Text>
+                        </View>
+                        <View style={[styles.infoWrap, { marginTop: 10 }]}>
+                            <Text style={styles.infoLabel}>연동 계좌</Text>
+                            <Text style={styles.infoValue}>{myCard?.account}</Text>
+                        </View>
                     </View>
-                    <Text style={styles.cardName}>{myCard?.cardName}</Text>
-                 
-                        <Text style={styles.infoLabel}>카드 번호</Text>
-                   
-                    <Text style={styles.cardDetailText}>{myCard?.cardNumber}</Text>
-                  
-                    <Text style={styles.infoLabel}>연동 계좌</Text>
-                    <Text style={styles.infoValue}>{myCard?.account}</Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                    <TouchableOpacity style={styles.removeButton} onPress={() => setModalVisible(true)}>
+                    <TouchableOpacity style={styles.removeButton} onPress={handleDeleteCard}>
                         <Text style={styles.removeButtonText}>해지하기</Text>
                     </TouchableOpacity>
                 </View>
-                
-        
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={modalVisible}
-                    onRequestClose={() => setModalVisible(false)}
-                >
-                    <View style={styles.modalContainer}>
-                        <View style={styles.modalContent}>
-                            <Text style={styles.modalText}>카드를 해지 하시겠습니까?</Text>
-                            <View style={styles.modalButtonContainer}>
-                                <TouchableOpacity style={styles.modalButton} onPress={handleDeleteCard}>
-                                    <Text style={styles.modalButtonText}>확인</Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>
-                                    <Text style={styles.modalButtonText}>취소</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    </View>
-                </Modal>
+
+                {/*<Modal*/}
+                {/*    animationType="slide"*/}
+                {/*    transparent={true}*/}
+                {/*    visible={modalVisible}*/}
+                {/*    onRequestClose={() => setModalVisible(false)}*/}
+                {/*>*/}
+                {/*    <View style={styles.modalContainer}>*/}
+                {/*        <View style={styles.modalContent}>*/}
+                {/*            <Text style={styles.modalText}>카드를 해지 하시겠습니까?</Text>*/}
+                {/*            <View style={styles.modalButtonContainer}>*/}
+                {/*                <TouchableOpacity style={styles.modalButton} onPress={handleDeleteCard}>*/}
+                {/*                    <Text style={styles.modalButtonText}>확인</Text>*/}
+                {/*                </TouchableOpacity>*/}
+                {/*                <TouchableOpacity style={styles.modalButton} onPress={() => setModalVisible(false)}>*/}
+                {/*                    <Text style={styles.modalButtonText}>취소</Text>*/}
+                {/*                </TouchableOpacity>*/}
+                {/*            </View>*/}
+                {/*        </View>*/}
+                {/*    </View>*/}
+                {/*</Modal>*/}
             </View>
         </SafeAreaView>
     );
@@ -118,38 +161,26 @@ export default function MyCard({ route, navigation }: any) {
 
 
 const styles = StyleSheet.create({
-    innerContainer: {
-        flex: 1,
-        width: "100%",
-        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: 'white',
     },
-    scrollContainer: {
-        alignItems: 'center',
-        padding: 20,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        width: '100%',
-        marginBottom: 20,
+    innerContainer: {
+        flex: 1,
+        width: width - 40,
+        marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
+        marginHorizontal: 20,
+        marginBottom: 20
     },
     nameContainer: {
-        width: '85%',
+        width: '100%',
         flexDirection: 'row',
-        marginTop: 15,
-        justifyContent: 'center',
-        marginBottom:10
+        justifyContent: 'space-between',
+        marginVertical: 20
     },
     cardText: {
-        fontSize: 25,
+        fontSize: 18,
+        fontWeight: 'bold'
     },
     headerText: {
         fontSize: 24,
@@ -166,26 +197,22 @@ const styles = StyleSheet.create({
         width: '100%',
         alignItems: 'center',
         marginBottom: 20,
+        flex: 1
     },
     cardImageContainer: {
-        width: 100,
-        height: 150,
-        borderWidth: 1,
-        borderColor: '#cfcfcf',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 10,
     },
     cardImage: {
         width: 100,
         height: 150,
-        // backgroundColor: '#B7E1CE',
         borderRadius: 10,
     },
     cardImageText: {
         fontSize: 16,
         color: '#cfcfcf',
-    }, 
+    },
     button: {
         flex: 1,
         padding: 10,
@@ -196,10 +223,9 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     cardName: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 10,
-
+        marginBottom: 30,
     },
     barcodeButton: {
         backgroundColor: '#000000',
@@ -211,7 +237,7 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 16,
     },
-    
+
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
@@ -225,7 +251,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center'
     },
-    modalButtonText:{
+    modalButtonText: {
         fontSize: 16
     },
     modalText: {
@@ -236,53 +262,44 @@ const styles = StyleSheet.create({
     },
     cardDetailText: {
         fontSize: 14,
-        color: '#000000',
-        marginBottom: 20,
+    },
+    infoWrap: {
+        width: '100%',
+        backgroundColor: '#f3f3f3',
+        padding: 20,
+        borderRadius: 10
     },
     infoLabel: {
-        fontSize: 16,
         color: '#888888',
-        marginBottom: 5,
-        marginTop:10
+        fontWeight: 'bold',
+        marginBottom: 5
     },
     infoValue: {
-        fontSize: 16,
-        marginBottom: 20,
-    },
-    buttonContainer: {
-        width: '85%',
-        marginTop:40
+        fontSize: 18,
     },
     infoButton: {
         backgroundColor: '#B7E1CE',
         padding: 15,
         borderRadius: 10,
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 10,
-    },
-    buttonText: {
-        fontSize: 16,
     },
     removeButton: {
-        backgroundColor: '#B7E1CE',
-        padding: 15,
+        width: '100%',
+        backgroundColor: 'rgba(220,20,60,0.1)',
+        height: 40,
         borderRadius: 10,
         alignItems: 'center',
-        marginBottom: 10,
+        justifyContent: 'center'
     },
     removeButtonText: {
         fontSize: 16,
         fontWeight: 'bold',
+        color: '#dc143c',
     },
     imageWrapper: {
-        width: 90,
-        height: 90,
-        borderRadius: 45,
-        overflow: 'hidden',
-        marginLeft: 150,
-    },  
+        padding: 10
+    },
     imageMore: {
         width: 50,
         height: 20,
@@ -301,6 +318,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor:'#B7E1CE',
-}
+        borderColor: '#B7E1CE',
+    }
 });

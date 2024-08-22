@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     sendButtonText: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#fff',
         fontWeight: 'bold'
     },

@@ -41,6 +41,7 @@ export default function CreateCard({route, navigation}: any) {
     const {token} = route.params;
     const id: number = route.params?.id;
     const cardProductId: number = route.params?.id;
+    console.log("카드 프로덕트 아이디: " + cardProductId);
     const [cardProduct, setCardProduct] = useState<CardProductResponse>();
     const toggleFeature = () => {
         setApplyFeature(!applyFeature);

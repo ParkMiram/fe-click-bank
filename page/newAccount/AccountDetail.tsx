@@ -265,35 +265,28 @@ export const AccountDetail = ({navigation, route}: any) => {
 
     const SavingAccountSettings = () => (
         <>
-            <TouchableOpacity style={styles.accountDelete} onPress={() => setModalVisible(true)}>
+            <TouchableOpacity style={styles.accountDelete} onPress={handleDeleteAccount}>
                 <Text style={styles.accountDeleteText}>계좌 삭제</Text>
-                <Svg
-                    width={24}
-                    height={23}
-                    fill="none"
-                >
-                    <Path stroke="#222" d="m9 5.75 6 5.75-6 5.75"/>
-                </Svg>
             </TouchableOpacity>
-            <Modal
-                transparent={true}
-                visible={modalVisible}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalContent}>
-                        <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>
-                        <View style={styles.buttonContainer}>
-                            <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>
-                                <Text style={styles.buttonText}>확인</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
-                                <Text style={styles.buttonText}>취소</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+            {/*<Modal*/}
+            {/*    transparent={true}*/}
+            {/*    visible={modalVisible}*/}
+            {/*    onRequestClose={() => setModalVisible(false)}*/}
+            {/*>*/}
+            {/*    <View style={styles.modalContainer}>*/}
+            {/*        <View style={styles.modalContent}>*/}
+            {/*            <Text style={styles.modalText}>계좌를 삭제 하시겠습니까?</Text>*/}
+            {/*            <View style={styles.buttonContainer}>*/}
+            {/*                <TouchableOpacity style={styles.button} onPress={handleDeleteAccount}>*/}
+            {/*                    <Text style={styles.buttonText}>확인</Text>*/}
+            {/*                </TouchableOpacity>*/}
+            {/*                <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>*/}
+            {/*                    <Text style={styles.buttonText}>취소</Text>*/}
+            {/*                </TouchableOpacity>*/}
+            {/*            </View>*/}
+            {/*        </View>*/}
+            {/*    </View>*/}
+            {/*</Modal>*/}
         </>
     );
 
@@ -421,7 +414,7 @@ export const AccountDetail = ({navigation, route}: any) => {
                                 </Svg>
                                 <Text style={styles.accountName}>{accountName}</Text>
                             </TouchableOpacity>
-                            <View style={styles.settingsContainer}>
+                            <View style={[styles.settingsContainer, type !== 1 && type !== 2 ? { justifyContent: 'flex-end' } : {} ]}>
                                 {/*<View style={styles.row}>*/}
                                 {/*    <Text style={styles.sectionHeader}>계좌 설정</Text>*/}
                                 {/*</View>*/}
