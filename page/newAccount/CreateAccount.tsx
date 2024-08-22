@@ -137,13 +137,14 @@ const styles = StyleSheet.create({
         width: width - 40,
         marginHorizontal: 20,
         height: 40,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginBottom: 20
     },
     buttonText: {
         fontSize: 16,
         color: '#fff',
         fontWeight: 'bold',
-        textAlign: 'center'
+        textAlign: 'center',
     },
     kindImg: {
         width: 30,
