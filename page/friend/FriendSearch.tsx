@@ -35,7 +35,7 @@ export default function FriendSearch(props: any) {
     const getFriend = async () => {
         try {
             if(friendCode.length === 5) {
-                const response: AxiosResponse<any, any> = await axios.get(`http://34.30.12.64:31000/api/v1/auth?code=${friendCode}`);
+                const response: AxiosResponse<any, any> = await axios.get(`https://just-click.shop/api/v1/auth?code=${friendCode}`);
                 setFriend(response.data);
                 setSearchFlag(true);
             } else {

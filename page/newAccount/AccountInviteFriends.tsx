@@ -10,11 +10,11 @@ import {
     Image,
     SafeAreaView,
     FlatList,
-    Alert
+    Alert, Dimensions
 } from "react-native";
 import {Circle, Path, Svg} from "react-native-svg";
 import { getFriends, waitGroupMember } from "../../component/api/NewAccountApi";
-
+import MyFriendSearch from "../friend/MyFriendSearch";
 
 interface props {
     token: string;
@@ -43,28 +43,41 @@ interface ToggleButtonProps {
     onToggle: (item: GroupMemberRequset, isActive: boolean) => void;
 }
 
+const {width, height} = Dimensions.get('window');
+
 export default function AccountInviteFriends({ navigation, route }: any) {
     const { token, account }: props = route.params;
     const [groupMember, setGroupMember] = useState<GroupMemberInfo[]>([]);
     const [members, setMembers] = useState<GroupMemberRequset[]>([]);
+    // 내 친구 검색
+    const [srchMyFriend, setSrchMyFriend] = useState('');
+
     console.log("members : "+members.length)
 
+    // 내 친구 내 검색
+    const searchFriends = groupMember.filter((friend: { name: string | string[]; }) =>
+        friend.name.includes(srchMyFriend)
+    );
+
     const ToggleButton = ({ item, isActive, onToggle }: ToggleButtonProps) => {
-        const [color, setColor] = useState(isActive ? '#1D9287' : '#6BC29A');
-        const [fillColor, setFillColor] = useState(isActive ? '#1D9287' : 'none');
-        const [fontColor, setFontColor] = useState(isActive ? '#ffffff' : '#6BC29A');
-    
+        const [color, setColor] = useState(isActive ? '#007378' : '#ddd');
+        const [fillColor, setFillColor] = useState(isActive ? '#007378' : '#fff');
+        const [fontColor, setFontColor] = useState(isActive ? '#fff' : '#ddd');
+
         const handlePress = () => {
-            const newColor = color === '#6BC29A' ? '#1D9287' : '#6BC29A';
-            setColor(prevColor => (prevColor === '#6BC29A' ? '#1D9287' : '#6BC29A'));
-            setFillColor(prevFillColor => (prevFillColor === 'none' ? '#1D9287' : 'none'));
-            setFontColor(prevFontColor => (prevFontColor === '#6BC29A' ? '#ffffff' : '#6BC29A'));
-            onToggle(item, newColor === '#1D9287');
+            const newColor = color === '#ddd' ? '#007378' : '#ddd';
+            setColor(newColor);
+            setFillColor(newColor);
+            setFontColor(newColor === '#ddd' ? '#ddd' : '#fff');
+            onToggle(item, newColor === '#007378');
         };
-    
+
         return (
-            <TouchableOpacity style={styles.transfer} onPress={handlePress}>
-                <Svg width={24} height={24} fill="none">
+            <TouchableOpacity style={styles.checkbox} onPress={handlePress}>
+                <Svg
+                    width={30} height={30} fill="none"
+                    viewBox="0 0 24 24"
+                >
                     <Circle cx={12} cy={12} r={9} stroke={color} fill={fillColor} />
                     <Path stroke={fontColor} d="m8 12 3 3 5-6" />
                 </Svg>
@@ -84,6 +97,7 @@ export default function AccountInviteFriends({ navigation, route }: any) {
         try {
             const response = await waitGroupMember(token, account, members);
             console.log('API Response:', response.data);
+            Alert.alert("모임 통장 초대", "초대되었습니다.")
             navigation.goBack();
         } catch (error) {
             // Handle error
@@ -92,18 +106,19 @@ export default function AccountInviteFriends({ navigation, route }: any) {
         }
     };
 
+    const fetchData = async () => {
+        try {
+            const response = await getFriends(token, account);
+            setGroupMember(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
+            Alert.alert("모임 통장 초대", "모임에 초대할 멤버가 없습니다.")
+            navigation.navigate("AccountDetail", { token })
+        }
+    };
+
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getFriends(token, account);
-                setGroupMember(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error(error);
-                Alert.alert("모임 통장 초대", "모임에 초대할 멤버가 없습니다.")
-                navigation.navigate("AccountDetail", { token })
-            }
-        };
         fetchData();
     }, []);
 
@@ -151,31 +166,43 @@ export default function AccountInviteFriends({ navigation, route }: any) {
             <>
                 <View style={styles.wrap}>
                     <View style={styles.title}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <Svg
+                                width={10}
+                                height={16}
+                                fill="none"
+                                viewBox="0 0 8 14"
+                            >
+                                <Path stroke="#222" d="M7 1 1 7l6 6"/>
+                            </Svg>
+                        </TouchableOpacity>
                         <Text style={styles.titleTxt}>모임 통장 초대</Text>
                     </View>
                     {/* search */}
                     <View style={styles.searchWrap}>
-                        <TextInput style={styles.searchInpt} placeholder='내 친구 검색하기'/>
-                        <TouchableOpacity>
-                            <Svg
-                                width={14}
-                                height={14}
-                                fill="none"
-                            >
-                                <Circle cx={6.25} cy={6.25} r={5.25} stroke="#404040"/>
-                                <Path stroke="#404040" strokeLinecap="round" d="m13 13-3-3"/>
-                            </Svg>
-                        </TouchableOpacity>
+                        {/*<TextInput style={styles.searchInpt} placeholder='내 친구 검색하기'/>*/}
+                        {/*<TouchableOpacity>*/}
+                        {/*    <Svg*/}
+                        {/*        width={14}*/}
+                        {/*        height={14}*/}
+                        {/*        fill="none"*/}
+                        {/*    >*/}
+                        {/*        <Circle cx={6.25} cy={6.25} r={5.25} stroke="#404040"/>*/}
+                        {/*        <Path stroke="#404040" strokeLinecap="round" d="m13 13-3-3"/>*/}
+                        {/*    </Svg>*/}
+                        {/*</TouchableOpacity>*/}
+                        <MyFriendSearch
+                            srchMyFriend={srchMyFriend}
+                            setSrchMyFriend={setSrchMyFriend}
+                        />
                     </View>
                     <View style={styles.listWrap}>
-                        <View>
-                            {/* list */}
-                            <FlatList
-                                data={groupMember}
-                                renderItem={renderItem}
-                                keyExtractor={item => item.code.toString()}
-                            />
-                        </View>
+                        {/* list */}
+                        <FlatList
+                            data={searchFriends}
+                            renderItem={renderItem}
+                            keyExtractor={item => item.code.toString()}
+                        />
                     </View>
                 </View>
             </>
@@ -186,14 +213,12 @@ export default function AccountInviteFriends({ navigation, route }: any) {
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
                 <FriendList />
-                <View style={styles.footer} >
-                    <TouchableOpacity
-                        style={styles.sendButton}
-                        onPress={handleMembersPress}
-                    >
-                        <Text style={styles.sendButtonText}>초대하기</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={styles.sendButton}
+                    onPress={handleMembersPress}
+                >
+                    <Text style={styles.sendButtonText}>초대하기</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )
@@ -212,31 +237,28 @@ const styles = StyleSheet.create({
     },
     wrap: {
         width: '100%',
-        height: '100%',
+        flex: 1,
     },
     title: {
         width: '100%',
-        height: 60,
-        display: 'flex',
+        backgroundColor: 'white',
+        flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#eeeeee'
+        paddingHorizontal: 20,
+        marginVertical: 20
     },
     titleTxt: {
-        fontSize: 16,
-        fontWeight: "500"
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10
     },
     searchWrap: {
         width: '100%',
-        borderRadius: 5,
         backgroundColor: '#f8f8f8',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 20,
-        paddingVertical: 15,
-        marginBottom: 20
+        paddingLeft: 20,
     },
     searchInpt: {
         flex: 1,
@@ -246,17 +268,12 @@ const styles = StyleSheet.create({
         marginLeft: 10
     },
     listWrap: {
-        height: '100%',
-        padding: 20,
+        width: width - 40,
         backgroundColor: '#fff',
-    },
-    friendList: {
-        position: 'relative',
-        backgroundColor: '#ffffff',
-        paddingBottom: 120,
-        width: '100%'
+        margin: 20
     },
     list: {
+        width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -277,31 +294,27 @@ const styles = StyleSheet.create({
         fontWeight: '500',
         fontSize: 16,
     },
-    transfer: {
-        width: 50,
+    checkbox: {
+        width: 30,
         height: 30,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
     },
-    footer: {
-        flex: 1,
-        width: '100%',
-        alignItems: 'center',
-    },
     sendButton: {
-        marginTop: Platform.OS === 'ios'? 50 : 30,
-        backgroundColor: '#B7E1CE',
-        padding: 16,
+        backgroundColor: '#007378',
+        height: 40,
         alignItems: 'center',
-        borderRadius: 25,
-        width: '60%',
+        justifyContent: 'center',
+        borderRadius: 10,
+        width: width - 40,
+        marginHorizontal: 20,
         alignSelf: 'center',
-        position: 'absolute',
-        bottom: 30,
+        marginBottom: 20
     },
     sendButtonText: {
-        fontWeight: '500',
+        fontWeight: 'bold',
         fontSize: 16,
+        color: '#fff'
     },
 });

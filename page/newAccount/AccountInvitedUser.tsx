@@ -1,7 +1,17 @@
-import { Image, Platform, SafeAreaView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+    Dimensions,
+    Image,
+    Platform,
+    SafeAreaView,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
+} from "react-native";
 import { Circle, Path, Svg } from "react-native-svg";
 import { Ionicons } from '@expo/vector-icons';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { getGroupAccount } from "../../component/api/NewAccountApi";
 
 interface Props {
@@ -15,6 +25,8 @@ interface GroupMemberInfo {
     userImg: string;
     admin: boolean;
 }
+
+const {width, height} = Dimensions.get('window');
 
 export const AccountInvitedUser = ({ navigation, route}: any) => {
     const { token, account }: Props = route.params;
@@ -46,11 +58,10 @@ export const AccountInvitedUser = ({ navigation, route}: any) => {
                     />
                 ) : (
                     <Svg
-                        width={55}
-                        height={55}
+                        width={45}
+                        height={45}
                         fill="none"
                         viewBox="0 0 30 30"
-                        style={{marginRight: 10}}
                     >
                         <Path
                             fill="#7E869E"
@@ -76,27 +87,21 @@ export const AccountInvitedUser = ({ navigation, route}: any) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.innerContainer}>
-                <View style={styles.header}>
+                <View style={styles.accountNameContainer}>
                     <TouchableOpacity 
                         onPress={() => navigation.navigate('AccountDetail', { token })}
                     >
                         <Svg
-                            width={31}
-                            height={24}
+                            width={10}
+                            height={16}
                             fill="none"
-                            style={{marginLeft: 40}}
+                            viewBox="0 0 8 14"
                         >
-                            <Path stroke="#33363F" strokeWidth={2} d="m19.375 6-7.75 6 7.75 6" />
+                            <Path stroke="#222" d="M7 1 1 7l6 6"/>
                         </Svg>
                     </TouchableOpacity>
-                    <View style={styles.bellContainer}>
-                        <Ionicons name="notifications" size={24} color="green" />
-                    </View>
-                </View>
-                <View style={styles.accountNameContainer}>
                     <Text style={styles.accountName}>참여 멤버</Text>
                 </View>
-                <View style={[styles.line, {width: '90%'}]} />
                 <View style={styles.settingsContainer}>
                     {members.map(member => (
                         <View key={member.userCode} style={styles.row}>
@@ -123,21 +128,10 @@ const styles = StyleSheet.create({
         width: "100%",
         marginTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         alignItems: 'center',
-        backgroundColor: '#B7E1CE'
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        width: '100%',
-        marginBottom: 10,
-        marginTop: 20
     },
     profileContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        marginLeft: 25
     },
     profileImage: {
         width: 45,
@@ -145,45 +139,35 @@ const styles = StyleSheet.create({
         borderRadius: 25,
     },
     profileName: {
-        fontSize: 25,
-        fontWeight: '500',
+        fontSize: 20,
         textAlign: 'left',
-        marginLeft: 15
+        marginLeft: 10
     },
     bellContainer: {
         position: 'absolute',
         right: 40,
     },
     accountNameContainer: {
+        width: '100%',
+        backgroundColor: 'white',
         flexDirection: 'row',
         alignItems: 'center',
-        width: '100%',
-        marginBottom: 10,
-        marginTop: 30,
-        marginLeft: 100,
+        paddingHorizontal: 20,
+        marginVertical: 20
     },
     accountName: {
-        fontSize: 35,
+        fontSize: 18,
         fontWeight: 'bold',
-        marginRight: 10,
-    },
-    line: {
-        borderTopColor: '#fff',
-        borderTopWidth: 1,
-        alignSelf: 'center',
-        marginTop: 15,
-        marginBottom: 15,
+        marginLeft: 10
     },
     settingsContainer: {
-        width: '80%',
-        marginTop: 100,
-        flex: 1
+        width: width - 40,
+        flex: 1,
+        marginHorizontal: 20
     },
     row: {
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: 10,
-        marginBottom: 30,
-        height: 50
+        marginBottom: 20,
     },
 })

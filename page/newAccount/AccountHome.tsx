@@ -96,6 +96,7 @@ export default function AccountHome({ route, navigation }: any) {
     
                     // 상태 업데이트
                     setAccounts([]);
+                    setUserCode(userCode || '');
                     setUserName(userName || '');
                     setUserImg(userImg || '');
                 } else {

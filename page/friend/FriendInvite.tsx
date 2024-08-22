@@ -41,12 +41,12 @@ export default function  FriendInvite (props: any) {
     const inviteAccept = async (): Promise<void> => {
         try {
             const token = bearerToken.split(' ')[1];
-            console.log(token);
             await saveGroup(token, { status: true })
             Alert.alert(
                 '모임 통장',
                 '모임 통장에 가입되었습니다.🤝'
             );
+            getInviteListData();
         } catch (error: any) {
             console.log('Error:', error.message);
         }
@@ -62,6 +62,7 @@ export default function  FriendInvite (props: any) {
                 '모임 통장',
                 '모임 통장 가입을 거절했습니다.'
             );
+            getInviteListData();
         } catch (error: any) {
             console.log('Error:', error.message);
         }
